@@ -1,4 +1,4 @@
-package org.factoriaf5.p4_gijon_project_funkoshop_backend;
+package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,7 +22,7 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO) {
-        ProductDTO createdProduct = productService.addProduct(productDTO);
+        ProductDTO createdProduct = productService.createProduct(productDTO);
         return ResponseEntity.ok(createdProduct);
     }
 

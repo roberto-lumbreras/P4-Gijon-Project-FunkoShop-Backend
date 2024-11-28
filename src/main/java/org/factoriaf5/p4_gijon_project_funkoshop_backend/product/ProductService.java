@@ -69,7 +69,7 @@ public class ProductService {
         product.setStock(productDTO.getStock());
         product.setDiscount(productDTO.getDiscount());
         product.setImageHash(productDTO.getImageHash());
-        product.setImageHash2(productDTO.getImageHash2());   
+        product.setImageHash2(productDTO.getImageHash2());
         product.setCategory(category);
 
         Product updatedProduct = productRepository.save(product);
@@ -78,7 +78,7 @@ public class ProductService {
                 updatedProduct.getImageHash(), updatedProduct.getImageHash2(), updatedProduct.getCategory().getId());
     }
 
-    public ProductDTO getProduct(Long id) {
+    public ProductDTO fetchProductById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException(
                         "Product not found by id " + id + ". Status: " + HttpStatus.NOT_FOUND));
