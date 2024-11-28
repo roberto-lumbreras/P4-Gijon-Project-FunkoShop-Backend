@@ -2,13 +2,33 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend;
 
 import java.math.BigDecimal;
 
-public record ProductDTO(
-    Long id,
-    String name,
-    String description,
-    BigDecimal price,
-    Integer stock,
-    Integer discount,
-    String imageHash,
-    String imageHash2,
-    String categoryId){}
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+public class ProductDTO{
+    private Long id;
+    private String name;
+    private String description;
+    private BigDecimal price;
+    private Integer stock;
+    private Integer discount;
+    private String imageHash;
+    private String imageHash2;
+    //private Long categoryId;
+
+    public ProductDTO(Product product){
+        this.id=product.getId();
+        this.name=product.getName();
+        this.description=product.getDescription();
+        this.price=product.getPrice();
+        this.stock=product.getStock();
+        this.discount=product.getDiscount();
+        this.imageHash=product.getImageHash();
+        this.imageHash2=product.getImageHash2();
+        //this.categoryId=product.getCategory().getId();
+    }
+}
