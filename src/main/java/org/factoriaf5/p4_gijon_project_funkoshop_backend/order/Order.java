@@ -1,10 +1,17 @@
-package main.java.org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
+package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
+
 
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.*;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -118,3 +125,4 @@ public class Order {
         this.price = price;
     }
 }
+
