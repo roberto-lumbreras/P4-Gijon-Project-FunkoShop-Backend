@@ -40,7 +40,7 @@ public class ProductService {
                         + ". Status: " + HttpStatus.NOT_FOUND));
 
         Product product = new Product();
-        product.setName(productDTO.getname());
+        product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());
         product.setStock(productDTO.getStock());
@@ -63,7 +63,7 @@ public class ProductService {
                 Category category = categoryRepository.findById(productDTO.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found by id " + productDTO.getCategoryId() + ". Status: " + HttpStatus.NOT_FOUND));
 
-        product.setName(productDTO.getname());
+        product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());
         product.setStock(productDTO.getStock());
