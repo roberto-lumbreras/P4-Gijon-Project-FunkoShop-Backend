@@ -10,7 +10,7 @@ public class OrderDto {
     private Long id;
     private User user;
     private Date orderDate;
-    private boolean isPaid;
+    private boolean paid;
     private Status status;
     private Integer amount;
     private List<ArrayList> productList;
@@ -64,11 +64,11 @@ public void setOrderDate(Date orderDate) {
 }
 
 public boolean isPaid() {
-    return isPaid;
+    return paid;
 }
 
-public void setPaid(boolean isPaid) {
-    this.isPaid = isPaid;
+public void setPaid(boolean paid) {
+    this.paid = paid;
 }
 
 public Integer getAmount() {
