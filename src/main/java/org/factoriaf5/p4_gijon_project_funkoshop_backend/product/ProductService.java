@@ -1,13 +1,14 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Product;
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Category;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.ProductDTO;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.ProductRepository;
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.CategoryRepository;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.Category;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.CategoryRepository;
 
 import javax.management.RuntimeErrorException;
 
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.CategoryRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +38,7 @@ public class ProductService {
 
         Category category = categoryRepository.findById(productDTO.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found by id " + productDTO.getCategoryId()
-                        + ". Status: " + HttpStatus.NOT_FOUND));
+                + ". Status: " + HttpStatus.NOT_FOUND));
 
         Product product = new Product();
         product.setName(productDTO.getName());
@@ -50,9 +51,7 @@ public class ProductService {
         product.setImageHash2(productDTO.getImageHash2());
 
         Product savedProduct = productRepository.save(product);
-        return new ProductDTO(savedProduct.getId(), savedProduct.getName(), savedProduct.getDescription(),
-                savedProduct.getPrice(), savedProduct.getStock(), savedProduct.getDiscount(),
-                savedProduct.getImageHash(), savedProduct.getImageHash2(), savedProduct.getCategory().getId());
+        return new ProductDTO(savedProduct);
 
     }
 
@@ -60,7 +59,7 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found by id " + id + ". Status: " + HttpStatus.NOT_FOUND));
 
-                Category category = categoryRepository.findById(productDTO.getCategoryId())
+        Category category = categoryRepository.findById(productDTO.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found by id " + productDTO.getCategoryId() + ". Status: " + HttpStatus.NOT_FOUND));
 
         product.setName(productDTO.getName());
@@ -73,24 +72,13 @@ public class ProductService {
         product.setCategory(category);
 
         Product updatedProduct = productRepository.save(product);
-        return new ProductDTO(updatedProduct.getId(), updatedProduct.getName(), updatedProduct.getDescription(),
-                updatedProduct.getPrice(), updatedProduct.getStock(), updatedProduct.getDiscount(),
-                updatedProduct.getImageHash(), updatedProduct.getImageHash2(), updatedProduct.getCategory().getId());
+        return new ProductDTO(updatedProduct);
     }
 
     public ProductDTO fetchProductById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException(
-                        "Product not found by id " + id + ". Status: " + HttpStatus.NOT_FOUND));
-        return new ProductDTO(
-                product.getId(),
-                product.getName(),
-                product.getDescription(),
-                product.getPrice(),
-                product.getStock(),
-                product.getDiscount(),
-                product.getImageHash(),
-                product.getImageHash2(),
-                product.getCategory().getId());
+                "Product not found by id " + id + ". Status: " + HttpStatus.NOT_FOUND));
+        return new ProductDTO(product);
     }
 }

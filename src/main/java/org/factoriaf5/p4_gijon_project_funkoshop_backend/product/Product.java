@@ -2,6 +2,8 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
 import java.math.BigDecimal;
 
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.Category;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,5 +31,5 @@ public class Product {
     private Integer discount;
     private String imageHash;
     private String imageHash2;
-    //private Category category;
+    private Category category;
 }

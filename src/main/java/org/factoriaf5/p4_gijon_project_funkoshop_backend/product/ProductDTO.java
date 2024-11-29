@@ -18,7 +18,7 @@ public class ProductDTO{
     private Integer discount;
     private String imageHash;
     private String imageHash2;
-    //private Long categoryId;
+    private Long categoryId;
 
     public ProductDTO(Product product){
         this.id=product.getId();
@@ -29,6 +29,6 @@ public class ProductDTO{
         this.discount=product.getDiscount();
         this.imageHash=product.getImageHash();
         this.imageHash2=product.getImageHash2();
-        //this.categoryId=product.getCategory().getId();
+        this.categoryId=product.getCategory().getId();
     }
 }

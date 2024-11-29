@@ -44,7 +44,7 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
-    @GetMapping
+    /* @GetMapping
     public ResponseEntity<Page<ProductDTO>> fetchProducts(
             @RequestParam Integer page,
             @RequestParam Integer size,
@@ -83,5 +83,6 @@ public class ProductController {
     public ResponseEntity<Page<ProductDTO>> fetchNewProducts() {
         Page<ProductDTO> products = productService.fetchNewProducts();
         return ResponseEntity.ok(products);
-    }
+    } */
+
 }
