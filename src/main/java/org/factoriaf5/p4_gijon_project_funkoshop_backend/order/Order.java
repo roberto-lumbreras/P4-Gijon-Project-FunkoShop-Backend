@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.OrderService.Status;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,7 +38,7 @@ public class Order {
     private String payment;
 
     @Column(name = "status", nullable = false)
-    private Enum status;
+    private Status status;
 
     @Column(name = "amount", nullable = false)
     private Integer amount;
@@ -47,7 +49,7 @@ public class Order {
     @Column(name = "price", nullable = false)
     private Float price;
 
-    public Order(Long orderId, User user, Date orderDate, Boolean isPaid, Enum status, int amount,
+    public Order(Long orderId, User user, Date orderDate, Boolean isPaid, Status status, int amount,
             List<ArrayList> productList, Float price) {
         this.orderId = orderId;
         this.user = user;
@@ -103,11 +105,11 @@ public class Order {
         this.payment = payment;
     }
 
-    public Enum getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(Enum status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

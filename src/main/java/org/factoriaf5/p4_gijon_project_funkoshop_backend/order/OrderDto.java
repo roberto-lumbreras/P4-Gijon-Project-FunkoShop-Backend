@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.OrderService.Status;
 
 public class OrderDto {
 
     private Long orderId;
-    private User user;
+    private Long userId;
     private Date orderDate;
     private boolean paid;
     private String payment;
@@ -24,7 +25,7 @@ public OrderDto() {
 public OrderDto(Order order) {
 
     this.orderId = order.getOrderId();
-    this.user = order.getUser().getId();
+    this.userId = order.getUser().getId();
     this.orderDate = order.getOrderDate();
     this.paid = order.getIsPaid();
     this.payment = order.getPayment();
@@ -49,12 +50,12 @@ public OrderDto(Order order) {
         this.orderId = orderId;
     }
 
-    public User getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Date getOrderDate() {
