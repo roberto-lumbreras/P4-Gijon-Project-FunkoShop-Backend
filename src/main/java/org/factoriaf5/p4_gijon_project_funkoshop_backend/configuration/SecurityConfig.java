@@ -1,9 +1,9 @@
-package org.factoriaf5.p4_gijon_project_funkoshop_backend.config;
+package org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration;
 
 import javax.sql.DataSource;
 
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.config.jwt.AuthEntryPointJwt;
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.config.jwt.AuthTokenFilter;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.AuthEntryPointJwt;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
