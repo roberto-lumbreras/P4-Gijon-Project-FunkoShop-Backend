@@ -1,4 +1,4 @@
-package org.factoriaf5.p4_gijon_project_funkoshop_backend.Config.JWT;
+package org.factoriaf5.p4_gijon_project_funkoshop_backend.config.jwt;
 
 import java.io.IOException;
 
