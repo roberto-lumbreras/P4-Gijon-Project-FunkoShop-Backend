@@ -5,12 +5,12 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -21,7 +21,7 @@ import lombok.Data;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long orderId;
 
     @OneToMany
     @JoinColumn(name = "user_id", nullable = false)
@@ -45,9 +45,9 @@ public class Order {
     @Column(name = "price", nullable = false)
     private Float price;
 
-    public Order(Long id, User user, Date orderDate, Boolean isPaid, Enum status, int amount,
+    public Order(Long orderId, User user, Date orderDate, Boolean isPaid, Enum status, int amount,
             List<ArrayList> productList, Float price) {
-        this.id = id;
+        this.orderId = orderId;
         this.user = user;
         this.orderDate = orderDate;
         this.isPaid = isPaid;
@@ -61,12 +61,12 @@ public class Order {
 
     }
 
-    public Long getId() {
-        return id;
+    public Long getOrderId() {
+        return  orderId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
     public User getUser() {
