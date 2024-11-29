@@ -4,17 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.net.ssl.SSLEngineResult.Status;
-
-import org.apache.catalina.realm.JNDIRealm.User;
-
 
 public class OrderDto {
 
-    private Long id;
+    private Long orderId;
     private User user;
     private Date orderDate;
     private boolean paid;
+    private String payment;
     private Status status;
     private Integer amount;
     private List<ArrayList> productList;
@@ -26,77 +23,86 @@ public OrderDto() {
 
 public OrderDto(Order order) {
 
-this.id = order.getId();
-this.user = order.getUser().getId();
-this.orderDate = order.getOrderDate();
-this.isPaid = order.getIsPaid();
-this.status = OrderService.Status.getStatus();
-this.amount = order.getAmount();
-this.productList = order.getProductList();
-this.price = order.getPrice();
+    this.orderId = order.getOrderId();
+    this.user = order.getUser().getId();
+    this.orderDate = order.getOrderDate();
+    this.paid = order.getIsPaid();
+    this.payment = order.getPayment();
+    this.status = OrderService.Status.getStatus();
+    this.amount = order.getAmount();
+    this.productList = order.getProductList();
+    this.price = order.getPrice();
 
 }
 
-public Status getStatus() {
-    return status;
+    public Status getStatus() {
+        return status;
     }
     public void setStatus(Status status) {
         this.status = status;
     }
-public Long getId() {
-    return id;
-}
+    public Long getOrderId() {
+        return orderId;
+    }
 
-public void setId(Long id) {
-    this.id = id;
-}
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
 
-public User getUser() {
-    return user;
-}
+    public User getUser() {
+        return user;
+    }
 
-public void setUser(User user) {
-    this.user = user;
-}
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-public Date getOrderDate() {
-    return orderDate;
-}
+    public Date getOrderDate() {
+        return orderDate;
+    }
 
-public void setOrderDate(Date orderDate) {
-    this.orderDate = orderDate;
-}
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
+    }
 
-public boolean isPaid() {
-    return paid;
-}
+    public boolean isPaid() {
+        return paid;
+    }
 
-public void setPaid(boolean paid) {
-    this.paid = paid;
-}
+    public void setPaid(boolean paid) {
+        this.paid = paid;
+    }
 
-public Integer getAmount() {
-    return amount;
-}
+    public String getPayment(){
+        return payment;
+    }
 
-public void setAmount(Integer amount) {
-    this.amount = amount;
-}
+    public void setPayment(String payment) {
+        this.payment = payment;
+    }
 
-public List<ArrayList> getProductList() {
-    return productList;
-}
+    public Integer getAmount() {
+        return amount;
+    }
 
-public void setProductList(List<ArrayList> productList) {
-    this.productList = productList;
-}
+    public void setAmount(Integer amount) {
+        this.amount = amount;
+    }
 
-public Float getPrice() {
-    return price;
-}
+    public List<ArrayList> getProductList() {
+        return productList; 
+    }
 
-public void setPrice(Float price) {
-    this.price = price;
-}
+    public void setProductList(List<ArrayList> productList) {
+        this.productList = productList;
+    }
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
+    }
 
 }

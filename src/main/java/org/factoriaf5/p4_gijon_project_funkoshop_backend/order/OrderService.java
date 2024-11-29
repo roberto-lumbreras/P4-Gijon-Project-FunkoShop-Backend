@@ -6,6 +6,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class OrderService {
+
+    public enum Status {
+        PENDING, SHIPPED, DELIVERED, CANCELED
+    }
+
+    public Status getStatus(Status status) {
+        return status;
+    }
+
+    public void setStatus(Status status){
+        // implement logic to update status
+    }
     
     private OrderRepository orderRepository;
     
