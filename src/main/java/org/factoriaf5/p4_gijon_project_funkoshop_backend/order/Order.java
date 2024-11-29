@@ -1,6 +1,5 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 
-
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +32,9 @@ public class Order {
     @Column(name = "paid", nullable = false)
     private Boolean isPaid;
 
+    @Column(name = "payment_method", nullable = false)
+    private String payment;
+
     @Column(name = "status", nullable = false)
     private Enum status;
 
@@ -62,7 +64,7 @@ public class Order {
     }
 
     public Long getOrderId() {
-        return  orderId;
+        return orderId;
     }
 
     public void setOrderId(Long orderId) {
@@ -91,6 +93,14 @@ public class Order {
 
     public void setIsPaid(Boolean isPaid) {
         this.isPaid = isPaid;
+    }
+
+    public String getPayment() {
+        return payment;
+    }
+
+    public void setPayment(String payment) {
+        this.payment = payment;
     }
 
     public Enum getStatus() {
@@ -125,4 +135,3 @@ public class Order {
         this.price = price;
     }
 }
-
