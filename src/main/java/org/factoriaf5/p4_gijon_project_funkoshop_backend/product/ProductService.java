@@ -1,13 +1,6 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Product;
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.ProductDTO;
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.ProductRepository;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.Category;
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.CategoryRepository;
-
-import javax.management.RuntimeErrorException;
-
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.CategoryRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

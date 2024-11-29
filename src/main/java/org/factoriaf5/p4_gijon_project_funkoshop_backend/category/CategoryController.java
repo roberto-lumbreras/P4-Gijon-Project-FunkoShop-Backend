@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class CategoryController {
 
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/api/categories")
 public class DeviceController {
 
         @Autowired
         CategoryService service;
 
-        @GetMapping(path = "/categories")
+        @GetMapping
         public ResponseEntity<List<CategoryDTO>> getCategories() {
         return new ResponseEntity<>(service.getCategories(), HttpStatus.OK);
         }
