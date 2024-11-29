@@ -2,23 +2,17 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.Category;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.CategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProductService {
 
+    @Autowired
     private ProductRepository productRepository;
+    @Autowired
     private CategoryRepository categoryRepository;
-
-    public ProductService() {
-    }
-
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
-        this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
-
-    }
 
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id)

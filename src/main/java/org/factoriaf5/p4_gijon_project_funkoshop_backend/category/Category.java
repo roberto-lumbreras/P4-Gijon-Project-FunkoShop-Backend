@@ -23,7 +23,6 @@ public class Category {
     private Long id;
     @Column(nullable=false)
     private String name;
-    @Column(nullable=false)
     private String imageHash;
     @Column(name = "highlights", nullable = false)
     private boolean highlights;
