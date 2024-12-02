@@ -43,11 +43,11 @@ public class DetailOrder {
     public DetailOrder() {
     }
 
-    public Long getDetailID() {
+    public Long getDetailId() {
         return detailId;
     }
 
-    public void setDetailID(Long detailId) {
+    public void setDetailId(Long detailId) {
         this.detailId = detailId;
     }
 
