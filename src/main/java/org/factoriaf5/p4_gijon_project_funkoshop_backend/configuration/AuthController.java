@@ -21,10 +21,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.security.core.AuthenticationException;
 
 
 @RestController
+@RequestMapping ("/auth")
 public class AuthController {
     @Autowired
     private JwtUtils jwtUtils;
@@ -49,7 +51,7 @@ public class AuthController {
         return "Hello, Admin!";
     }
 
-   @PostMapping("/signin")
+   @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         org.springframework.security.core.Authentication authentication;
         try {

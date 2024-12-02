@@ -1,3 +1,9 @@
+/* Se borra la base de datos anterior si existiese */
+
+DROP DATABASE IF EXISTS funkoshop;
+CREATE DATABASE funkoshop;
+USE funkoshop;
+
 CREATE TABLE users (
     username VARCHAR(50) NOT NULL PRIMARY KEY,
     password VARCHAR(500) NOT NULL,

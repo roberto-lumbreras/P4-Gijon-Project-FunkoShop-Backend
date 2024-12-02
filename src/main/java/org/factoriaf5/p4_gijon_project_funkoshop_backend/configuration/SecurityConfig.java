@@ -39,9 +39,9 @@ public class SecurityConfig {
     }
 
     private static final String[] WhiteList = {
-                        "**/auth/**",
-                        "**/products/**",
-                        "**/categories/**"
+                        "/auth/**",
+                        "/products/**",
+                        "/categories/**"
     };
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
