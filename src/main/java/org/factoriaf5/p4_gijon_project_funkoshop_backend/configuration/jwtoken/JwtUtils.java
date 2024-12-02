@@ -17,9 +17,12 @@ import java.util.Date;
 public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-    @Value("${spring.app.jwtSecret}")
+    @Value("${spring.app.jwt.secret}")
     private String jwtSecret;
     
+    @Value("${spring.app.jwt.expirationMs}")
+    private Long jwtExpirationMs;
+
     public String getJwtFromHeader(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         logger.debug("Authorization Header: {}", bearerToken);
