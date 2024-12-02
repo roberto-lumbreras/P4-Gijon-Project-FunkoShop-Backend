@@ -3,7 +3,7 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 import java.util.List;
 import java.util.Map;
 
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.P4GijonProjectFunkoshopBackendApplication.order.OrderDTO;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.*;
 import org.springframework.boot.info.SslInfo.CertificateValidityInfo.Status;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
