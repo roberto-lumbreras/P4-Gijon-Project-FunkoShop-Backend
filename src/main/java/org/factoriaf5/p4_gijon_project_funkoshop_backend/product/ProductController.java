@@ -1,6 +1,7 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -60,16 +62,18 @@ public class ProductController {
         Page<ProductDTO> products = productService.fetchProductsByCategory(categoryId, page, size, sort);
         return ResponseEntity.ok(products);
     }
-
+*/
     @GetMapping("/keyword/{keyword}")
     public ResponseEntity<Page<ProductDTO>> fetchProductsByKeyword(
-            @PathVariable String keywordId,
+            @PathVariable String keyword,
             @RequestParam Integer page,
             @RequestParam Integer size,
             @RequestParam String sort) {
-        Page<ProductDTO> products = productService.fetchProductsByCategory(keywordId, page, size, sort);
+        Page<ProductDTO> products = productService.fetchProductsByKeyword(keyword, page, size, sort);
         return ResponseEntity.ok(products);
     }
+    
+    /*
 
     @GetMapping("/discounted")
     public ResponseEntity<Page<ProductDTO>> fetchDiscountedProducts() {

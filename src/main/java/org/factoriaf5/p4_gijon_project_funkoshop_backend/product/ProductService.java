@@ -1,8 +1,16 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.Category;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -67,5 +75,28 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException(
                 "Product not found by id " + id + ". Status: " + HttpStatus.NOT_FOUND));
         return new ProductDTO(product);
+    }
+
+    public Page<ProductDTO> fetchProductsByKeyword(String keyword, Integer page, Integer size, String sort) {
+        String[] splitSort = sort.split(",");
+
+        String sortField = splitSort[0];
+        String sortDirection = splitSort[1].toUpperCase();
+
+        Sort.Direction direction = Sort.Direction.valueOf(sortDirection);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+        
+        Page<Product> productPage = productRepository.findAll(pageable);
+        
+        // Filtrar los productos después de obtener la página
+        List<ProductDTO> filteredProducts = productPage.stream()
+            .filter(x -> x.getName().toLowerCase().contains(keyword.toLowerCase()) ||
+                        x.getDescription().toLowerCase().contains(keyword.toLowerCase()))
+            .map(ProductDTO::new)
+            .collect(Collectors.toList());
+        
+        // Convertir la lista filtrada a una página
+        return new PageImpl<>(filteredProducts, pageable, productPage.getTotalElements());
     }
 }
