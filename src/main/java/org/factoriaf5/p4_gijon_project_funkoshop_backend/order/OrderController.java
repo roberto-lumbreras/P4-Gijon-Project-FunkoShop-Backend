@@ -14,60 +14,81 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 @RestController
 @RequestMapping("/api")
-
 public class OrderController {
-    
-        OrderService orderService;
-    public OrderController (OrderService orderService) {
+
+    OrderService orderService;
+
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
 
     @PreAuthorize("hasRole('USER')")
-    @PostMapping
+    @PostMapping("/order/create")
     public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
-
-        OrderDTO createdOrder = orderService.createOrder(orderDTO);
-        return ResponseEntity.status(HttpStatus.CREATED);
+        try {
+            OrderDTO createdOrder = orderService.createOrder(orderDTO);
+            return ResponseEntity.status(HttpStatus.CREATED);
+        } catch (IllegalArgumentException error) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/order/{orderId}")
-    public ResponseEntity<OrderDTO> updateOrderStatus(@PathVariable Long orderId, @RequestParam Status status) {   
-
-        OrderDTO updatedOrder = orderService.updateOrderStatus(orderId, status);
-        return ResponseEntity.ok(updatedOrder);
+    public ResponseEntity<OrderDTO> updateOrderStatus(@PathVariable Long orderId, @RequestParam Status status) {
+        try {
+            OrderDTO updatedOrder = orderService.updateOrderStatus(orderId, status);
+            return ResponseEntity.ok(updatedOrder);
+        } catch (IllegalArgumentException error) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/order/pdf/{orderId}")
-    public ResponseEntity<byte[]> generateOrderPDF(@PathVariable Long orderId) {   
-
-    byte[] pdfData = orderService.generateOrderPDF(orderId);
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_PDF);
-    headers.setContentDisposition(ContentDisposition.inline().filename("order_" + orderId + ".pdf").build());
-        return ResponseEntity.ok().headers(headers).body(pdfData);
+    public ResponseEntity<byte[]> generateOrderPDF(@PathVariable Long orderId) {
+        try {
+            byte[] pdfData = orderService.generateOrderPDF(orderId);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDisposition(ContentDisposition.inline().filename("order_" + orderId + ".pdf").build());
+            return ResponseEntity.ok().headers(headers).body(pdfData);
+        } catch (IllegalArgumentException error) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/order/all")
-    public ResponseEntity<OrderDto> retreiveAllOrder (@RequestBody OrderDto order) {
-        OrderDto orderDto = orderService.retreiveAllOrder(userId);
-    } 
+    public ResponseEntity<OrderDto> retreiveAllOrder(@RequestBody OrderDto order) {
+        try {
+            OrderDto orderDto = orderService.retreiveAllOrder(userId);
+            // return new ResponseEntity<OrderDto>(orderDto).build();
+        } catch (IllegalArgumentException error) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/order/status/{orderId}")
     public ResponseEntity<Status> retreiveOrderStatus (@RequestBody Status status) {
-        Status status = orderService.getStatus(status);
-    }
+        try {
+            Status status = orderService.getStatus(status);
+        } catch(IllegalArgumentException error) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
 
     @PreAuthorize("hasRole('USER')")
-    @PatchMapping ("/order/payment/{orderId}")
-    public ResponseEntity<OrderDto> SelectPaymentMethod (@RequestBody OrderDto payment) {
-        OrderDto payment = orderService.SelectPaymentMethod(payment);   
+    @PatchMapping("/order/payment/{orderId}")
+    public ResponseEntity<OrderDto> selectPaymentMethod(@RequestBody OrderDto payment) {
+        try {
+            OrderDto result = orderService.selectPayment(payment);
+        } catch (IllegalArgumentException error) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
-
-    
+}
 }
