@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -71,11 +72,11 @@ public class SecurityConfig {
     @Bean
     public CommandLineRunner initData(UserDetailsService userDetailsService) {
         return args -> {
-            UserDetails user1 = User.withEmail("user@email.com")
+            UserDetails user1 = User.withUsername("user@email.com")
                     .password(passwordEncoder().encode("1234"))
                     .roles("USER")
                     .build();
-            UserDetails admin = User.withEmail("admin@email.com")
+            UserDetails admin = User.withUsername("admin@email.com")
                     .password(passwordEncoder().encode("1234"))
                     .roles("ADMIN")
                     .build();

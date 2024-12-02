@@ -2,6 +2,7 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.Config.JWT;
 
 import java.io.IOException;
 
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

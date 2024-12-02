@@ -1,3 +1,5 @@
+package org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;

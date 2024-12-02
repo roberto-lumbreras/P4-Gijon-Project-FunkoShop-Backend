@@ -31,18 +31,18 @@ public class JwtUtils {
         }
         return null;
     }
-    public String generateTokenFromUsername(UserDetails userDetails) {
-        String username = userDetails.getUsername();
+    public String generateTokenFromEmail(UserDetails userDetails) {
+        String email = userDetails.getUsername();
         return Jwts.builder()
-                .subject(username)
+                .subject(email)
                 .issuedAt(new Date())
                 .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key())
                 .compact();
     }
-    public String getUserNameFromJwtToken(String token) {
+    public String getEmailFromJwtToken(String token) {
         return Jwts.parser()
-                        .verifyWith((SecretKey) key())
+                .verifyWith((SecretKey) key())
                 .build().parseSignedClaims(token)
                 .getPayload().getSubject();
     }
