@@ -1,5 +1,7 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +46,7 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
-    /* @GetMapping
+    @GetMapping
     public ResponseEntity<Page<ProductDTO>> fetchProducts(
             @RequestParam Integer page,
             @RequestParam Integer size,
@@ -53,7 +55,7 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/category/{categoryId}")
+    /* @GetMapping("/category/{categoryId}")
     public ResponseEntity<Page<ProductDTO>> fetchProductsByCategory(
             @PathVariable Long categoryId,
             @RequestParam Integer page,
@@ -61,8 +63,8 @@ public class ProductController {
             @RequestParam String sort) {
         Page<ProductDTO> products = productService.fetchProductsByCategory(categoryId, page, size, sort);
         return ResponseEntity.ok(products);
-    }
-*/
+    } */
+
     @GetMapping("/keyword/{keyword}")
     public ResponseEntity<Page<ProductDTO>> fetchProductsByKeyword(
             @PathVariable String keyword,
@@ -72,15 +74,13 @@ public class ProductController {
         Page<ProductDTO> products = productService.fetchProductsByKeyword(keyword, page, size, sort);
         return ResponseEntity.ok(products);
     }
-    
-    /*
 
-    @GetMapping("/discounted")
-    public ResponseEntity<Page<ProductDTO>> fetchDiscountedProducts() {
-        Page<ProductDTO> products = productService.fetchDiscountedProducts();
+    /* @GetMapping("/discounted")
+    public ResponseEntity<List<ProductDTO>> fetchDiscountedProducts() {
+        List<ProductDTO> products = productService.fetchDiscountedProducts();
         return ResponseEntity.ok(products);
     }
-
+    
     @GetMapping("/new")
     public ResponseEntity<Page<ProductDTO>> fetchNewProducts() {
         Page<ProductDTO> products = productService.fetchNewProducts();

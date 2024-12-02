@@ -99,4 +99,21 @@ public class ProductService {
         // Convertir la lista filtrada a una página
         return new PageImpl<>(filteredProducts, pageable, productPage.getTotalElements());
     }
+
+    public Page<ProductDTO> fetchProducts(Integer page, Integer size, String sort) {
+        String[] splitSort = sort.split(",");
+
+        String sortField = splitSort[0];
+        String sortDirection = splitSort[1].toUpperCase();
+
+        Sort.Direction direction = Sort.Direction.valueOf(sortDirection);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+
+        List<ProductDTO> productDTOs = productRepository.findAll(pageable).stream().map(ProductDTO::new).collect(Collectors.toList());
+
+        return new PageImpl<>(productDTOs, pageable, productRepository.findAll(pageable).getTotalElements());
+    }
+
+
 }
