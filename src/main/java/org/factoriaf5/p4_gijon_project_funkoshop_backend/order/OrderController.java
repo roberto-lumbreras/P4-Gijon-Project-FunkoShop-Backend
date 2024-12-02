@@ -1,5 +1,9 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 
+import java.util.List;
+
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.P4GijonProjectFunkoshopBackendApplication.order.OrderDTO;
+import org.springframework.boot.info.SslInfo.CertificateValidityInfo.Status;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,9 +33,14 @@ public class OrderController {
     // ENDPOINT FRONTEND
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/orders")
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
+    public ResponseEntity<OrderDTO> createOrder(@RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody OrderDTO orderDTO) {
         try {
-            OrderDTO createdOrder = orderService.createOrder(orderDTO);
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            OrderDTO createdOrder = orderService.createOrder(authorizationHeader, orderDTO);
             return ResponseEntity.status(HttpStatus.CREATED);
         } catch (IllegalArgumentException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -40,10 +50,15 @@ public class OrderController {
     // ENDPOINT FRONTEND
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/orders/user")
-    public ResponseEntity<OrderDto> retrieveAllOrdersByUser(@RequestBody OrderDto order) {
+    public ResponseEntity<List<OrderDto>> retrieveAllOrdersByUser(
+            @RequestHeader("Authorization") String authorizationHeader, @RequestBody OrderDto orderDto) {
         try {
-            OrderDto orderDto = orderService.retreiveAllOrderByUser(userId);
-            // return new ResponseEntity<OrderDto>(orderDto).build();
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            List<OrderDto> orderList = orderService.getOrdersByUser(authorizationHeader, orderDto);
+            return ResponseEntity.ok(orderList);
         } catch (IllegalArgumentException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -52,10 +67,15 @@ public class OrderController {
     // ENDPOINT FRONTEND
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/orders")
-    public ResponseEntity<OrderDto> retrieveAllOrdersByAdmin(@RequestBody OrderDto order) {
+    public ResponseEntity<OrderDto> retrieveAllOrdersByAdmin(@RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody OrderDto orderDto) {
         try {
-            OrderDto orderDto = orderService.retreiveAllOrderByAdmin(userId);
-            // return new ResponseEntity<OrderDto>(orderDto).build();
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            List<OrderDto> orderList = orderService.getAllOrders(authorizationHeader, orderDto);
+            return ResponseEntity.ok(orderList);
         } catch (IllegalArgumentException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -63,9 +83,14 @@ public class OrderController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/order/{orderId}")
-    public ResponseEntity<OrderDTO> updateOrderStatus(@PathVariable Long orderId, @RequestParam Status status) {
+    public ResponseEntity<OrderDTO> updateOrderStatus(@RequestHeader("Authorization") String authorizationHeader,
+            @PathVariable Long orderId, @RequestParam Status status) {
         try {
-            OrderDTO updatedOrder = orderService.updateOrderStatus(orderId, status);
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            OrderDTO updatedOrder = orderService.updateOrderStatus(authorizationHeader, orderId, status);
             return ResponseEntity.ok(updatedOrder);
         } catch (IllegalArgumentException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -74,9 +99,13 @@ public class OrderController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/order/pdf/{orderId}")
-    public ResponseEntity<byte[]> generateOrderPDF(@PathVariable Long orderId) {
+    public ResponseEntity<byte[]> generateOrderPDF(@RequestHeader("Authorization") String authorizationHeader,
+            @PathVariable Long orderId) {
         try {
-            byte[] pdfData = orderService.generateOrderPDF(orderId);
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            byte[] pdfData = orderService.generateOrderPDF(authorizationHeader, orderId);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
             headers.setContentDisposition(ContentDisposition.inline().filename("order_" + orderId + ".pdf").build());
@@ -88,9 +117,14 @@ public class OrderController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/order/status/{orderId}")
-    public ResponseEntity<Status> retreiveOrderStatus(@RequestBody Status status) {
+    public ResponseEntity<Status> retreiveOrderStatus(@RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody Status status) {
         try {
-            Status status = orderService.getStatus(status);
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            Status status = orderService.getStatus(authorizationHeader, status);
         } catch (IllegalArgumentException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -98,9 +132,13 @@ public class OrderController {
 
     @PreAuthorize("hasRole('USER')")
     @PatchMapping("/order/payment/{orderId}")
-    public ResponseEntity<OrderDto> selectPaymentMethod(@RequestBody OrderDto payment) {
+    public ResponseEntity<OrderDto> selectPaymentMethod(@RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody OrderDto payment) {
         try {
-            OrderDto result = orderService.selectPayment(payment);
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            OrderDto result = orderService.selectPayment(authorizationHeader, payment);
         } catch (IllegalArgumentException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
