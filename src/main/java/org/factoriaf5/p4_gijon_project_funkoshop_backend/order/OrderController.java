@@ -74,12 +74,13 @@ public class OrderController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/order/status/{orderId}")
-    public ResponseEntity<Status> retreiveOrderStatus (@RequestBody Status status) {
+    public ResponseEntity<Status> retreiveOrderStatus(@RequestBody Status status) {
         try {
             Status status = orderService.getStatus(status);
-        } catch(IllegalArgumentException error) {
+        } catch (IllegalArgumentException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+    }
 
     @PreAuthorize("hasRole('USER')")
     @PatchMapping("/order/payment/{orderId}")
@@ -90,5 +91,4 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-}
 }
