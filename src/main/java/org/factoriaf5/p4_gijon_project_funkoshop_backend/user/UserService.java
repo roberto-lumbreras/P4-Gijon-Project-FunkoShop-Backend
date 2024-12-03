@@ -1,25 +1,24 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.user;
 
-
-
-import com.example.userservice.model.User;
-import com.example.userservice.repository.UserRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+/* import java.util.Optional; */
 
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
+    // Constructor con inyección de dependencias
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     // Obtener usuario por ID
     public User getUserById(Long id) {
