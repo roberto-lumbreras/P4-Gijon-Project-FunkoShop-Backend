@@ -115,5 +115,13 @@ public class ProductService {
         return new PageImpl<>(productDTOs, pageable, productRepository.findAll(pageable).getTotalElements());
     }
 
+    public Page<ProductDTO> fetchProductsByCategory(Long categoryId, Integer page, Integer size, String sort) {
+        String[] splitSort = sort.split(",");
+        String sortField = splitSort[0];
+        String sortDirection = splitSort[1].toUpperCase();
+        Sort s = Sort.by(Sort.Direction.valueOf(sortDirection.toUpperCase()) ,sortField);
+        return productRepository.fetchProductsByCategory(categoryId,PageRequest.of(page,size,s)).map(ProductDTO::new);
+    }
+
 
 }

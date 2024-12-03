@@ -1,7 +1,5 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +53,7 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    /* @GetMapping("/category/{categoryId}")
+    @GetMapping("/category/{categoryId}")
     public ResponseEntity<Page<ProductDTO>> fetchProductsByCategory(
             @PathVariable Long categoryId,
             @RequestParam Integer page,
@@ -63,7 +61,7 @@ public class ProductController {
             @RequestParam String sort) {
         Page<ProductDTO> products = productService.fetchProductsByCategory(categoryId, page, size, sort);
         return ResponseEntity.ok(products);
-    } */
+    }
 
     @GetMapping("/keyword/{keyword}")
     public ResponseEntity<Page<ProductDTO>> fetchProductsByKeyword(
