@@ -35,7 +35,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PatchMapping("/users/{id}")
+    @PatchMapping("/user/{id}")
     public ResponseEntity<User> changePassword(@PathVariable Long id, @RequestBody User userDetails) {
         try {
             User changePass = userService.changePassword(id, userDetails);
@@ -46,7 +46,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/admin/{id}")
+    @DeleteMapping("/user/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         if (userService.getUserById(id).isPresent()) {
             userService.deleteUser(id);
