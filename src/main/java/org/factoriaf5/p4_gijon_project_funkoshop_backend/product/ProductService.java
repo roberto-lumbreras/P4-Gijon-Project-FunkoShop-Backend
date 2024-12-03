@@ -123,5 +123,16 @@ public class ProductService {
         return productRepository.fetchProductsByCategory(categoryId,PageRequest.of(page,size,s)).map(ProductDTO::new);
     }
 
+    public List<ProductDTO> fetchDiscountedProducts() {
+        List<ProductDTO> discountedProducts = productRepository.findAll()
+            .stream()
+            .filter(product -> product.getDiscount() > 0)
+            .map(ProductDTO::new) 
+            .collect(Collectors.toList()); 
+    
+        return discountedProducts;
+
+    }
+
 
 }

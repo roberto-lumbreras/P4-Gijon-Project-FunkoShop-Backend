@@ -1,5 +1,7 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -73,11 +75,13 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    /* @GetMapping("/discounted")
+    @GetMapping("/discounted")
     public ResponseEntity<List<ProductDTO>> fetchDiscountedProducts() {
         List<ProductDTO> products = productService.fetchDiscountedProducts();
         return ResponseEntity.ok(products);
     }
+
+    /*
     
     @GetMapping("/new")
     public ResponseEntity<Page<ProductDTO>> fetchNewProducts() {
