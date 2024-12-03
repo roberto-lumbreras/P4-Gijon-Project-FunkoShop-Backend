@@ -2,7 +2,7 @@ INSERT INTO categories(name,highlights) VALUES ('DC',true);
 INSERT INTO categories(name,highlights) VALUES ('MARVEL',true);
 
 INSERT INTO products (name, description, category_id, stock, price,discount) 
-VALUES 
+VALUES
 ('Batman Figure', 'A detailed collectible of Batman.', 1, 50, 29.99,10),
 ('Superman Figure', 'A powerful Superman collectible.', 1, 40, 25.99,15),
 ('Wonder Woman Figure', 'A stunning Wonder Woman figurine.', 1, 45, 27.49,20),

@@ -17,3 +17,4 @@ CREATE TABLE IF NOT EXISTS products(
     category_id BIGINT,
     CONSTRAINT fk_category FOREIGN KEY (category_id) REFERENCES categories(id)
 );
+ALTER TABLE products ADD COLUMN created_at TIMESTAMP;
