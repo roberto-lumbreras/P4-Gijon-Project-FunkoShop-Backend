@@ -1,6 +1,5 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +14,7 @@ public class OrderDto {
     private String payment;
     private Status status;
     private Integer amount;
-    private List<ArrayList> productList;
+    private List<?> productList;
     private Float price;
 
     public OrderDto() {
@@ -29,7 +28,7 @@ public class OrderDto {
         this.orderDate = order.getOrderDate();
         this.paid = order.getIsPaid();
         this.payment = order.getPayment();
-        this.status = OrderService.Status.getStatus();
+        this.status = order.getStatus();
         this.amount = order.getAmount();
         this.productList = order.getProductList();
         this.price = order.getPrice();
@@ -64,7 +63,7 @@ public class OrderDto {
         return amount;
     }
 
-    public List<ArrayList> getProductList() {
+    public List<?> getProductList() {
         return productList;
     }
 
