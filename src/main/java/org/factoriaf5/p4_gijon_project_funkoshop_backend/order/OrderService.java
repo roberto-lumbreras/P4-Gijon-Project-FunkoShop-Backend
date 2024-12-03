@@ -54,7 +54,7 @@ public class OrderService {
             throw new RuntimeException("Order not found.");
         }
 
-        return order.get().getStatus();
+        return Status.getStatus();
     }
 
 }
