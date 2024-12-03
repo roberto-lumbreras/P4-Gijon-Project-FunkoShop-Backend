@@ -1,7 +1,6 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
 import java.time.LocalDateTime;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

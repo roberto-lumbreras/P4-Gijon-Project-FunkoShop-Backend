@@ -3,7 +3,6 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.Category;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +44,7 @@ public class ProductService {
         product.setDiscount(productDTO.getDiscount());
         product.setImageHash(productDTO.getImageHash());
         product.setImageHash2(productDTO.getImageHash2());
+        product.setCreatedAt(LocalDateTime.now());
 
         Product savedProduct = productRepository.save(product);
         return new ProductDTO(savedProduct);
@@ -68,6 +68,7 @@ public class ProductService {
         product.setImageHash(productDTO.getImageHash());
         product.setImageHash2(productDTO.getImageHash2());
         product.setCategory(category);
+        
 
         Product updatedProduct = productRepository.save(product);
         return new ProductDTO(updatedProduct);
