@@ -3,7 +3,6 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 import java.util.List;
 import java.util.Map;
 
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.*;
 import org.springframework.boot.info.SslInfo.CertificateValidityInfo.Status;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -51,14 +50,14 @@ public class OrderController {
     // ENDPOINT FRONTEND
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/orders/user")
-    public ResponseEntity<List<OrderDto>> retrieveAllOrdersByUser(
+    public ResponseEntity<List<OrderDto>> ListOrdersByUser(
             @RequestHeader("Authorization") String authorizationHeader, @RequestBody OrderDto orderDto) {
         try {
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
 
-            List<OrderDto> orderList = orderService.getOrdersByUser(authorizationHeader, orderDto);
+            List<OrderDto> orderList = orderService.ListOrdersByUser(authorizationHeader, orderDto);
             return ResponseEntity.ok(orderList);
         } catch (IllegalArgumentException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -66,9 +65,10 @@ public class OrderController {
     }
 
     // ENDPOINT FRONTEND
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/orders")
-    public ResponseEntity<List<OrderDto>> retrieveAllOrdersByAdmin(@RequestHeader("Authorization") String authorizationHeader,
+    public ResponseEntity<List<OrderDto>> getAllOrders(@RequestHeader("Authorization") String authorizationHeader,
             @RequestBody OrderDto orderDto) {
         try {
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
@@ -86,14 +86,14 @@ public class OrderController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/order/{orderId}")
-    public ResponseEntity<Map<String,String>> updateOrderStatus(@RequestHeader("Authorization") String authorizationHeader,
+    public ResponseEntity<Map<String,String>> updateStatus(@RequestHeader("Authorization") String authorizationHeader,
             @PathVariable Long orderId, @RequestParam Status status) {
         try {
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
 
-        orderService.updateOrderStatus(authorizationHeader, orderId, status);
+        orderService.updateStatus(authorizationHeader, orderId, status);
         return ResponseEntity.ok(Map.of("message", "Order status updated successfully"));
     
         } catch (IllegalArgumentException error) {
@@ -122,9 +122,10 @@ public class OrderController {
     }
 
 // ENDPOINT BACKEND - sin implementation en el frontend actual 
+
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/order/status/{orderId}")
-    public ResponseEntity<Status> retreiveOrderStatus(@RequestHeader("Authorization") String authorizationHeader,
+    public ResponseEntity<Status> getStatus(@RequestHeader("Authorization") String authorizationHeader,
             @RequestBody Status status) {
         try {
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
@@ -139,7 +140,8 @@ public class OrderController {
     }
 
 // ENDPOINT BACKEND - sin implementation en el frontend actual 
-    @PreAuthorize("hasRole('USER')")
+
+/*     @PreAuthorize("hasRole('USER')")
     @PatchMapping("/order/payment/{orderId}")
     public ResponseEntity<OrderDto> selectPaymentMethod(@RequestHeader("Authorization") String authorizationHeader,
             @RequestParam OrderDto payment, @PathVariable Long orderId) {
@@ -153,6 +155,6 @@ public class OrderController {
         } catch (IllegalArgumentException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-    }
+    } */
 
 }
