@@ -18,92 +18,58 @@ public class OrderDto {
     private List<ArrayList> productList;
     private Float price;
 
-public OrderDto() {
+    public OrderDto() {
 
-}
+    }
 
-public OrderDto(Order order) {
+    public OrderDto(Order order) {
 
-    this.orderId = order.getOrderId();
-    this.userId = order.getUser().getId();
-    this.orderDate = order.getOrderDate();
-    this.paid = order.getIsPaid();
-    this.payment = order.getPayment();
-    this.status = OrderService.Status.getStatus();
-    this.amount = order.getAmount();
-    this.productList = order.getProductList();
-    this.price = order.getPrice();
+        this.orderId = order.getOrderId();
+        this.userId = order.getUser().getId();
+        this.orderDate = order.getOrderDate();
+        this.paid = order.getIsPaid();
+        this.payment = order.getPayment();
+        this.status = OrderService.Status.getStatus();
+        this.amount = order.getAmount();
+        this.productList = order.getProductList();
+        this.price = order.getPrice();
 
-}
+    }
 
     public Status getStatus() {
         return status;
     }
-    public void setStatus(Status status) {
-        this.status = status;
-    }
+
     public Long getOrderId() {
         return orderId;
-    }
-
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
     }
 
     public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
     public Date getOrderDate() {
         return orderDate;
-    }
-
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
     }
 
     public boolean isPaid() {
         return paid;
     }
 
-    public void setPaid(boolean paid) {
-        this.paid = paid;
-    }
-
-    public String getPayment(){
+    public String getPayment() {
         return payment;
-    }
-
-    public void setPayment(String payment) {
-        this.payment = payment;
     }
 
     public Integer getAmount() {
         return amount;
     }
 
-    public void setAmount(Integer amount) {
-        this.amount = amount;
-    }
-
     public List<ArrayList> getProductList() {
-        return productList; 
-    }
-
-    public void setProductList(List<ArrayList> productList) {
-        this.productList = productList;
+        return productList;
     }
 
     public Float getPrice() {
         return price;
-    }
-
-    public void setPrice(Float price) {
-        this.price = price;
     }
 
 }
