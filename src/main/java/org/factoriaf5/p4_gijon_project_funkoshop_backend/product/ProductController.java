@@ -1,9 +1,20 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -90,5 +101,46 @@ public class ProductController {
         Page<ProductDTO> products = productService.fetchNewProducts(pageable);
         return ResponseEntity.ok(products);
     }
+    @Test
+void fetchProducts_ShouldReturnPagedProducts() throws Exception {
+    ProductDTO product1 = new ProductDTO();
+    product1.setName("Product 1");
+    ProductDTO product2 = new ProductDTO();
+    product2.setName("Product 2");
 
+    Page<ProductDTO> pagedProducts = new PageImpl<>(List.of(product1, product2));
+    when(productService.fetchProducts(anyInt(), anyInt(), anyString())).thenReturn(pagedProducts);
+
+    mockMvc.perform(get("/api/products")
+            .param("page", "0")
+            .param("size", "10")
+            .param("sort", "name,asc"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content").isArray())
+            .andExpect(jsonPath("$.content[0].name").value("Product 1"))
+            .andExpect(jsonPath("$.content[1].name").value("Product 2"));
+
+    verify(productService, times(1)).fetchProducts(0, 10, "name,asc");
+}
+
+@Test
+void fetchProductsByCategory_ShouldReturnPagedProducts() throws Exception {
+    Long categoryId = 1L;
+    ProductDTO product1 = new ProductDTO();
+    product1.setName("Product in Category");
+    Page<ProductDTO> pagedProducts = new PageImpl<>(List.of(product1));
+
+    when(productService.fetchProductsByCategory(eq(categoryId), anyInt(), anyInt(), anyString()))
+            .thenReturn(pagedProducts);
+
+    mockMvc.perform(get("/api/products/category/{categoryId}", categoryId)
+            .param("page", "0")
+            .param("size", "10")
+            .param("sort", "name,asc"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content").isArray())
+            .andExpect(jsonPath("$.content[0].name").value("Product in Category"));
+
+    verify(productService, times(1)).fetchProductsByCategory(categoryId, 0, 10, "name,asc");
+}
 }

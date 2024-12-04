@@ -7,6 +7,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -111,6 +116,44 @@ class ProductControllerTest {
     }
 
 @Test
+void fetchProductsByCategory_ShouldReturnPagedProducts() throws Exception {
+    Long categoryId = 1L;
+    int page = 0, size = 10;
+    String sort = "price,desc";
+
+    Page<ProductDTO> productPage = new PageImpl<>(List.of(new ProductDTO()));
+    when(productService.fetchProductsByCategory(categoryId, page, size, sort)).thenReturn(productPage);
+
+    mockMvc.perform(get("/api/products/category/{categoryId}", categoryId)
+            .param("page", String.valueOf(page))
+            .param("size", String.valueOf(size))
+            .param("sort", sort))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content").isArray());
+
+    verify(productService, times(1)).fetchProductsByCategory(categoryId, page, size, sort);
+}
+
+@Test
+void fetchProductsByKeyword_ShouldReturnPagedProducts() throws Exception {
+    String keyword = "test";
+    int page = 0, size = 10;
+    String sort = "name,asc";
+
+    Page<ProductDTO> productPage = new PageImpl<>(List.of(new ProductDTO()));
+    when(productService.fetchProductsByKeyword(keyword, page, size, sort)).thenReturn(productPage);
+
+    mockMvc.perform(get("/api/products/keyword/{keyword}", keyword)
+            .param("page", String.valueOf(page))
+            .param("size", String.valueOf(size))
+            .param("sort", sort))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content").isArray());
+
+    verify(productService, times(1)).fetchProductsByKeyword(keyword, page, size, sort);
+}
+
+@Test
 void fetchDiscountedProducts_ShouldReturnListOfDiscountedProducts() throws Exception {
     List<ProductDTO> discountedProducts = List.of(new ProductDTO());
     when(productService.fetchDiscountedProducts()).thenReturn(discountedProducts);
@@ -120,6 +163,19 @@ void fetchDiscountedProducts_ShouldReturnListOfDiscountedProducts() throws Excep
             .andExpect(jsonPath("$").isArray());
 
     verify(productService, times(1)).fetchDiscountedProducts();
+}
+
+@Test
+void fetchNewProducts_ShouldReturnPagedNewProducts() throws Exception {
+    Pageable pageable = PageRequest.of(0, 8, Sort.by(Sort.Direction.DESC, "createdAt"));
+    Page<ProductDTO> newProducts = new PageImpl<>(List.of(new ProductDTO()));
+    when(productService.fetchNewProducts(pageable)).thenReturn(newProducts);
+
+    mockMvc.perform(get("/api/products/new"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content").isArray());
+
+    verify(productService, times(1)).fetchNewProducts(any(Pageable.class));
 }
 
 }
