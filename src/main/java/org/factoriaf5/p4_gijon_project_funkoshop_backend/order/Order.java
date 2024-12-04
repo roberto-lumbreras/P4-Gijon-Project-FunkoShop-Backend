@@ -3,7 +3,6 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 import java.sql.Date;
 import java.util.List;
 
-import org.apache.catalina.realm.JNDIRealm.User;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.OrderService.Status;
 
