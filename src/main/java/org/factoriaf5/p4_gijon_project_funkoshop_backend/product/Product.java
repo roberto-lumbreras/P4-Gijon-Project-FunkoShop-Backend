@@ -39,4 +39,5 @@ public class Product {
     private @With Category category;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
 }
