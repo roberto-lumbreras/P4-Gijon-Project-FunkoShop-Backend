@@ -8,13 +8,15 @@ import java.util.Optional;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.Category;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.CategoryRepository;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
@@ -22,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 public class ProductServiceTest {
 
@@ -257,7 +260,19 @@ public class ProductServiceTest {
 
     @Test
     void testFetchProducts() {
-        
+        Product product = new Product();
+        product.setId(1L);
+        product.setName("New Product 1");
+        product.setCategory(new Category(1L, "name", "", true));
+        product.setCreatedAt(LocalDateTime.now().minusDays(5));
+        String sort = "name,asc";
+        Integer page = 0;
+        Integer size = 1;
+        Pageable pageable = PageRequest.of(page, size,Sort.by("name").ascending());
+        Page<Product> expected = new PageImpl<>(Arrays.asList(product), pageable, 1);
+        when(productRepository.findAll(any(Pageable.class))).thenReturn(expected);
+        Page<ProductDTO> result = productService.fetchProducts(page, size, sort);
+        assertEquals(expected.map(ProductDTO::new).getContent(),result.getContent());
     }
 
     @Test

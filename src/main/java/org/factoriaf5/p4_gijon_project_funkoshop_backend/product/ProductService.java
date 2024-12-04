@@ -114,10 +114,7 @@ public class ProductService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
 
-        List<ProductDTO> productDTOs = productRepository.findAll(pageable).stream().map(ProductDTO::new)
-                .collect(Collectors.toList());
-
-        return new PageImpl<>(productDTOs, pageable, productRepository.findAll(pageable).getTotalElements());
+        return productRepository.findAll(pageable).map(ProductDTO::new);
     }
 
     public Page<ProductDTO> fetchProductsByCategory(Long categoryId, Integer page, Integer size, String sort) {

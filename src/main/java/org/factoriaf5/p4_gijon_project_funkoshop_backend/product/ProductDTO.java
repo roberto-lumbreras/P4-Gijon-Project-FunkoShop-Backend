@@ -2,10 +2,13 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@EqualsAndHashCode
 @Getter
 @Setter
 @NoArgsConstructor
