@@ -93,21 +93,21 @@ public class OrderService {
         
         User user = userRepository.findUserByEmail(emailToken);
         
-        if(user == null) {
+            if(user == null) {
             throw new RuntimeException("User not found.");
         }
 
-        if (!token.equals(user.getToken())) {
+            if (!token.equals(user.getToken())) {
             throw new RuntimeException("Invalid token.");
         }
 
-        if (!"user".equals(user.getRoles()) && !"admin".equals(user.getRoles())) {
+            if (!"user".equals(user.getRoles()) && !"admin".equals(user.getRoles())) {
             throw new RuntimeException("Unauthorized user.");
         }
 
         Optional<Order> order = orderRepository.findById(orderId);
 
-        if (order == null) {
+            if (order == null) {
             throw new RuntimeException("Order not found.");
         }
 
@@ -123,7 +123,7 @@ public class OrderService {
     @Transactional
     public void updateOrderStatus(String authorizationHeader, Long orderId, Status status) {//naming cambiar al definitivo de updateOder
 
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             throw new IllegalArgumentException("Invalid or missing token");
         }
 
@@ -132,11 +132,11 @@ public class OrderService {
 
         User user = userRepository.findByEmail(emailToken);
 
-        if (user == null) {
+            if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
 
-        if (!token.equals(user.getToken())) {
+            if (!token.equals(user.getToken())) {
             throw new IllegalArgumentException("Invalid token");
         }
 
@@ -151,7 +151,7 @@ public class OrderService {
     @Transactional
     public byte[] generateOrderPDF(String authorizationHeader, Long orderId) {
 
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             throw new IllegalArgumentException("Invalid or missing token");
         }
 
@@ -159,16 +159,16 @@ public class OrderService {
         String emailToken = jwtUtil.generateEmailFromToken(token);
         User user = userRepository.findByEmail(emailToken);
 
-        if (user == null) {
+            if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
 
-        if (!token.equals(user.getToken())) {
+            if (!token.equals(user.getToken())) {
             throw new IllegalArgumentException("Invalid token");
         }
 
         Optional<Order> orderOptional = orderRepository.findById(orderId);
-        if (orderOptional.isEmpty()) {
+            if (orderOptional.isEmpty()) {
             throw new IllegalArgumentException("Order not found");
         }
 
