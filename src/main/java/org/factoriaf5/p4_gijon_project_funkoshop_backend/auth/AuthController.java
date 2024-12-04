@@ -96,3 +96,4 @@ public class AuthController {
         return ResponseEntity.ok("Te has registrado correctamente");
     }    
 }
+

@@ -41,6 +41,7 @@ public class SecurityConfig {
 
     private static final String[] WhiteList = {
                         "/auth/**",
+                        "/auth/signup",
                         "/products/**",
                         "/categories/**"
     };

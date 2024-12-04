@@ -1,7 +1,6 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.user;
-
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.profile.Profile;
-
+/* import org.factoriaf5.p4_gijon_project_funkoshop_backend.profile.Profile; */
+/*  */
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
