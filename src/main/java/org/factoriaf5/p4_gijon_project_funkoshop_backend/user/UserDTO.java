@@ -5,6 +5,6 @@ public class UserDTO {
     private String email;
     private String password;
     private Role role;
-    private ProfileDto profile;
+    //private ProfileDto profile;
 
 }

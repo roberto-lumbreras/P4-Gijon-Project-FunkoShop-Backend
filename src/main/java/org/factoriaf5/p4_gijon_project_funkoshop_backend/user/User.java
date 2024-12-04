@@ -28,7 +28,7 @@ public class User {
     private String password;
     private Role role;
     private String JwToken;
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Profile profile;
+    // @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    // private Profile profile;
 
 }
