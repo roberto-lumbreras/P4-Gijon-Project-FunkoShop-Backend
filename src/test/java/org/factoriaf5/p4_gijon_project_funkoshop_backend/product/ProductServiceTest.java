@@ -1,9 +1,9 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.Category;
@@ -12,7 +12,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 public class ProductServiceTest {
 
@@ -178,5 +187,87 @@ public class ProductServiceTest {
         assertEquals("Category not found by id 99. Status: 404 NOT_FOUND", exception.getMessage());
         verify(categoryRepository).findById(categoryId);
 }
+
+    @Test
+    void testFetchDiscountedProducts() {
+        Product product = new Product();
+        product.setId(1L);
+        product.setName("Funkoshop Exclusive");
+        product.setDescription("Special edition Funko Pop");
+        product.setPrice(new BigDecimal("29.99"));
+        product.setStock(50);
+        product.setDiscount(10);
+        product.setImageHash("imageHash1");
+        product.setImageHash2("imageHash2");
+        product.setCategory(new Category(1L, "Marvel", "", true));
+        product.setCreatedAt(LocalDateTime.now());
+
+        Product product2 = new Product();
+        product2.setId(2L);
+        product2.setName("Funkoshop Exclusive2");
+        product2.setDescription("Special edition Funko Pop2");
+        product2.setPrice(new BigDecimal("29.99"));
+        product2.setStock(50);
+        product2.setDiscount(0);
+        product2.setImageHash("imageHash21");
+        product2.setImageHash2("imageHash22");
+        product2.setCategory(new Category(1L, "Marvel2", "", true));
+        product2.setCreatedAt(LocalDateTime.now());
+
+        when(productRepository.findAll()).thenReturn(Arrays.asList(product, product2));
+
+        List<ProductDTO> products = productService.fetchDiscountedProducts();
+        assertEquals(1, products.size());
+        verify(productRepository).findAll();
+    }
+
+    @Test
+    void testFetchNewProducts() {
+        Product product1 = new Product();
+        product1.setId(1L);
+        product1.setName("New Product 1");
+        product1.setCategory(new Category(1L, "name", "", true));
+        product1.setCreatedAt(LocalDateTime.now().minusDays(5));
+
+        Product product2 = new Product();
+        product2.setId(2L);
+        product2.setName("New Product 2");
+        product2.setCategory(new Category(1L, "name", "", true));
+        product2.setCreatedAt(LocalDateTime.now().minusDays(40));
+
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Product> productPage = new PageImpl<>(Arrays.asList(product1), pageable, 1);
+
+        when(productRepository.findByCreatedAtAfter(any(LocalDateTime.class), eq(pageable)))
+            .thenReturn(productPage);
+
+        Page<ProductDTO> result = productService.fetchNewProducts(pageable);
+
+        assertNotNull(result);
+
+        assertEquals(1, result.getContent().size());
+
+        assertEquals("New Product 1", result.getContent().get(0).getName());
+
+        verify(productRepository).findByCreatedAtAfter(any(LocalDateTime.class), eq(pageable));
+    }
+
+
+
+
+    @Test
+    void testFetchProducts() {
+        
+    }
+
+    @Test
+    void testFetchProductsByCategory() {
+        
+    }
+
+    @Test
+    void testFetchProductsByKeyword() {
+        
+    }
 
 }
