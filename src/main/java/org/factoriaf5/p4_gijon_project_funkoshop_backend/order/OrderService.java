@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.apache.catalina.User;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrderDto;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,20 +22,27 @@ import jakarta.transaction.Transactional;
 @Service
 public class OrderService {
 
+    @Autowired
+    private UserRepository userRepository;
+    private JwtUtil jwtUtil;
     private OrderRepository orderRepository;
     private DetailOrderRepository detailOrderRepository;
-
-    public OrderService() {
-    }
 
     public enum Status {
         PENDING, PROCESSING, DELIVERED, CANCELED
     }
-    
-    public OrderService(OrderRepository orderRepository) {
+
+    public OrderService(OrderRepository orderRepository, UserRepository userRepository, JwtUtil jwtUtil, DetailOrderRepository detailOrderRepository) {
         this.orderRepository = orderRepository;
+        this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
+        this.detailOrderRepository = detailOrderRepository;
+        
     }
 
+    public OrderService() {
+    }
+/* 
     private Order initializeOrder(OrderDto orderDto) {
         Order order = new Order();
         order.setUser(orderDto.getUserId());
@@ -42,20 +50,12 @@ public class OrderService {
         order.setPayment(orderDto.getPayment());
         order.setStatus(Status.PROCESSING);
         order.setIsPaid(determineIsPaid(orderDto.getPayment())); 
-        order.setAmount(orderDto.getAmount());
+        order.setTotalAmount(orderDto.getTotalAmount());
         order.setPrice(orderDto.getPrice());
         return order;
-    }
 
-    private boolean determineIsPaid(String payment) {
-        return "tarjeta".equalsIgnoreCase(payment); 
-    }
-
-    private void validatePaymentMethod(String payment) {
-        if (!"contrareembolso".equalsIgnoreCase(payment) && !"tarjeta".equalsIgnoreCase(payment)) {
-            throw new IllegalArgumentException("El método de pago debe ser 'contrareembolso' o 'tarjeta'.")
-        }
     } 
+        */
 
     @Transactional
     public void createOrder(OrderDto orderDto) {
@@ -69,13 +69,23 @@ public class OrderService {
             return productList.stream()
                 .map(detailDto -> {
                     DetailOrder detailOrder = new DetailOrder();
-                    detailOrder.setAmount(detailDto.getAmount());
+                    detailOrder.setTotalAmount(detailDto.getTotalAmount());
                     detailOrder.setPrice(detailDto.getPrice());
                     detailOrder.setOrder(savedOrder);
                     return detailOrder;
                 })
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
     }
+
+    private boolean determineIsPaid(String payment) {
+        return "tarjeta".equalsIgnoreCase(payment); 
+    }
+
+    private void validatePaymentMethod(String payment) {
+        if (!"contrareembolso".equalsIgnoreCase(payment) && !"tarjeta".equalsIgnoreCase(payment)) {
+            throw new IllegalArgumentException("El método de pago debe ser 'contrareembolso' o 'tarjeta'.")
+        }
+    } 
 
 
     public List<Order> listOrdersByUser(Long userId) {
@@ -111,15 +121,10 @@ public class OrderService {
             throw new RuntimeException("Order not found.");
         }
 
-        return Status.getStatus();
+        return order.getStatus();
     }
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-    
+   
     @Transactional
     public void updateOrderStatus(String authorizationHeader, Long orderId, Status status) {//naming cambiar al definitivo de updateOder
 
@@ -187,8 +192,8 @@ public class OrderService {
             document.add(new Paragraph("Order Details:"));
 
             for (DetailOrder detail : details) {
-                document.add(new Paragraph("Product ID: " + detail.getProductId()));
-                document.add(new Paragraph("Quantity: " + detail.getAmount()));
+                document.add(new Paragraph("Product ID: " + detail.getProduct()));
+                document.add(new Paragraph("Total amount: " + detail.getTotalAmount()));
                 document.add(new Paragraph("Price: " + detail.getPrice()));
             }
 

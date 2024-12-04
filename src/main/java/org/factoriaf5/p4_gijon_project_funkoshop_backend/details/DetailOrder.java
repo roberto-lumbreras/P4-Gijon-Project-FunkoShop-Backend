@@ -19,11 +19,11 @@ public class DetailOrder {
     private Long detailId;
 
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product", nullable = false)
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order", nullable = false)
     private Order order;
 
     @Column(name = "product_quantity", nullable = false)
