@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DetailOrderServices {
+public class DetailOrderService {
 
     // UserRepository userRepository;
     OrderRepository orderRepository;
