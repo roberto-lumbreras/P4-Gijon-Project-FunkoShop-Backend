@@ -27,28 +27,33 @@ public class JwtUtils {
         String bearerToken = request.getHeader("Authorization");
         logger.debug("Authorization Header: {}", bearerToken);
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7); // Remove Bearer prefix
+            return bearerToken.substring(7);
         }
         return null;
     }
+
+    @SuppressWarnings("deprecation")
     public String generateTokenFromEmail(UserDetails userDetails) {
         String email = userDetails.getUsername();
         return Jwts.builder()
                 .subject(email)
                 .issuedAt(new Date())
                 .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(key())
+                .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
     }
+
     public String getEmailFromJwtToken(String token) {
         return Jwts.parser()
                 .verifyWith((SecretKey) key())
                 .build().parseSignedClaims(token)
                 .getPayload().getSubject();
     }
+
     private Key key() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
+
     public boolean validateJwtToken(String authToken) {
         try {
             System.out.println("Validate");

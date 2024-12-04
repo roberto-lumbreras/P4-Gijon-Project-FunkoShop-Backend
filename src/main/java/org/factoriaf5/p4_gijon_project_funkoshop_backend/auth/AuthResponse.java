@@ -1,6 +1,6 @@
-package org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken;
+package org.factoriaf5.p4_gijon_project_funkoshop_backend.auth;
 
-public class LoginResponse {
+public class AuthResponse {
     
     private String email;
     private String jwtToken;
@@ -8,7 +8,7 @@ public class LoginResponse {
         USER, ADMIN
     };
 
-    public LoginResponse(String email, String jwtToken) {
+    public AuthResponse(String email, String jwtToken) {
         this.email = email;
         this.jwtToken = jwtToken;
     }
