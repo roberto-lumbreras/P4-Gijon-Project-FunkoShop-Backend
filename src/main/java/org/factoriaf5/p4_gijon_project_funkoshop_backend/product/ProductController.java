@@ -86,7 +86,7 @@ public class ProductController {
 
     @GetMapping("/new")
     public ResponseEntity<Page<ProductDTO>> fetchNewProducts(
-            @PageableDefault(size = 8, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        @PageableDefault(size = 8, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<ProductDTO> products = productService.fetchNewProducts(pageable);
         return ResponseEntity.ok(products);
     }
