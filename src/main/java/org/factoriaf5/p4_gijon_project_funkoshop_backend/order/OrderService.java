@@ -249,7 +249,7 @@ public class OrderService {
 
             for (DetailOrder detail : details) {
                 document.add(new Paragraph("Product ID: " + detail.getProduct()));
-                document.add(new Paragraph("Total amount: " + detail.getTotalAmount()));
+                document.add(new Paragraph("Product Quantity: " + detail.getProductQuantity()));
                 document.add(new Paragraph("Price: " + detail.getPrice()));
             }
 
