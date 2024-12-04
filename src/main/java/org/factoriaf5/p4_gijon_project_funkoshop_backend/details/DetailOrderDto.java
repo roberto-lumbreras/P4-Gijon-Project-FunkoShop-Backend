@@ -1,17 +1,19 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.details;
 
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.Order;
+
 public class DetailOrderDto {
     private Long detailId;
-    private Long productId;
-    private Long orderId;
-    private Integer amount;
+    private Product product;
+    private Order order;
+    private Integer productQuantity;
     private Double price;
 
     public DetailOrderDto(DetailOrder detailOrder) {
         this.detailId = detailOrder.getDetailId();
-        this.productId = detailOrder.getProduct().getProductId();
-        this.orderId = detailOrder.getOrder().getOrderId();
-        this.amount = detailOrder.getAmount();
+        this.product = detailOrder.getProduct();
+        this.order = detailOrder.getOrder();
+        this.productQuantity = detailOrder.getProductQuantity();
         this.price = detailOrder.getPrice();
     }
 
@@ -23,16 +25,16 @@ public class DetailOrderDto {
         return detailId;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
-    public Long getOrderId() {
-        return orderId;
+    public Order getOrder() {
+        return order;
     }
 
-    public Integer getAmount() {
-        return amount;
+    public Integer getProductQuantity() {
+        return productQuantity;
     }
 
     public Double getPrice() {

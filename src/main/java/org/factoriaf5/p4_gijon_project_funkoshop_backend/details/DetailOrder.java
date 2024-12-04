@@ -26,17 +26,17 @@ public class DetailOrder {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @Column(name = "amount", nullable = false)
-    private Integer amount;
+    @Column(name = "product_quantity", nullable = false)
+    private Integer productQuantity;
 
     @Column(name = "price", nullable = false)
     private Double price;
 
-    public DetailOrder(Long id, Product product, Order order, Integer amount, Double price) {
+    public DetailOrder(Long id, Product product, Order order, Integer productQuantity, Double price) {
         this.detailId = id;
         this.product = product;
         this.order = order;
-        this.amount = amount;
+        this.productQuantity = productQuantity;
         this.price = price;
     }
 
@@ -67,12 +67,12 @@ public class DetailOrder {
         this.order = order;
     }
 
-    public Integer getAmount() {
-        return amount;
+    public Integer getProductQuantity() {
+        return productQuantity;
     }
 
-    public void setAmount(Integer amount) {
-        this.amount = amount;
+    public void setProductQuantity(Integer productQuantity) {
+        this.productQuantity = productQuantity;
     }
 
     public Double getPrice() {

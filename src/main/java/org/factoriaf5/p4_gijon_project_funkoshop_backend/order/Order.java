@@ -39,8 +39,8 @@ public class Order {
     @Column(name = "status", nullable = false)
     private Status status;
 
-    @Column(name = "amount", nullable = false)
-    private Integer amount;
+    @Column(name = "totalAmount", nullable = false)
+    private Integer totalAmount;
 
     @Column(name = "product_list", nullable = false)
     private List<DetailOrder> productList;
@@ -48,14 +48,14 @@ public class Order {
     @Column(name = "price", nullable = false)
     private Float price;
 
-    public Order(Long orderId, User user, Date orderDate, Boolean isPaid, Status status, int amount,
+    public Order(Long orderId, User user, Date orderDate, Boolean isPaid, Status status, int totalAmount,
             List<DetailOrder> productList, Float price) {
         this.orderId = orderId;
         this.user = user;
         this.orderDate = orderDate;
         this.isPaid = isPaid;
         this.status = status;
-        this.amount = amount;
+        this.totalAmount = totalAmount;
         this.productList = productList;
         this.price = price;
     }
@@ -112,12 +112,12 @@ public class Order {
         this.status = status;
     }
 
-    public Integer getAmount() {
-        return amount;
+    public Integer getTotalAmount() {
+        return totalAmount;
     }
 
-    public void setAmount(Integer amount) {
-        this.amount = amount;
+    public void setTotalAmount(Integer totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
     public List<DetailOrder> getProductList() {

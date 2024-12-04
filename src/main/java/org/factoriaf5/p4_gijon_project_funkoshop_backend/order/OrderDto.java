@@ -14,7 +14,7 @@ public class OrderDto {
     private boolean paid;
     private String payment;
     private Status status;
-    private Integer amount;
+    private Integer totalAmount;
     private List<DetailOrder> productList;
     private Float price;
 
@@ -30,7 +30,7 @@ public class OrderDto {
         this.paid = order.getIsPaid();
         this.payment = order.getPayment();
         this.status = order.getStatus();
-        this.amount = order.getAmount();
+        this.totalAmount = order.getTotalAmount();
         this.productList = order.getProductList();
         this.price = order.getPrice();
 
@@ -60,8 +60,8 @@ public class OrderDto {
         return payment;
     }
 
-    public Integer getAmount() {
-        return amount;
+    public Integer getTotalAmount() {
+        return totalAmount;
     }
 
     public List<DetailOrder> getProductList() {
