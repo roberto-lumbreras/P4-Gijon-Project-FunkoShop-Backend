@@ -1,12 +1,6 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -49,7 +42,7 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
-    @GetMapping
+    /* @GetMapping
     public ResponseEntity<Page<ProductDTO>> fetchProducts(
             @RequestParam Integer page,
             @RequestParam Integer size,
@@ -70,25 +63,24 @@ public class ProductController {
 
     @GetMapping("/keyword/{keyword}")
     public ResponseEntity<Page<ProductDTO>> fetchProductsByKeyword(
-            @PathVariable String keyword,
+            @PathVariable String keywordId,
             @RequestParam Integer page,
             @RequestParam Integer size,
             @RequestParam String sort) {
-        Page<ProductDTO> products = productService.fetchProductsByKeyword(keyword, page, size, sort);
+        Page<ProductDTO> products = productService.fetchProductsByCategory(keywordId, page, size, sort);
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/discounted")
-    public ResponseEntity<List<ProductDTO>> fetchDiscountedProducts() {
-        List<ProductDTO> products = productService.fetchDiscountedProducts();
+    public ResponseEntity<Page<ProductDTO>> fetchDiscountedProducts() {
+        Page<ProductDTO> products = productService.fetchDiscountedProducts();
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/new")
-    public ResponseEntity<Page<ProductDTO>> fetchNewProducts(
-        @PageableDefault(size = 8, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<ProductDTO> products = productService.fetchNewProducts(pageable);
+    public ResponseEntity<Page<ProductDTO>> fetchNewProducts() {
+        Page<ProductDTO> products = productService.fetchNewProducts();
         return ResponseEntity.ok(products);
-    }
+    } */
 
 }
