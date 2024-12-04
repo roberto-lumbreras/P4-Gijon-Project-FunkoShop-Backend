@@ -100,9 +100,9 @@ public class OrderController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
 
-            orderService.updateStatus(authorizationHeader, orderId, status);
-            return ResponseEntity.ok(Map.of("message", "Order status updated successfully"));
-
+            orderService.updateOrderStatus(authorizationHeader, orderId, status);
+            Map<String, String> response = Map.of("message\", \"Order status updated successfully");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IllegalArgumentException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }

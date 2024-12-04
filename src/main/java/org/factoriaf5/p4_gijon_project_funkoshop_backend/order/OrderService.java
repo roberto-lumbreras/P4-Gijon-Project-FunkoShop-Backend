@@ -47,7 +47,7 @@ public class OrderService {
         order.setUser(orderDto.getUserId());
         order.setOrderDate(orderDto.getOrderDate());
         order.setPayment(orderDto.getPayment());
-        order.setIsPaid(determineIsPaid(orderDto.getPayment()));
+        order.setIsPaid(confirmPaid(orderDto.getPayment()));
         order.setStatus(Status.PROCESSING);
         order.setTotalAmount(orderDto.getTotalAmount());
         order.setPrice(orderDto.getPrice());
@@ -99,7 +99,7 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    private boolean determineIsPaid(String payment) {
+    private boolean confirmPaid(String payment) {
         return "tarjeta".equalsIgnoreCase(payment);
     }
 
