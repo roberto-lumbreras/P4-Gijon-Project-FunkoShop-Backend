@@ -40,6 +40,7 @@ public class SecurityConfig {
 
     private static final String[] WhiteList = {
                         "/auth/**",
+                        "/auth/signup",
                         "/products/**",
                         "/categories/**"
     };
@@ -47,8 +48,8 @@ public class SecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests.requestMatchers(WhiteList).permitAll()
-                        .requestMatchers("**/user/**").hasRole("USER")
-                        .requestMatchers("**/admin/**").hasRole("ADMIN").anyRequest().authenticated());
+                        .requestMatchers("/user/**").hasRole("USER")
+                        .requestMatchers("/admin/**").hasRole("ADMIN").anyRequest().authenticated());
         
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         
