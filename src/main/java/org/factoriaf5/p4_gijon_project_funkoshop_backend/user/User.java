@@ -1,7 +1,7 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.user;
 
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.profile.Profile;
-
+/* import org.factoriaf5.p4_gijon_project_funkoshop_backend.profile.Profile; */
+/*  */
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -28,7 +28,7 @@ public class User {
     private String password;
     private Role role;
     private String JwToken;
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Profile profile;
+    /* @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Profile profile; */
 
 }
