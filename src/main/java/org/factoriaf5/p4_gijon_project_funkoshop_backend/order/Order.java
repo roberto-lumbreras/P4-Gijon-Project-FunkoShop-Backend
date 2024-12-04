@@ -1,6 +1,7 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
@@ -27,7 +28,7 @@ public class Order {
     private User user;
 
     @Column(name = "order_date", nullable = false)
-    private Date orderDate;
+    private LocalDate orderDate;
 
     @Column(name = "paid", nullable = false)
     private Boolean isPaid;
@@ -47,7 +48,7 @@ public class Order {
     @Column(name = "price", nullable = false)
     private Float price;
 
-    public Order(Long orderId, User user, Date orderDate, Boolean isPaid, Status status, int totalAmount,
+    public Order(Long orderId, User user, LocalDate orderDate, Boolean isPaid, Status status, int totalAmount,
             List<DetailOrder> productList, Float price) {
         this.orderId = orderId;
         this.user = user;
@@ -79,11 +80,11 @@ public class Order {
         this.user = user;
     }
 
-    public Date getOrderDate() {
+    public LocalDate getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(Date orderDate) {
+    public void setOrderDate(LocalDate orderDate) {
         this.orderDate = orderDate;
     }
 

@@ -1,5 +1,6 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -10,7 +11,7 @@ public class OrderDto {
 
     private Long orderId;
     private Long userId;
-    private Date orderDate;
+    private LocalDate orderDate;
     private boolean paid;
     private String payment;
     private Status status;
@@ -48,7 +49,7 @@ public class OrderDto {
         return userId;
     }
 
-    public Date getOrderDate() {
+    public LocalDate getOrderDate() {
         return orderDate;
     }
 
