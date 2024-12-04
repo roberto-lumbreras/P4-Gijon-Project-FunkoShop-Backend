@@ -1,6 +1,5 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.auth;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -97,3 +96,4 @@ public class AuthController {
         return ResponseEntity.ok("Te has registrado correctamente");
     }    
 }
+
