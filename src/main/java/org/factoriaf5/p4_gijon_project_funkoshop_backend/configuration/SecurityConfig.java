@@ -4,6 +4,7 @@ import javax.sql.DataSource;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.AuthEntryPointJwt;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.AuthTokenFilter;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -14,12 +15,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -76,11 +77,11 @@ public class SecurityConfig {
         return args -> {
             UserDetails user1 = User.withUsername("user@email.com")
                     .password(passwordEncoder().encode("1234"))
-                    .roles("USER")
+                    .roles(Role.USER.name()) // Asigna el rol como un enum
                     .build();
             UserDetails admin = User.withUsername("admin@email.com")
                     .password(passwordEncoder().encode("1234"))
-                    .roles("ADMIN")
+                    .roles(Role.ADMIN.name()) // Asigna el rol como un enum
                     .build();
 
             JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
