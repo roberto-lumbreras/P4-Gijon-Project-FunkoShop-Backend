@@ -15,5 +15,8 @@ CREATE TABLE IF NOT EXISTS products(
     image_hash VARCHAR(255),
     image_hash2 VARCHAR(255),
     category_id BIGINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_category FOREIGN KEY (category_id) REFERENCES categories(id)
 );
+
+
