@@ -1,23 +1,21 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.auth;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import org.apache.catalina.User;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.JwtUtils;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.UserRepository;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.Role;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +32,7 @@ public class AuthController {
     private AuthenticationManager authenticationManager; 
 
     @Autowired
-    private UserRepository userrepository;
+    private UserRepository repository;
 
     @Autowired
     private PasswordEncoder encoder;
@@ -79,20 +77,22 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody AuthRequest registerRequest) {
-        if(repository.findByEmail(registerRequest.getEmail())){
-            return ResponseEntity.badRequest().body("el email ya esta en uso");
+        // Si el email ya está registrado, devuelve un error
+        if (repository.existsByEmail(registerRequest.getEmail())) {
+            return ResponseEntity.badRequest().body("El email ya está en uso");
         }
-
+    
+        // Crear un nuevo usuario
         User user = new User();
+        // Asignar valores al usuario
         user.setEmail(registerRequest.getEmail());
         user.setPassword(encoder.encode(registerRequest.getPassword()));
-        user.setRole(Role.USER);
-
+        user.setRole(Role.USER); // Asignar un rol predeterminado (puedes cambiarlo)
+    
+        // Guardar el usuario en la base de datos
         repository.save(user);
-        return ResponseEntity.ok("te has registrado correctamente");
-    }
     
-    
-    
-    
+        // Respuesta exitosa
+        return ResponseEntity.ok("Te has registrado correctamente");
+    }    
 }
