@@ -1,6 +1,6 @@
-package org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken;
+package org.factoriaf5.p4_gijon_project_funkoshop_backend.auth;
 
-public class LoginRequest {
+public class AuthRequest {
     
     private String email;
     private String password;
