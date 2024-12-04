@@ -24,11 +24,17 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String username;
     private String email;
     private String password;
+    private Boolean enabled;
     private Role role;
     private String JwToken;
     /* @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Profile profile; */
+ /*    public Object getUsername() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getUsername'");
+    } */
 
 }

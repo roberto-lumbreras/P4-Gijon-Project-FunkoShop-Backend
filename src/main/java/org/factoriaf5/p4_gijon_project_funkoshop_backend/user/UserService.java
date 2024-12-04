@@ -31,15 +31,29 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    // Agregar usuario
     public User addUser(User user) {
+        // Verificar si el email ya está registrado
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new RuntimeException("Email already in use: " + user.getEmail());
         }
+    
+        // Asignar automáticamente el email como username
+        user.setUsername(user.getEmail());
+        user.setEmail(user.getEmail());
+        user.setEnabled(true);
+
+    
+        // Codificar la contraseña
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+    
+        // Asignar un rol predeterminado si no se pasa uno en el DTO
+        if (user.getRole() == null) {
+            user.setRole(Role.USER); // Rol predeterminado
+        }
+    
+        // Guardar el usuario en la base de datos
         return userRepository.save(user);
     }
-
     // Eliminar usuario por ID
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {

@@ -24,11 +24,26 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@RequestBody User user) {
+        try {
+            // Llamar al servicio para crear el usuario
+            userService.addUser(user);
+
+            // Respuesta exitosa
+            return ResponseEntity.ok("Te has registrado correctamente");
+        } catch (RuntimeException e) {
+            // Si el email ya está en uso, el servicio lanzará una excepción
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping(path = "/admin/")
     public ResponseEntity<List<User>> getUsers() {
         List<User> user = userService.getUsers();
         return ResponseEntity.ok(user);
     }
+
     @GetMapping(path = "/user/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
