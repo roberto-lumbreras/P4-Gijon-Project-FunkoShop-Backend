@@ -3,6 +3,7 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 import java.util.Date;
 import java.util.List;
 
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.OrderService.Status;
 
 public class OrderDto {
@@ -14,7 +15,7 @@ public class OrderDto {
     private String payment;
     private Status status;
     private Integer amount;
-    private List<?> productList;
+    private List<DetailOrder> productList;
     private Float price;
 
     public OrderDto() {
@@ -63,7 +64,7 @@ public class OrderDto {
         return amount;
     }
 
-    public List<?> getProductList() {
+    public List<DetailOrder> getProductList() {
         return productList;
     }
 

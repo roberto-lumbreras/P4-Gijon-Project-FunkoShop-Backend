@@ -1,9 +1,10 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.catalina.realm.JNDIRealm.User;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.OrderService.Status;
 
 import jakarta.persistence.Column;
@@ -42,13 +43,13 @@ public class Order {
     private Integer amount;
 
     @Column(name = "product_list", nullable = false)
-    private List<ArrayList> productList;
+    private List<DetailOrder> productList;
 
     @Column(name = "price", nullable = false)
     private Float price;
 
     public Order(Long orderId, User user, Date orderDate, Boolean isPaid, Status status, int amount,
-            List<ArrayList> productList, Float price) {
+            List<DetailOrder> productList, Float price) {
         this.orderId = orderId;
         this.user = user;
         this.orderDate = orderDate;
@@ -119,11 +120,11 @@ public class Order {
         this.amount = amount;
     }
 
-    public List<ArrayList> getProductList() {
+    public List<DetailOrder> getProductList() {
         return productList;
     }
 
-    public void setProductList(List<ArrayList> productList) {
+    public void setProductList(List<DetailOrder> productList) {
         this.productList = productList;
     }
 
@@ -134,4 +135,5 @@ public class Order {
     public void setPrice(Float price) {
         this.price = price;
     }
+
 }
