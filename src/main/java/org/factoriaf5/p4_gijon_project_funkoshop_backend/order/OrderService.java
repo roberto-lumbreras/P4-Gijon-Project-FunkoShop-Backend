@@ -1,17 +1,16 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 
 import java.io.ByteArrayOutputStream;
-import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.catalina.User;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrderDto;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.w3c.dom.Document;
 
 import com.lowagie.text.Paragraph;
@@ -32,103 +31,162 @@ public class OrderService {
         PENDING, PROCESSING, DELIVERED, CANCELED
     }
 
-    public OrderService(OrderRepository orderRepository, UserRepository userRepository, JwtUtil jwtUtil, DetailOrderRepository detailOrderRepository) {
+    public OrderService(OrderRepository orderRepository, UserRepository userRepository, JwtUtil jwtUtil,
+            DetailOrderRepository detailOrderRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
         this.detailOrderRepository = detailOrderRepository;
-        
+
     }
 
     public OrderService() {
     }
-/* 
+
     private Order initializeOrder(OrderDto orderDto) {
         Order order = new Order();
+
         order.setUser(orderDto.getUserId());
-        order.setOrderDate(new Date());
+        order.setOrderDate(orderDto.getOrderDate());
         order.setPayment(orderDto.getPayment());
+        order.setIsPaid(determineIsPaid(orderDto.getPayment()));
         order.setStatus(Status.PROCESSING);
-        order.setIsPaid(determineIsPaid(orderDto.getPayment())); 
         order.setTotalAmount(orderDto.getTotalAmount());
         order.setPrice(orderDto.getPrice());
-        return order;
 
-    } 
-        */
+        return order;
+    }
 
     @Transactional
-    public void createOrder(OrderDto orderDto) {
+    public Order createOrder(@RequestHeader("Authorization") String authorizationHeader, OrderDto orderDto) {
+        String token = authorizationHeader.substring(7);
+        String emailToken = jwtUtil.generateEmailByToken(token);
+
+        User user = userRepository.findByEmail(emailToken)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        if (!user.getToken().equals(token)) {
+            throw new SecurityException("El token enviado no coincide con el que tiene el usuario");
+        }
+
+        if (!"user".equals(user.getRoles()) && !"admin".equals(user.getRoles())) {
+            throw new IllegalArgumentException("Acceso denegado. Solo un USER o un ADMIN pueden crear un pedido");
+        }
+
         validatePaymentMethod(orderDto.getPayment());
+
         Order order = initializeOrder(orderDto);
         Order savedOrder = orderRepository.save(order);
+
         List<DetailOrder> productList = mapDetails(orderDto.getProductList(), savedOrder);
+
         detailOrderRepository.saveAll(productList);
-        savedOrder.setProductList(productList); }
+        savedOrder.setProductList(productList);
+
+        orderRepository.save(savedOrder);
+    }
+
     private List<DetailOrder> mapDetails(List<DetailOrder> productList, Order savedOrder) {
-            return productList.stream()
+        return productList.stream()
                 .map(detailDto -> {
                     DetailOrder detailOrder = new DetailOrder();
-                    detailOrder.setTotalAmount(detailDto.getTotalAmount());
+
+                    detailOrder.setProductQuantity(detailDto.getProductQuantity());
                     detailOrder.setPrice(detailDto.getPrice());
                     detailOrder.setOrder(savedOrder);
+                    detailOrder.setProduct(productList);
+
                     return detailOrder;
                 })
-            .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     private boolean determineIsPaid(String payment) {
-        return "tarjeta".equalsIgnoreCase(payment); 
+        return "tarjeta".equalsIgnoreCase(payment);
     }
 
     private void validatePaymentMethod(String payment) {
         if (!"contrareembolso".equalsIgnoreCase(payment) && !"tarjeta".equalsIgnoreCase(payment)) {
-            throw new IllegalArgumentException("El método de pago debe ser 'contrareembolso' o 'tarjeta'.")
+            throw new IllegalArgumentException("El método de pago debe ser 'contrareembolso' o 'tarjeta'.");
         }
-    } 
-
-
-    public List<Order> listOrdersByUser(Long userId) {
-        return orderRepository.findByUserId(userId);
     }
 
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+    public List<OrderDto> listOrdersByUser(String authorizationHeader, OrderDto orderDto) {
+        String token = authorizationHeader.substring(7);
+        String emailToken = jwtUtil.generateEmailByToken(token);
+
+        User user = userRepository.findByEmail(emailToken)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        if (!user.getToken().equals(token)) {
+            throw new SecurityException("El token enviado no coincide con el que tiene el usuario");
+        }
+
+        if (!"user".equals(user.getRoles()) && !"admin".equals(user.getRoles())) {
+            throw new IllegalArgumentException("Acceso denegado. Solo un USER o un ADMIN pueden crear un pedido");
+        }
+
+        List<Order> listOrdersFromUser = orderRepository.findByUserId(orderDto.getUserId());
+
+        return listOrdersFromUser.stream()
+                .map(OrderDto::new)
+                .collect(Collectors.toList());
     }
 
+    public List<OrderDto> getAllOrders(String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
+        String emailToken = jwtUtil.generateEmailByToken(token);
+
+        User user = userRepository.findByEmail(emailToken)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        if (!user.getToken().equals(token)) {
+            throw new SecurityException("El token enviado no coincide con el que tiene el usuario");
+        }
+
+        if (!"user".equals(user.getRoles()) && !"admin".equals(user.getRoles())) {
+            throw new IllegalArgumentException("Acceso denegado. Solo un USER o un ADMIN pueden crear un pedido");
+        }
+
+        List<Order> list = orderRepository.findAll();
+
+        return list.stream()
+                .map(OrderDto::new)
+                .collect(Collectors.toList());
+    }
 
     public OrderDto getStatus(String authorizationHeader, Long orderId) {
         String token = authorizationHeader.substring(7);
         String emailToken = jwtUtil.generateEmailByToken(token);
-        
+
         User user = userRepository.findUserByEmail(emailToken);
-        
-            if(user == null) {
+
+        if (user == null) {
             throw new RuntimeException("User not found.");
         }
 
-            if (!token.equals(user.getToken())) {
+        if (!token.equals(user.getToken())) {
             throw new RuntimeException("Invalid token.");
         }
 
-            if (!"user".equals(user.getRoles()) && !"admin".equals(user.getRoles())) {
+        if (!"user".equals(user.getRoles()) && !"admin".equals(user.getRoles())) {
             throw new RuntimeException("Unauthorized user.");
         }
 
         Optional<Order> order = orderRepository.findById(orderId);
 
-            if (order == null) {
+        if (order == null) {
             throw new RuntimeException("Order not found.");
         }
 
         return order.getStatus();
     }
 
-   
     @Transactional
-    public void updateOrderStatus(String authorizationHeader, Long orderId, Status status) {//naming cambiar al definitivo de updateOder
+    public void updateOrderStatus(String authorizationHeader, Long orderId, Status status) {// naming cambiar al
+                                                                                            // definitivo de updateOder
 
-            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             throw new IllegalArgumentException("Invalid or missing token");
         }
 
@@ -137,16 +195,16 @@ public class OrderService {
 
         User user = userRepository.findByEmail(emailToken);
 
-            if (user == null) {
+        if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
 
-            if (!token.equals(user.getToken())) {
+        if (!token.equals(user.getToken())) {
             throw new IllegalArgumentException("Invalid token");
         }
 
         Order order = orderRepository.findById(orderId)
-            .orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + orderId));
+                .orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + orderId));
 
         order.setStatus(status);
         orderRepository.save(order);
@@ -156,7 +214,7 @@ public class OrderService {
     @Transactional
     public byte[] generateOrderPDF(String authorizationHeader, Long orderId) {
 
-            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             throw new IllegalArgumentException("Invalid or missing token");
         }
 
@@ -164,16 +222,16 @@ public class OrderService {
         String emailToken = jwtUtil.generateEmailFromToken(token);
         User user = userRepository.findByEmail(emailToken);
 
-            if (user == null) {
+        if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
 
-            if (!token.equals(user.getToken())) {
+        if (!token.equals(user.getToken())) {
             throw new IllegalArgumentException("Invalid token");
         }
 
         Optional<Order> orderOptional = orderRepository.findById(orderId);
-            if (orderOptional.isEmpty()) {
+        if (orderOptional.isEmpty()) {
             throw new IllegalArgumentException("Order not found");
         }
 
@@ -205,15 +263,3 @@ public class OrderService {
         return byteArrayOutputStream.toByteArray();
     }
 }
-
-
-
-
-
-
-
-
-
-    
-
-

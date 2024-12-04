@@ -33,7 +33,7 @@ public class OrderController {
     // ENDPOINT FRONTEND
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/orders")
-    public ResponseEntity<Map<String,String>> createOrder(@RequestHeader("Authorization") String authorizationHeader,
+    public ResponseEntity<Map<String, String>> createOrder(@RequestHeader("Authorization") String authorizationHeader,
             @RequestBody OrderDto orderDTO) {
         try {
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
@@ -41,68 +41,74 @@ public class OrderController {
             }
 
             orderService.createOrder(authorizationHeader, orderDTO);
-            return ResponseEntity.ok(Map.of("message : ", "Order created successfully"));
+
+            Map<String, String> response = Map.of("message: ", "Order created successfully");
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (IllegalArgumentException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (SecurityException error) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
     // ENDPOINT FRONTEND
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/orders/user")
-    public ResponseEntity<List<OrderDto>> ListOrdersByUser(
+    public ResponseEntity<List<OrderDto>> listOrdersByUser(
             @RequestHeader("Authorization") String authorizationHeader, @RequestBody OrderDto orderDto) {
         try {
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
 
-            List<OrderDto> orderList = orderService.ListOrdersByUser(authorizationHeader, orderDto);
+            List<OrderDto> orderList = orderService.listOrdersByUser(authorizationHeader, orderDto);
+
             return ResponseEntity.ok(orderList);
         } catch (IllegalArgumentException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (SecurityException error) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
     // ENDPOINT FRONTEND
-
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/orders")
-    public ResponseEntity<List<OrderDto>> getAllOrders(@RequestHeader("Authorization") String authorizationHeader,
-            @RequestBody OrderDto orderDto) {
+    public ResponseEntity<List<OrderDto>> getAllOrders(@RequestHeader("Authorization") String authorizationHeader) {
         try {
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
 
-            List<OrderDto> orderList = orderService.getAllOrders(authorizationHeader, orderDto);
+            List<OrderDto> orderList = orderService.getAllOrders(authorizationHeader);
+
             return ResponseEntity.ok(orderList);
         } catch (IllegalArgumentException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (SecurityException error) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
-// ENDPOINT BACKEND - sin implementation en el frontend actual 
-
+    // ENDPOINT BACKEND - sin implementation en el frontend actual
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/order/{orderId}")
-    public ResponseEntity<Map<String,String>> updateStatus(@RequestHeader("Authorization") String authorizationHeader,
+    public ResponseEntity<Map<String, String>> updateStatus(@RequestHeader("Authorization") String authorizationHeader,
             @PathVariable Long orderId, @RequestParam Status status) {
         try {
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
 
-        orderService.updateStatus(authorizationHeader, orderId, status);
-        return ResponseEntity.ok(Map.of("message", "Order status updated successfully"));
-    
+            orderService.updateStatus(authorizationHeader, orderId, status);
+            return ResponseEntity.ok(Map.of("message", "Order status updated successfully"));
+
         } catch (IllegalArgumentException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
-// ENDPOINT BACKEND - sin implementation en el frontend actual 
-
+    // ENDPOINT BACKEND - sin implementation en el frontend actual
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/order/pdf/{orderId}")
     public ResponseEntity<byte[]> generateOrderPDF(@RequestHeader("Authorization") String authorizationHeader,
@@ -121,8 +127,7 @@ public class OrderController {
         }
     }
 
-// ENDPOINT BACKEND - sin implementation en el frontend actual 
-
+    // ENDPOINT BACKEND - sin implementation en el frontend actual
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/order/status/{orderId}")
     public ResponseEntity<Status> getStatus(@RequestHeader("Authorization") String authorizationHeader,
@@ -139,22 +144,29 @@ public class OrderController {
         }
     }
 
-// ENDPOINT BACKEND - sin implementation en el frontend actual 
-
-/*     @PreAuthorize("hasRole('USER')")
-    @PatchMapping("/order/payment/{orderId}")
-    public ResponseEntity<OrderDto> selectPaymentMethod(@RequestHeader("Authorization") String authorizationHeader,
-            @RequestParam OrderDto payment, @PathVariable Long orderId) {
-        try {
-            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }
-
-            OrderDto result = orderService.selectPayment(authorizationHeader, payment, orderId);
-            return ResponseEntity.ok(result);
-        } catch (IllegalArgumentException error) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-    } */
+    // ENDPOINT BACKEND - sin implementation en el frontend actual
+    /*
+     * @PreAuthorize("hasRole('USER')")
+     * 
+     * @PatchMapping("/order/payment/{orderId}")
+     * public ResponseEntity<OrderDto>
+     * selectPaymentMethod(@RequestHeader("Authorization") String
+     * authorizationHeader,
+     * 
+     * @RequestParam OrderDto payment, @PathVariable Long orderId) {
+     * try {
+     * if (authorizationHeader == null ||
+     * !authorizationHeader.startsWith("Bearer ")) {
+     * return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+     * }
+     * 
+     * OrderDto result = orderService.selectPayment(authorizationHeader, payment,
+     * orderId);
+     * return ResponseEntity.ok(result);
+     * } catch (IllegalArgumentException error) {
+     * return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+     * }
+     * }
+     */
 
 }
