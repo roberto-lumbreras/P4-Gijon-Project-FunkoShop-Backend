@@ -135,6 +135,25 @@ void fetchProductsByCategory_ShouldReturnPagedProducts() throws Exception {
 }
 
 @Test
+void fetchProducts_ShouldReturnPagedProducts() throws Exception {
+    int page = 0;
+    int size = 10;
+    String sort = "name,asc";
+
+    Page<ProductDTO> productPage = new PageImpl<>(List.of(new ProductDTO()));
+    when(productService.fetchProducts(page, size, sort)).thenReturn(productPage);
+
+    mockMvc.perform(get("/api/products")
+            .param("page", String.valueOf(page))
+            .param("size", String.valueOf(size))
+            .param("sort", sort))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content").isArray());
+
+    verify(productService, times(1)).fetchProducts(page, size, sort);
+}
+
+@Test
 void fetchProductsByKeyword_ShouldReturnPagedProducts() throws Exception {
     String keyword = "test";
     int page = 0, size = 10;
