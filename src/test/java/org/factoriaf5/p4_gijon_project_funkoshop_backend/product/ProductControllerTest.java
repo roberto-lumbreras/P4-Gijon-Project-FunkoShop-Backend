@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 class ProductControllerTest {
 
@@ -106,5 +107,19 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.name").value("Fetched Product"));
 
         verify(productService, times(1)).fetchProductById(id);
+
     }
+
+@Test
+void fetchDiscountedProducts_ShouldReturnListOfDiscountedProducts() throws Exception {
+    List<ProductDTO> discountedProducts = List.of(new ProductDTO());
+    when(productService.fetchDiscountedProducts()).thenReturn(discountedProducts);
+
+    mockMvc.perform(get("/api/products/discounted"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").isArray());
+
+    verify(productService, times(1)).fetchDiscountedProducts();
+}
+
 }
