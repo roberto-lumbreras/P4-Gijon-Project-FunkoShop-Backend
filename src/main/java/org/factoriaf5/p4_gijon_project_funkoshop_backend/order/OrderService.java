@@ -153,41 +153,36 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    public OrderDto getStatus(String authorizationHeader, Long orderId) {
+    public Status getStatus(String authorizationHeader, Long orderId) {
         String token = authorizationHeader.substring(7);
         String emailToken = jwtUtil.generateEmailByToken(token);
 
         User user = userRepository.findUserByEmail(emailToken);
 
         if (user == null) {
-            throw new RuntimeException("User not found.");
+            throw new IllegalArgumentException("User not found.");
         }
 
         if (!token.equals(user.getToken())) {
-            throw new RuntimeException("Invalid token.");
+            throw new SecurityException("Invalid token.");
         }
 
         if (!"user".equals(user.getRoles()) && !"admin".equals(user.getRoles())) {
-            throw new RuntimeException("Unauthorized user.");
+            throw new IllegalArgumentException("Unauthorized user.");
         }
 
-        Optional<Order> order = orderRepository.findById(orderId);
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found."));
 
         if (order == null) {
-            throw new RuntimeException("Order not found.");
+            throw new IllegalArgumentException("Order not found.");
         }
 
         return order.getStatus();
     }
 
     @Transactional
-    public void updateOrderStatus(String authorizationHeader, Long orderId, Status status) {// naming cambiar al
-                                                                                            // definitivo de updateOder
-
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("Invalid or missing token");
-        }
-
+    public void updateOrderStatus(String authorizationHeader, Long orderId, Status status) {
         String token = authorizationHeader.substring(7);
         String emailToken = jwtUtil.generateEmailFromToken(token);
 
@@ -198,7 +193,7 @@ public class OrderService {
         }
 
         if (!token.equals(user.getToken())) {
-            throw new IllegalArgumentException("Invalid token");
+            throw new SecurityException("Invalid token");
         }
 
         Order order = orderRepository.findById(orderId)
@@ -211,13 +206,9 @@ public class OrderService {
     @Autowired
     @Transactional
     public byte[] generateOrderPDF(String authorizationHeader, Long orderId) {
-
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("Invalid or missing token");
-        }
-
         String token = authorizationHeader.substring(7);
         String emailToken = jwtUtil.generateEmailFromToken(token);
+
         User user = userRepository.findByEmail(emailToken);
 
         if (user == null) {
