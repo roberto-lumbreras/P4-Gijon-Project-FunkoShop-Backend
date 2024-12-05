@@ -23,7 +23,6 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-
     // Crear un nuevo usuario
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody User user) {

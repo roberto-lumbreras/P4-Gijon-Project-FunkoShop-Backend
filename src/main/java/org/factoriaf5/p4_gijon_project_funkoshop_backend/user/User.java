@@ -29,13 +29,7 @@ public class User {
     private Boolean enabled;
     private Role role;
     private String JwToken;
-    //esta comentado para que no de errores al compilar ya que perfiles aun no esta hecho
-    
     /* @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Profile profile; */
- /*    public Object getUsername() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUsername'");
-    } */
 
 }

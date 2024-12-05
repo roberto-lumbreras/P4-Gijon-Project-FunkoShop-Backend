@@ -30,7 +30,8 @@ public class UserService {
     public List<User> getUsers() {
         return userRepository.findAll();
     }
-
+  
+    //registrar usuario
     public User addUser(User user) {
         // Verificar si el email ya está registrado
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
