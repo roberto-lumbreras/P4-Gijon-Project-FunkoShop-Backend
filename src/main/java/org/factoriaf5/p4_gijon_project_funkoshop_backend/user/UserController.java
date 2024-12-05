@@ -24,6 +24,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    // Crear un nuevo usuario
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody User user) {
         try {
@@ -38,12 +39,14 @@ public class UserController {
         }
     }
 
+    // Obtener todos los usuarios
     @GetMapping(path = "/admin/")
     public ResponseEntity<List<User>> getUsers() {
         List<User> user = userService.getUsers();
         return ResponseEntity.ok(user);
     }
 
+    // Obtener usuario por ID
     @GetMapping(path = "/user/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         try {
@@ -54,6 +57,7 @@ public class UserController {
         }
     }
 
+    // Cambiar contraseña
     @PatchMapping("/user/{id}")
     public ResponseEntity<User> changePassword(@PathVariable Long id, @RequestBody User userDetails) {
         try {
@@ -65,6 +69,7 @@ public class UserController {
         }
     }
 
+    // Eliminar usuario
     @DeleteMapping("/user/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         if (userService.getUserById(id) != null) {

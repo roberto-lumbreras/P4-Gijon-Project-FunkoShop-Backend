@@ -1,12 +1,12 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.user;
 /* import org.factoriaf5.p4_gijon_project_funkoshop_backend.profile.Profile; */
 /*  */
-import jakarta.persistence.CascadeType;
+//import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.OneToOne;
+//import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,6 +29,8 @@ public class User {
     private Boolean enabled;
     private Role role;
     private String JwToken;
+    //esta comentado para que no de errores al compilar ya que perfiles aun no esta hecho
+    
     /* @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Profile profile; */
  /*    public Object getUsername() {
