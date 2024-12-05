@@ -4,6 +4,9 @@ import javax.sql.DataSource;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.AuthEntryPointJwt;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.AuthTokenFilter;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.Role;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.User;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -14,12 +17,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -40,6 +41,7 @@ public class SecurityConfig {
 
     private static final String[] WhiteList = {
                         "/auth/**",
+                        "/api/signup",
                         "/products/**",
                         "/categories/**"
     };
@@ -47,8 +49,8 @@ public class SecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests.requestMatchers(WhiteList).permitAll()
-                        .requestMatchers("**/user/**").hasRole("USER")
-                        .requestMatchers("**/admin/**").hasRole("ADMIN").anyRequest().authenticated());
+                        .requestMatchers("/user/**").hasRole("USER")
+                        .requestMatchers("/admin/**").hasRole("ADMIN").anyRequest().authenticated());
         
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         
@@ -70,20 +72,23 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CommandLineRunner initData(UserDetailsService userDetailsService) {
+    public CommandLineRunner initData(UserRepository repository, PasswordEncoder encoder) {
         return args -> {
-            UserDetails user1 = User.withUsername("user@email.com")
-                    .password(passwordEncoder().encode("1234"))
-                    .roles("USER")
-                    .build();
-            UserDetails admin = User.withUsername("admin@email.com")
-                    .password(passwordEncoder().encode("1234"))
-                    .roles("ADMIN")
-                    .build();
+            User user1 = new User();
+            user1.setUsername("user@email.com");
+            user1.setEmail("user@email.com");
+            user1.setPassword(encoder.encode("1234"));
+            user1.setRole(Role.USER);
+            user1.setEnabled(true);
+            repository.save(user1);
 
-            JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
-            userDetailsManager.createUser(user1);
-            userDetailsManager.createUser(admin);
+            User user2 = new User();
+            user2.setUsername("admin@email.com");
+            user2.setEmail("admin@email.com");
+            user2.setPassword(encoder.encode("1234"));
+            user2.setRole(Role.ADMIN);
+            user2.setEnabled(true);
+            repository.save(user2);
         };
     }
 
