@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.JwtUtils;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrderRepository;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -21,7 +23,7 @@ public class OrderService {
 
     @Autowired
     private UserRepository userRepository;
-    private JwtUtil jwtUtil;
+    private JwtUtils jwtUtil;
     private OrderRepository orderRepository;
     private DetailOrderRepository detailOrderRepository;
 

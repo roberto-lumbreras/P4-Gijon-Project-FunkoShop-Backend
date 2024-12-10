@@ -44,7 +44,7 @@ public class DetailOrderController {
                     if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
                         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
-            DetailOrderDto bestSeller = detailOrderService.getBestSeller(authorizationHeader,detailOrderDto);
+            DetailOrderDto bestSeller = detailOrderService.getBestSellers(authorizationHeader,detailOrderDto);
             return ResponseEntity.ok(bestSeller);
         } catch (IllegalArgumentException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
