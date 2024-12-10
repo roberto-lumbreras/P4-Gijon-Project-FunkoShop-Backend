@@ -50,21 +50,7 @@ public class DetailOrderController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-    // ENDPOINT FRONTEND
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/details/sales")
-    public ResponseEntity<DetailOrderDto> listByMonth(
-        @RequestHeader("Authorization") String authorizationHeader,DetailOrderDto detailOrderDto) {
-                try{
-                    if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-                }
-                DetailOrderDto salesByMonth = detailOrderService.getSalesByMonth(authorizationHeader,detailOrderDto);
-                return ResponseEntity.ok(salesByMonth);
-                } catch (IllegalArgumentException error) {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-                }
-        }
+    
     // ENDPOINT BACKEND - sin implementation en el frontend actual (aun no hemos podido acceder como admin)
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/details/pdf/")
@@ -97,18 +83,5 @@ public class DetailOrderController {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-    @PreAuthorize("hasRole('USER')")
-    @GetMapping("/details/email")
-    public ResponseEntity<Void> sendEmail(
-        @RequestHeader("Authorization") String authorizationHeader, DetailOrderDto detailOrderDto) {
-            try {
-                if (authorizationHeader == null ||!authorizationHeader.startsWith("Bearer ")) {
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-                }
-                detailOrderService.sendEmail(authorizationHeader, detailOrderDto);
-                return ResponseEntity.noContent().build();
-                } catch (IllegalArgumentException error) {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-    }
+
 }

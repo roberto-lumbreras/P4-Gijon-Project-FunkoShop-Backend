@@ -3,6 +3,7 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 import java.util.List;
 import java.util.Map;
 
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrderDto;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.OrderService.Status;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -148,6 +149,37 @@ public class OrderController {
             return ResponseEntity.ok().headers(headers).body(pdfData);
         } catch (IllegalArgumentException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    // ENDPOINT FRONTEND
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/details/sales")
+    public ResponseEntity<DetailOrderDto> listByMonth(
+        @RequestHeader("Authorization") String authorizationHeader,DetailOrderDto detailOrderDto) {
+                try{
+                    if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                }
+                DetailOrderDto salesByMonth = detailOrderService.getSalesByMonth(authorizationHeader,detailOrderDto);
+                return ResponseEntity.ok(salesByMonth);
+                } catch (IllegalArgumentException error) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                }
+        }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/details/email")
+    public ResponseEntity<Void> sendEmail(
+        @RequestHeader("Authorization") String authorizationHeader, DetailOrderDto detailOrderDto) {
+            try {
+                if (authorizationHeader == null ||!authorizationHeader.startsWith("Bearer ")) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                }
+                detailOrderService.sendEmail(authorizationHeader, detailOrderDto);
+                return ResponseEntity.noContent().build();
+                } catch (IllegalArgumentException error) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
