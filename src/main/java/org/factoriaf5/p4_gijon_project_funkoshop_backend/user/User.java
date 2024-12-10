@@ -1,11 +1,16 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.user;
+
+import java.util.List;
+
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Product;
+
 /* import org.factoriaf5.p4_gijon_project_funkoshop_backend.profile.Profile; */
 /*  */
 //import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 //import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -29,7 +34,10 @@ public class User {
     private Boolean enabled;
     private Role role;
     private String JwToken;
-    /* @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Profile profile; */
+    private List<Product> favorites;
+    /*
+     * @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+     * private Profile profile;
+     */
 
 }
