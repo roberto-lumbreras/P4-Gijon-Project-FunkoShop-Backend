@@ -1,11 +1,9 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.OrderService.Status;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.User;
 
 import jakarta.persistence.Column;
@@ -135,6 +133,10 @@ public class Order {
 
     public void setPrice(Float price) {
         this.price = price;
+    }
+
+    public enum Status {
+        PENDING, PROCESSING, DELIVERED, CANCELED
     }
 
 }

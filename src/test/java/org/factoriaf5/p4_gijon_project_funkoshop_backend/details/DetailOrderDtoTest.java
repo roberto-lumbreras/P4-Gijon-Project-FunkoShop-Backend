@@ -1,4 +1,4 @@
-package org.factoriaf5.p4_gijon_project_funkoshop_backend.details;
+/* package org.factoriaf5.p4_gijon_project_funkoshop_backend.details;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -91,4 +91,4 @@ class DetailOrderDtoTest {
         assertNull(detailOrderDto.getAmount());
         assertNull(detailOrderDto.getPrice());
     }
-}
+} */

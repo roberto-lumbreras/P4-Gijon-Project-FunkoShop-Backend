@@ -1,11 +1,10 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.OrderService.Status;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.Order.Status;
 
 public class OrderDto {
 
