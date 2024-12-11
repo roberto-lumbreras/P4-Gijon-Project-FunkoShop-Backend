@@ -3,8 +3,9 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 import java.util.List;
 import java.util.Map;
 
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrderDto;
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.OrderService.Status;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrderDTO;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.Order.Status;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.ProductDTO;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ContentDisposition;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
 
 @RequestMapping("/orders") // ENDPOINT VISTO EN EL FRONTEND DEL FUNKO
 @RestController
@@ -31,26 +33,30 @@ public class OrderController {
     // ENDPOINT FRONTEND
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/orders")
-    public ResponseEntity<Map<String, String>> createOrder(@RequestBody OrderDto orderDTO) {
-            orderService.createOrder(orderDTO);
-            Map<String, String> response = Map.of("message: ", "Order created successfully");
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
+            OrderDTO createdOrder = orderService.createOrder(orderDTO);
+            return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @GetMapping("/orders/user")
+    public ResponseEntity<List<OrderDto>> listOrdersByUser(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        User authenticatedUser = (User) authentication.getPrincipal();
+
+        List<OrderDto> orderList = orderService.listOrdersByUser(authenticatedUser);
+
+        return ResponseEntity.ok(orderList);
     }
 
     // ENDPOINT FRONTEND
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/orders")
-    public ResponseEntity<List<OrderDto>> getAllOrders() {
-        List<OrderDto> orderList = orderService.getAllOrders();
-        return ResponseEntity.ok(orderList);
-    }
-
-    // ENDPOINT FRONTEND
-    @PreAuthorize("hasRole('USER')")
-    @GetMapping("/orders/user")
-    public ResponseEntity<List<OrderDto>> listOrdersByUser() {
-        User user = null;
-        List<OrderDto> orderList = orderService.listOrdersByUser(user);
+    public ResponseEntity<List<OrderDTO>> getAllOrders() {
+        List<OrderDTO> orderList = orderService.getAllOrders();
         return ResponseEntity.ok(orderList);
     }
 
@@ -85,34 +91,34 @@ public class OrderController {
     // ENDPOINT FRONTEND
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/details/sales")
-    public ResponseEntity<List<OrderDto>> listByMonth() {
-            List<OrderDto> salesByMonth = orderService.listByMonth();
+    public ResponseEntity<List<OrderDTO>> listByMonth() {
+            List<OrderDTO> salesByMonth = orderService.listByMonth();
             return ResponseEntity.ok(salesByMonth);
-        }
-
-    @PreAuthorize("hasRole('USER')")
-    @GetMapping("/details/email")
-    public ResponseEntity<Void> sendEmail(DetailOrderDto detailOrderDto) {
-            orderService.sendEmail(detailOrderDto);
-            return ResponseEntity.noContent().build();
         }
 
     @PreAuthorize("hasRole('ADMIN')") // Este podria ser mas de user que de admin
     @GetMapping("/details/sales")
-    public ResponseEntity<List<DetailOrderDto>> getBestSellers() {
-        List<DetailOrderDto> bestSeller = orderService.getBestSellers();
+    public ResponseEntity<List<ProductDTO>> getBestSellers() {
+        List<ProductDTO> bestSeller = orderService.getBestSellers();
         return ResponseEntity.ok(bestSeller);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/details/pdf")
-    public ResponseEntity<byte[]> generateOrderPDF(DetailOrderDto detailOrderDto) {
+    public ResponseEntity<byte[]> generateOrderPDF(DetailOrderDTO detailOrderDto) {
             byte[] pdfData = orderService.generatePDFAllOrders(detailOrderDto);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
             headers.setContentDisposition(ContentDisposition.inline().filename("detailorder_" + detailOrderDto + ".pdf").build());
             return ResponseEntity.ok().headers(headers).body(pdfData);
     }
+
+    /* @PreAuthorize("hasRole('USER')")
+    @GetMapping("/details/email")
+    public ResponseEntity<Void> sendEmail(DetailOrderDTO detailOrderDto) {
+            orderService.sendEmail(detailOrderDto);
+            return ResponseEntity.noContent().build();
+        } */
 
     // ENDPOINT BACKEND - sin implementation en el frontend actual
     /*

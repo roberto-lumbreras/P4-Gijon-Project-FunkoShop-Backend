@@ -3,14 +3,14 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.details;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.Order;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Product;
 
-public class DetailOrderDto {
+public class DetailOrderDTO {
     private Long detailId;
     private Product product;
     private Order order;
     private Integer productQuantity;
     private Double price;
 
-    public DetailOrderDto(DetailOrder detailOrder) {
+    public DetailOrderDTO(DetailOrder detailOrder) {
         this.detailId = detailOrder.getDetailId();
         this.product = detailOrder.getProduct();
         this.order = detailOrder.getOrder();
@@ -18,7 +18,7 @@ public class DetailOrderDto {
         this.price = detailOrder.getPrice();
     }
 
-    public DetailOrderDto() {
+    public DetailOrderDTO() {
 
     }
 

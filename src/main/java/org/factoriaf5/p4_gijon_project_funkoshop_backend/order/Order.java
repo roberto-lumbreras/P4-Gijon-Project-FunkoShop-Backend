@@ -103,9 +103,9 @@ public class Order {
         this.payment = payment;
     }
 
-   public Status getStatus() {
+    public Status getStatus() {
         return status;
-    } 
+    }
 
     public void setStatus(Status status) {
         this.status = status;
