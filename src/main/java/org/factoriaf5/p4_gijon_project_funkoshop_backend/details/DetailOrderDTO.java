@@ -13,7 +13,6 @@ public class DetailOrderDTO {
     public DetailOrderDTO(DetailOrder detailOrder) {
         this.detailId = detailOrder.getDetailId();
         this.product = detailOrder.getProduct();
-        this.order = detailOrder.getOrder();
         this.productQuantity = detailOrder.getProductQuantity();
         this.price = detailOrder.getPrice();
     }
