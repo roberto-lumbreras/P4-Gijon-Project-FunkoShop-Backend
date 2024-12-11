@@ -6,28 +6,28 @@ import java.util.List;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.Order.Status;
 
-public class OrderDto {
+public class OrderDTO {
 
     private Long orderId;
     private Long userId;
     private LocalDate orderDate;
-    private boolean paid;
+    private Boolean isPaid;
     private String payment;
     private Status status;
     private Integer totalAmount;
     private List<DetailOrder> productList;
     private Float price;
 
-    public OrderDto() {
+    public OrderDTO() {
 
     }
 
-    public OrderDto(Order order) {
+    public OrderDTO(Order order) {
 
         this.orderId = order.getOrderId();
         this.userId = order.getUser().getId();
         this.orderDate = order.getOrderDate();
-        this.paid = order.getIsPaid();
+        this.isPaid = order.getIsPaid();
         this.payment = order.getPayment();
         this.status = order.getStatus();
         this.totalAmount = order.getTotalAmount();
@@ -53,7 +53,7 @@ public class OrderDto {
     }
 
     public boolean isPaid() {
-        return paid;
+        return isPaid;
     }
 
     public String getPayment() {
