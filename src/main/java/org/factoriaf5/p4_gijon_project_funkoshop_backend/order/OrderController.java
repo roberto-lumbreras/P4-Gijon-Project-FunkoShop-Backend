@@ -40,14 +40,14 @@ public class OrderController {
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/orders/user")
-    public ResponseEntity<List<OrderDto>> listOrdersByUser(Authentication authentication) {
+    public ResponseEntity<List<OrderDTO>> listOrdersByUser(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         User authenticatedUser = (User) authentication.getPrincipal();
 
-        List<OrderDto> orderList = orderService.listOrdersByUser(authenticatedUser);
+        List<OrderDTO> orderList = orderService.listOrdersByUser(authenticatedUser);
 
         return ResponseEntity.ok(orderList);
     }

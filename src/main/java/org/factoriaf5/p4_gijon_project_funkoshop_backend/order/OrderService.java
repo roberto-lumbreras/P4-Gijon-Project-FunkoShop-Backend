@@ -222,20 +222,21 @@ public class OrderService {
 
     }
 
-    public List<OrderDto> listOrdersByUser(User authenticatedUser) {
+    @SuppressWarnings("ConvertToStringSwitch")
+    public List<OrderDTO> listOrdersByUser(User authenticatedUser) {
         if (authenticatedUser == null) {
             throw new IllegalArgumentException("Usuario no autenticado");
         }
     
         Role role = authenticatedUser.getRole();
     
-        if ("admin".equals(role)) {
+        if ("ADMIN".equals(role.name())) {
             return orderRepository.findAll().stream()
-                    .map(order -> new OrderDto(order))  // Conversion manual
+                    .map(order -> new OrderDTO(order))  // Conversion manual
                     .collect(Collectors.toList());
-        } else if ("user".equals(role)) {
+        } else if ("USER".equals(role.name())) {
             return orderRepository.findByUserId(authenticatedUser.getId()).stream()
-                    .map(order -> new OrderDto(order))  // Conversion manual
+                    .map(order -> new OrderDTO(order))  // Conversion manual
                     .collect(Collectors.toList());
         } else {
             throw new SecurityException("Acceso denegado. Solo un USER o un ADMIN pueden listar pedidos");
@@ -243,7 +244,6 @@ public class OrderService {
     }
 
     /* public void sendEmail(String authorizationHeader, DetailOrderDTO detailOrderDto) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'sendEmail'");
     } */
 
