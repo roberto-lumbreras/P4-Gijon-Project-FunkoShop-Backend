@@ -8,14 +8,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.swing.text.Document;
+
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.JwtUtils;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.Order;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.OrderDto;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.OrderRepository;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Product;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.ProductDTO;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.ProductRepository;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.User;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.UserRepository;
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.stereotype.Service;
 
 import com.lowagie.text.Paragraph;
@@ -24,18 +27,20 @@ import com.lowagie.text.pdf.PdfWriter;
 @Service
 public class DetailOrderService {
 
+    JwtUtils jwtUtils;
     UserRepository userRepository;
     OrderRepository orderRepository;
     ProductRepository productRepository;
+    DetailOrderRepository detailOrderRepository;
 
     public List<OrderDto> listByMonth(String authorizationHeader) {
         String token = authorizationHeader.substring(7);
-        String emailToken = jwtUtils.extractEmailFromToken(token);
+        String emailToken = jwtUtils.getEmailFromJwtToken(token);
 
         User user = userRepository.findByEmail(emailToken)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario del token no encontrado"));
 
-        if (!token.equals(user.getToken(token)) && !"admin".equals(user.getRoles())) {
+        if (!token.equals(user.getJwToken()) && !"admin".equals(user.getRole())) {
             throw new SecurityException("Acceso denegado. Solo el ADMIN puede realizar la acción");
         }
 
@@ -43,22 +48,22 @@ public class DetailOrderService {
 
         LocalDate firstDayOfLastMonth = now.minusMonths(1).withDayOfMonth(1);
         LocalDate lastDayOfLastMonth = now.withDayOfMonth(1).minusDays(1);
-        List<OrderDto> orderDto = OrderRepository.findAll().stream().filter(order -> {
+        List<OrderDto> orderDto = orderRepository.findAll().stream().filter(order -> {
             LocalDate orderDate = order.getOrderDate();
             return !orderDate.isBefore(firstDayOfLastMonth) && !orderDate.isAfter(lastDayOfLastMonth);
         }).map(order -> new OrderDto(order)).collect(Collectors.toList());
         return orderDto;
     }
 
-    public List<ProductDto> retrieveBestSellers(String authorizationHeader) {
+    public List<ProductDTO> retrieveBestSellers(String authorizationHeader) {
 
         String token = authorizationHeader.substring(7);
-        String emailToken = jwtUtil.extractEmailFromToken(token);
+        String emailToken = jwtUtils.getEmailFromJwtToken(token);
 
         User user = userRepository.findByEmail(emailToken)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario del token no encontrado"));
 
-        if (!token.equals(user.getToken(token)) && !"admin".equals(user.getRoles())) {
+        if (!token.equals(user.getJwToken()) && !"admin".equals(user.getRole())) {
             throw new SecurityException("Acceso denegado. Solo el ADMIN puede realizar la acción");
         }
 
@@ -112,14 +117,14 @@ public class DetailOrderService {
         }
 
         String token = authorizationHeader.substring(7);
-        String emailToken = jwtUtil.generateEmailFromToken(token);
+        String emailToken = jwtUtils.getEmailFromJwtToken(token);
         User user = userRepository.findByEmail(emailToken);
 
         if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
 
-        if (!token.equals(user.getToken())) {
+        if (!token.equals(user.getJwToken())) {
             throw new IllegalArgumentException("Invalid token");
         }
 
@@ -153,12 +158,12 @@ public class DetailOrderService {
     public Integer calculateQuantity(String authorizationHeader, Order orderId, Product productId) {
 
         String token = authorizationHeader.substring(7);
-        String emailToken = jwtUtil.extractEmailFromToken(token);
+        String emailToken = jwtUtils.getEmailFromJwtToken(token);
 
         User user = userRepository.findByEmail(emailToken)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario del token no encontrado"));
 
-        if (!token.equals(user.getToken(token)) && !"admin".equals(user.getRoles())) {
+        if (!token.equals(user.getJwToken()) && !"admin".equals(user.getRole())) {
             throw new SecurityException("Acceso denegado. Solo el ADMIN puede realizar la acción");
         }
 

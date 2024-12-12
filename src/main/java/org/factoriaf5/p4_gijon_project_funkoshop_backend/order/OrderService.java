@@ -5,8 +5,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.swing.text.Document;
+
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.JwtUtils;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrderRepository;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.User;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -21,7 +26,7 @@ public class OrderService {
 
     @Autowired
     private UserRepository userRepository;
-    private JwtUtil jwtUtil;
+    private JwtUtils jwtUtils;
     private OrderRepository orderRepository;
     private DetailOrderRepository detailOrderRepository;
 
@@ -29,11 +34,11 @@ public class OrderService {
         PENDING, PROCESSING, DELIVERED, CANCELED
     }
 
-    public OrderService(OrderRepository orderRepository, UserRepository userRepository, JwtUtil jwtUtil,
+    public OrderService(OrderRepository orderRepository, UserRepository userRepository, JwtUtils jwtUtils,
             DetailOrderRepository detailOrderRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
-        this.jwtUtil = jwtUtil;
+        this.jwtUtils = jwtUtils;
         this.detailOrderRepository = detailOrderRepository;
 
     }
@@ -58,16 +63,16 @@ public class OrderService {
     @Transactional
     public Order createOrder(@RequestHeader("Authorization") String authorizationHeader, OrderDto orderDto) {
         String token = authorizationHeader.substring(7);
-        String emailToken = jwtUtil.generateEmailByToken(token);
+        String emailToken = jwtUtils.getEmailFromJwtToken(token);
 
         User user = userRepository.findByEmail(emailToken)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
-        if (!user.getToken().equals(token)) {
+        if (!user.getJwToken().equals(token)) {
             throw new SecurityException("El token enviado no coincide con el que tiene el usuario");
         }
 
-        if (!"user".equals(user.getRoles()) && !"admin".equals(user.getRoles())) {
+        if (!"user".equals(user.getRole()) && !"admin".equals(user.getRole())) {
             throw new IllegalArgumentException("Acceso denegado. Solo un USER o un ADMIN pueden crear un pedido");
         }
 
@@ -111,16 +116,16 @@ public class OrderService {
 
     public List<OrderDto> listOrdersByUser(String authorizationHeader, OrderDto orderDto) {
         String token = authorizationHeader.substring(7);
-        String emailToken = jwtUtil.generateEmailByToken(token);
+        String emailToken = jwtUtils.getEmailFromJwtToken(token);
 
         User user = userRepository.findByEmail(emailToken)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
-        if (!user.getToken().equals(token)) {
+        if (!user.getJwToken().equals(token)) {
             throw new SecurityException("El token enviado no coincide con el que tiene el usuario");
         }
 
-        if (!"user".equals(user.getRoles()) && !"admin".equals(user.getRoles())) {
+        if (!"user".equals(user.getRole()) && !"admin".equals(user.getRole())) {
             throw new IllegalArgumentException("Acceso denegado. Solo un USER o un ADMIN pueden crear un pedido");
         }
 
@@ -133,16 +138,16 @@ public class OrderService {
 
     public List<OrderDto> getAllOrders(String authorizationHeader) {
         String token = authorizationHeader.substring(7);
-        String emailToken = jwtUtil.generateEmailByToken(token);
+        String emailToken = jwtUtils.getEmailFromJwtToken(token);
 
         User user = userRepository.findByEmail(emailToken)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
-        if (!user.getToken().equals(token)) {
+        if (!user.getJwToken().equals(token)) {
             throw new SecurityException("El token enviado no coincide con el que tiene el usuario");
         }
 
-        if (!"user".equals(user.getRoles()) && !"admin".equals(user.getRoles())) {
+        if (!"user".equals(user.getRole()) && !"admin".equals(user.getRole())) {
             throw new IllegalArgumentException("Acceso denegado. Solo un USER o un ADMIN pueden crear un pedido");
         }
 
@@ -155,19 +160,19 @@ public class OrderService {
 
     public Status getStatus(String authorizationHeader, Long orderId) {
         String token = authorizationHeader.substring(7);
-        String emailToken = jwtUtil.generateEmailByToken(token);
+        String emailToken = jwtUtils.getEmailFromJwtToken(token);
 
-        User user = userRepository.findUserByEmail(emailToken);
+        User user = userRepository.findByEmail(emailToken);
 
         if (user == null) {
             throw new IllegalArgumentException("User not found.");
         }
 
-        if (!token.equals(user.getToken())) {
+        if (!token.equals(user.getJwToken())) {
             throw new SecurityException("Invalid token.");
         }
 
-        if (!"user".equals(user.getRoles()) && !"admin".equals(user.getRoles())) {
+        if (!"user".equals(user.getRole()) && !"admin".equals(user.getRole())) {
             throw new IllegalArgumentException("Unauthorized user.");
         }
 
@@ -184,7 +189,7 @@ public class OrderService {
     @Transactional
     public void updateOrderStatus(String authorizationHeader, Long orderId, Status status) {
         String token = authorizationHeader.substring(7);
-        String emailToken = jwtUtil.generateEmailFromToken(token);
+        String emailToken = jwtUtils.getEmailFromJwtToken(token);
 
         User user = userRepository.findByEmail(emailToken);
 
@@ -192,7 +197,7 @@ public class OrderService {
             throw new IllegalArgumentException("User not found");
         }
 
-        if (!token.equals(user.getToken())) {
+        if (!token.equals(user.getJwToken())) {
             throw new SecurityException("Invalid token");
         }
 
@@ -207,7 +212,7 @@ public class OrderService {
     @Transactional
     public byte[] generateOrderPDF(String authorizationHeader, Long orderId) {
         String token = authorizationHeader.substring(7);
-        String emailToken = jwtUtil.generateEmailFromToken(token);
+        String emailToken = jwtUtils.getEmailFromJwtToken(token);
 
         User user = userRepository.findByEmail(emailToken);
 
@@ -215,7 +220,7 @@ public class OrderService {
             throw new IllegalArgumentException("User not found");
         }
 
-        if (!token.equals(user.getToken())) {
+        if (!token.equals(user.getJwToken())) {
             throw new IllegalArgumentException("Invalid token");
         }
 

@@ -123,7 +123,7 @@ public class OrderController {
 
             orderService.updateOrderStatus(authorizationHeader, orderId, status);
 
-            Map<String, String> response = Map.of("message\", \"Order status updated successfully");
+            Map<String, String> response = Map.of("message", "Order status updated successfully");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IllegalArgumentException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

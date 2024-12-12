@@ -1,11 +1,11 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.OrderService.Status;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -104,9 +104,9 @@ public class Order {
         this.payment = payment;
     }
 
-   public Status getStatus() {
+    public Status getStatus() {
         return status;
-    } 
+    }
 
     public void setStatus(Status status) {
         this.status = status;
