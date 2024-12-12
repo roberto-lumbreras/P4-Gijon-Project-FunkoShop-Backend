@@ -1,6 +1,7 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.details;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.Order;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Product;
 
 public class DetailOrderDto {
     private Long detailId;
