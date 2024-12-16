@@ -1,5 +1,6 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ProductService {
@@ -27,41 +29,50 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found by id " + id));
         productRepository.deleteById(id);
     }
-    public ProductDTO createProduct(ProductDTO productDTO) {
+    public ProductDTO createProduct(ProductDTO productDTO, MultipartFile image1, MultipartFile image2) throws IOException {
         Category category = categoryRepository.findById(productDTO.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found by id " + productDTO.getCategoryId()
-                        + ". Status: " + HttpStatus.NOT_FOUND));
-        Product product = new Product();
-        product.setName(productDTO.getName());
-        product.setDescription(productDTO.getDescription());
-        product.setPrice(productDTO.getPrice());
-        product.setStock(productDTO.getStock());
-        product.setCategory(category);
-        product.setDiscount(productDTO.getDiscount());
-        product.setImageHash(productDTO.getImageHash());
-        product.setImageHash2(productDTO.getImageHash2());
-        product.setCreatedAt(LocalDateTime.now());
-        Product savedProduct = productRepository.save(product);
-        return new ProductDTO(savedProduct);
-    }
-    public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
-                        "Product not found by id " + id + ". Status: " + HttpStatus.NOT_FOUND));
-        Category category = categoryRepository.findById(productDTO.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found by id " + productDTO.getCategoryId()
-                        + ". Status: " + HttpStatus.NOT_FOUND));
-        product.setName(productDTO.getName());
-        product.setDescription(productDTO.getDescription());
-        product.setPrice(productDTO.getPrice());
-        product.setStock(productDTO.getStock());
-        product.setDiscount(productDTO.getDiscount());
-        product.setImageHash(productDTO.getImageHash());
-        product.setImageHash2(productDTO.getImageHash2());
-        product.setCategory(category);
-        Product updatedProduct = productRepository.save(product);
-        return new ProductDTO(updatedProduct);
-    }
+                .orElseThrow(() -> new RuntimeException("Category not found with id " + productDTO.getCategoryId()));
+
+                Product product = new Product();
+                product.setName(productDTO.getName());
+                product.setDescription(productDTO.getDescription());
+                product.setPrice(productDTO.getPrice());
+                product.setStock(productDTO.getStock());
+                product.setCategory(category);
+                product.setDiscount(productDTO.getDiscount());
+                product.setImageHash(image1 != null ? image1.getBytes() : null);
+                product.setImageHash2(image2 != null ? image2.getBytes() : null);
+                product.setCreatedAt(LocalDateTime.now());
+        
+                Product savedProduct = productRepository.save(product);
+                return new ProductDTO(savedProduct);
+            }
+ 
+            public ProductDTO updateProduct(Long id, ProductDTO productDTO, MultipartFile image1, MultipartFile image2) throws IOException {
+                Product product = productRepository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Product not found with id " + id));
+        
+                Category category = categoryRepository.findById(productDTO.getCategoryId())
+                        .orElseThrow(() -> new RuntimeException("Category not found with id " + productDTO.getCategoryId()));
+        
+                product.setName(productDTO.getName());
+                product.setDescription(productDTO.getDescription());
+                product.setPrice(productDTO.getPrice());
+                product.setStock(productDTO.getStock());
+                product.setDiscount(productDTO.getDiscount());
+                product.setCategory(category);
+        
+                if (image1 != null) {
+                    product.setImageHash(image1.getBytes());
+                }
+                if (image2 != null) {
+                    product.setImageHash2(image2.getBytes());
+                }
+        
+                Product updatedProduct = productRepository.save(product);
+                return new ProductDTO(updatedProduct);
+            }
+
     public ProductDTO fetchProductById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException(
