@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,13 +16,16 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
+    private final JdbcTemplate jdbcTemplate;
 
     // Constructor con inyección de dependencias
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils,
+            JdbcTemplate jdbcTemplate) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     // Obtener usuario por ID
@@ -43,9 +47,7 @@ public class UserService {
     // Obtener todos los usuarios
     public List<User> getUsers(String authorizationHeader) throws AccessDeniedException {
         String token = authorizationHeader.substring(7);
-        // System.out.println(token);
         String emailFromToken = jwtUtils.getEmailFromJwtToken(token);
-        // System.out.println(emailFromToken);
 
         User userRequest = userRepository.findByEmail(emailFromToken)
                 .orElseThrow(() -> new IllegalArgumentException("User request not found"));
@@ -60,7 +62,6 @@ public class UserService {
         }
 
         List<User> list = userRepository.findAll();
-        System.out.println(list);
 
         return userRepository.findAll();
     }
@@ -86,7 +87,13 @@ public class UserService {
         }
 
         // Guardar el usuario en la base de datos
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        String authorityQuery = "INSERT INTO authorities (username, authority) VALUES ('" + user.getEmail() + "', '"
+                + user.getRole() + "')";
+        jdbcTemplate.update(authorityQuery);
+
+        return savedUser;
     }
 
     // Eliminar usuario por ID
