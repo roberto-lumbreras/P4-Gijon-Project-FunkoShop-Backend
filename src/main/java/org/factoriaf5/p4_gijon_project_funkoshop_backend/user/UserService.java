@@ -82,7 +82,7 @@ public class UserService {
 
         // Asignar un rol predeterminado si no se pasa uno en el DTO
         if (user.getRole() == null) {
-            user.setRole("ROLE_USER"); // Rol predeterminado
+            user.setRole(Role.ROLE_USER); // Rol predeterminado
         }
 
         // Guardar el usuario en la base de datos
