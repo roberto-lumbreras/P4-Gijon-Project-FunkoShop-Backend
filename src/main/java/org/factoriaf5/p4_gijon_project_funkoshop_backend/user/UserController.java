@@ -118,4 +118,48 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error.getMessage());
         }
     }
+
+    @PostMapping("/user/add-first-address/{userId}")
+    public ResponseEntity<String> addFirstAddress(@RequestHeader("Authorization") String authorizationHeader, @RequestBody String entity) {
+        try {
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+        
+            userService.addFirstAddress(authorizationHeader, entity);
+            return ResponseEntity.status(HttpStatus.OK).body("Address was succesfully saved!");
+        
+        }
+        catch (IllegalArgumentException error) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error.getMessage());
+        } catch (SecurityException error) {
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error.getMessage());
+        } catch (AccessDeniedException error) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error.getMessage());
+        }
+    }
+
+    @PatchMapping("/user/add-second-address/{userId}")
+    public String addSecondAddress(@RequestBody String entity) {
+        //TODO: process POST request
+        
+        return entity;
+    }
+
+    @DeleteMapping("/user/remove-first-address/{userId}")
+    public String deleteFirstAddress(@RequestBody String entity) {
+        //TODO: process POST request
+        
+        return entity;
+    }
+
+    @DeleteMapping("/user/remove-second-address/{userId}")
+    public String deleteSecondAddress(@RequestBody String entity) {
+        //TODO: process POST request
+        
+        return entity;
+    }
+
+    
+    
 }
