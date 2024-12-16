@@ -6,6 +6,11 @@ import java.util.List;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.Order.Status;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class OrderDTO {
 
     private Long orderId;
@@ -14,9 +19,9 @@ public class OrderDTO {
     private Boolean isPaid;
     private String payment;
     private Status status;
-    private Integer totalAmount;
+    private Integer productQuantity;
     private List<DetailOrder> productList;
-    private Float price;
+    private Float totalAmount;
 
     public OrderDTO() {
 
@@ -32,44 +37,7 @@ public class OrderDTO {
         this.status = order.getStatus();
         this.totalAmount = order.getTotalAmount();
         this.productList = order.getProductList();
-        this.price = order.getPrice();
-
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public LocalDate getOrderDate() {
-        return orderDate;
-    }
-
-    public boolean isPaid() {
-        return isPaid;
-    }
-
-    public String getPayment() {
-        return payment;
-    }
-
-    public Integer getTotalAmount() {
-        return totalAmount;
-    }
-
-    public List<DetailOrder> getProductList() {
-        return productList;
-    }
-
-    public Float getPrice() {
-        return price;
+        this.productQuantity = order.getProductQuantity();
     }
 
 }

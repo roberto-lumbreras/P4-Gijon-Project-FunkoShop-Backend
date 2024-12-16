@@ -50,12 +50,12 @@ public class OrderService {
         Order order = new Order();
         order.setUser(user);
         order.setOrderDate(orderDTO.getOrderDate() != null ? orderDTO.getOrderDate() : LocalDate.now());
-        order.setIsPaid(orderDTO.isPaid());
+        order.setIsPaid(orderDTO.getIsPaid());
         order.setPayment(orderDTO.getPayment());
         order.setStatus(orderDTO.getStatus() != null ? orderDTO.getStatus() : Order.Status.PENDING);
         order.setTotalAmount(orderDTO.getTotalAmount());
         order.setProductList(orderDTO.getProductList());
-        order.setPrice(orderDTO.getPrice());
+        order.setTotalAmount(orderDTO.getTotalAmount());
 
         // Guardar la entidad en la base de datos
         Order savedOrder = orderRepository.save(order);
@@ -120,7 +120,7 @@ public class OrderService {
 
             for (DetailOrder detail : details) {
                 document.add(new Paragraph("Product ID: " + detail.getProduct()));
-                document.add(new Paragraph("Product Quantity: " + detail.getProductQuantity()));
+                document.add(new Paragraph("Product Quantity: " + detail.getQuantity()));
                 document.add(new Paragraph("Price: " + detail.getPrice()));
             }
 
@@ -164,7 +164,7 @@ public class OrderService {
 
             for (DetailOrder detailOrder : order.getProductList()) {
                 Long productId = detailOrder.getProduct().getId();
-                int quantity = detailOrder.getProductQuantity();
+                int quantity = detailOrder.getQuantity();
 
                 productSalesMap.put(productId, productSalesMap.getOrDefault(productId, 0) + quantity);
             }

@@ -49,3 +49,24 @@ CREATE TABLE IF NOT EXISTS products (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_category FOREIGN KEY (category_id) REFERENCES categories(id)
 );
+
+CREATE TABLE IF NOT EXISTS orders (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_date DATE NOT NULL,
+    paid BOOLEAN,
+    payment_method VARCHAR(255) NOT NULL,
+    status VARCHAR(255) NOT NULL,
+    total_amount DECIMAL(10, 2) NOT NULL CHECK (total_amount >= 0),
+    product_quantity INT NOT NULL CHECK (product_quantity>=0),
+    user_id INT,
+    CONSTRAINT fk_orders_users FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS order_details (
+    detail_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    product_id BIGINT NOT NULL,
+    product_quantity INT NOT NULL CHECK (product_quantity >= 0),
+    order_id BIGINT NOT NULL,
+    CONSTRAINT fk_orders_order_details FOREIGN KEY (order_id) REFERENCES orders(id),
+    CONSTRAINT fk_orders_products FOREIGN KEY (product_id) REFERENCES products(id)
+);
