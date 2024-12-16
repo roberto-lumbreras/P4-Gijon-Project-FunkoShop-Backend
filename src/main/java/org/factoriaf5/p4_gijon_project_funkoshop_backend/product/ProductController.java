@@ -10,6 +10,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -90,4 +91,13 @@ public class ProductController {
         Page<ProductDTO> products = productService.fetchNewProducts(pageable);
         return ResponseEntity.ok(products);
     }
+
+    @PatchMapping("/{id}/stock")
+    public ResponseEntity<ProductDTO> updateProductStock(
+        @PathVariable Long id,
+        @RequestParam int quantity) {
+        ProductDTO updatedProduct = productService.updateStock(id, quantity);
+        return ResponseEntity.ok(updatedProduct);
+}
+
 }
