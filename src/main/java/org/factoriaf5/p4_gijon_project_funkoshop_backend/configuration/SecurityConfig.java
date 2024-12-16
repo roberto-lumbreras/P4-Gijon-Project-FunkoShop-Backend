@@ -4,11 +4,7 @@ import javax.sql.DataSource;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.AuthEntryPointJwt;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.AuthTokenFilter;
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.Role;
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.User;
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,26 +36,26 @@ public class SecurityConfig {
     }
 
     private static final String[] WhiteList = {
-                        "/auth/**",
-                        "/api/signup",
-                        "/products/**",
-                        "/categories/**"
+            "/auth/**",
+            "/api/signup",
+            "/products/**",
+            "/categories/**"
     };
+
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(authorizeRequests ->
-                authorizeRequests.requestMatchers(WhiteList).permitAll()
-                        .requestMatchers("/user/**").hasRole("USER")
-                        .requestMatchers("/admin/**").hasRole("ADMIN").anyRequest().authenticated());
-        
+        http.authorizeHttpRequests(authorizeRequests -> authorizeRequests.requestMatchers(WhiteList).permitAll()
+                .requestMatchers("/user/**").hasRole("USER")
+                .requestMatchers("/admin/**").hasRole("ADMIN").anyRequest().authenticated());
+
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        
+
         http.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler));
-        
+
         http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
-        
+
         http.csrf(csrf -> csrf.disable());
-        
+
         http.addFilterBefore(authenticationJwtTokenFilter(),
                 UsernamePasswordAuthenticationFilter.class);
 
@@ -71,29 +67,32 @@ public class SecurityConfig {
         return new JdbcUserDetailsManager(dataSource);
     }
 
-    @Bean
-    public CommandLineRunner initData(UserRepository repository, PasswordEncoder encoder) {
-        return args -> {
-            User user1 = new User();
-            user1.setUsername("user@email.com");
-            user1.setEmail("user@email.com");
-            user1.setPassword(encoder.encode("1234"));
-            user1.setRole(Role.USER);
-            user1.setEnabled(true);
-            repository.save(user1);
+    /*
+     * @Bean
+     * public CommandLineRunner initData(UserRepository repository, PasswordEncoder
+     * encoder) {
+     * return args -> {
+     * User user1 = new User();
+     * user1.setUsername("admin@email.com");
+     * user1.setEmail("admin@email.com");
+     * user1.setPassword(encoder.encode("1234"));
+     * user1.setRole("admin");
+     * user1.setEnabled(true);
+     * repository.save(user1);
+     * 
+     * User user2 = new User();
+     * user2.setUsername("user@email.com");
+     * user2.setEmail("user@email.com");
+     * user2.setPassword(encoder.encode("1234"));
+     * user2.setRole("user");
+     * user2.setEnabled(true);
+     * repository.save(user2);
+     * };
+     * }
+     */
 
-            User user2 = new User();
-            user2.setUsername("admin@email.com");
-            user2.setEmail("admin@email.com");
-            user2.setPassword(encoder.encode("1234"));
-            user2.setRole(Role.ADMIN);
-            user2.setEnabled(true);
-            repository.save(user2);
-        };
-    }
-
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 

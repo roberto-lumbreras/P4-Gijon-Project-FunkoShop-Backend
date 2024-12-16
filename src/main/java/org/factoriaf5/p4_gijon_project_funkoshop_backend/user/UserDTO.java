@@ -7,12 +7,12 @@ public class UserDTO {
     private Long id;
     private String email;
     private String password;
-    private Role role;
+    private String role;
     private String JwToken;
     private List<Long> favorites;
     /* private ProfileDto profile; */
 
-    public UserDTO(Long id, String email, String password, Role role, String JwtToken, List<Long> favorites) {
+    public UserDTO(Long id, String email, String password, String role, String JwtToken, List<Long> favorites) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -45,11 +45,11 @@ public class UserDTO {
         this.password = password;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
     }
 

@@ -35,7 +35,7 @@ public class User {
     private String email;
     private String password;
     private Boolean enabled;
-    private Role role;
+    private String role;
     private String JwToken;
 
     @ManyToMany
