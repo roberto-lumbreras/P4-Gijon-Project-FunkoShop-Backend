@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/products")
@@ -24,16 +26,23 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+@PostMapping
+public ResponseEntity<ProductDTO> addProduct(
+        @RequestPart("product") ProductDTO productDTO,
+        @RequestPart(value = "image1", required = false) MultipartFile image1,
+        @RequestPart(value = "image2", required = false) MultipartFile image2) throws Exception {
 
-    @PostMapping
-    public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO) {
-        ProductDTO createdProduct = productService.createProduct(productDTO);
-        return ResponseEntity.ok(createdProduct);
-    }
+    ProductDTO createdProduct = productService.createProduct(productDTO, image1, image2);
+    return ResponseEntity.ok(createdProduct);
+}
+@PutMapping("/{id}")
+    public ResponseEntity<ProductDTO> updateProduct(
+            @PathVariable Long id,
+            @RequestPart("product") ProductDTO productDTO,
+            @RequestPart(value = "image1", required = false) MultipartFile image1,
+            @RequestPart(value = "image2", required = false) MultipartFile image2) throws Exception {
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
-        ProductDTO updatedProduct = productService.updateProduct(id, productDTO);
+        ProductDTO updatedProduct = productService.updateProduct(id, productDTO, image1, image2);
         return ResponseEntity.ok(updatedProduct);
     }
 

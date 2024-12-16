@@ -42,27 +42,28 @@ public class SecurityConfig {
     private static final String[] WhiteList = {
                         "/auth/**",
                         "/api/signup",
-                        "/products/**",
+                        "/api/**",
+                        "/api/products/**",
                         "/categories/**"
     };
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(authorizeRequests ->
+        http.authorizeHttpRequests(authorizeRequests -> 
                 authorizeRequests.requestMatchers(WhiteList).permitAll()
-                        .requestMatchers("/user/**").hasRole("USER")
-                        .requestMatchers("/admin/**").hasRole("ADMIN").anyRequest().authenticated());
-        
+                .requestMatchers("/user/**").hasRole("USER")
+                .requestMatchers("/admin/**").hasRole("ADMIN").anyRequest().authenticated());
+    
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        
+    
         http.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler));
-        
+    
         http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
-        
+    
         http.csrf(csrf -> csrf.disable());
-        
+    
         http.addFilterBefore(authenticationJwtTokenFilter(),
                 UsernamePasswordAuthenticationFilter.class);
-
+    
         return http.build();
     }
 
@@ -101,5 +102,4 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration builder) throws Exception {
         return builder.getAuthenticationManager();
     }
-
 }
