@@ -49,7 +49,7 @@ public class ProductService {
                 Product savedProduct = productRepository.save(product);
                 return new ProductDTO(savedProduct);
             }
-
+ 
             public ProductDTO updateProduct(Long id, ProductDTO productDTO, MultipartFile image1, MultipartFile image2) throws IOException {
                 Product product = productRepository.findById(id)
                         .orElseThrow(() -> new RuntimeException("Product not found with id " + id));
