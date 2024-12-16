@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Product;
 
+import jakarta.persistence.Column;
 /* import org.factoriaf5.p4_gijon_project_funkoshop_backend.profile.Profile; */
 /*  */
 //import jakarta.persistence.CascadeType;
@@ -38,6 +39,7 @@ public class User {
     private String password;
     private Boolean enabled;
     private Role role;
+    @Column(name = "jw_token")
     private String JwToken;
 
     @ManyToMany
