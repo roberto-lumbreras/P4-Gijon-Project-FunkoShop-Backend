@@ -30,29 +30,45 @@ public class AuthTokenFilter extends OncePerRequestFilter{
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
     @Override
-    protected void doFilterInternal(@SuppressWarnings("null") HttpServletRequest request, @SuppressWarnings("null") HttpServletResponse response, @SuppressWarnings("null") FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-            logger.debug("AuthTokenFilter called for URI: {}", request.getRequestURI());
-            try {
-                String jwt = parseJwt(request);
-                if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                    String email = jwtUtils.getEmailFromJwtToken(jwt);
-
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    logger.debug("Roles from JWT: {}", userDetails.getAuthorities());
-
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                }
-                
-            } catch (Exception e) {
-                logger.error("Cannot set user authentication: {}", e);
-            }
-                filterChain.doFilter(request, response);
+    
+        logger.debug("AuthTokenFilter called for URI: {}", request.getRequestURI());
+        
+        // Comprueba si la ruta es una ruta pública
+        if (request.getRequestURI().startsWith("/api/products") || request.getRequestURI().startsWith("/auth") 
+                || request.getRequestURI().startsWith("/categories")) {
+            logger.debug("Ruta pública detectada: {}", request.getRequestURI());
+            filterChain.doFilter(request, response);
+            return;
         }
+    
+        String jwt = parseJwt(request);
+        logger.debug("JWT token: {}", jwt);
+    
+        if (jwt != null) {
+            try {
+                if (jwtUtils.validateJwtToken(jwt)) {
+                    String email = jwtUtils.getEmailFromJwtToken(jwt);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+    
+                    if (userDetails != null) {
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                        logger.debug("Usuario autenticado con éxito.");
+                    }
+                } else {
+                    logger.error("Token inválido.");
+                }
+            } catch (Exception e) {
+                logger.error("Error en la autenticación: {}", e.getMessage());
+            }
+        }
+    
+        filterChain.doFilter(request, response);
+    }
+    
 
         private String parseJwt(HttpServletRequest request) {
             String jwt = jwtUtils.getJwtFromHeader(request);

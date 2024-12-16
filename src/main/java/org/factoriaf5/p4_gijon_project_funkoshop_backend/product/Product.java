@@ -32,8 +32,8 @@ public class Product {
     private BigDecimal price;
     private Integer stock;
     private Integer discount;
-    private String imageHash;
-    private String imageHash2;
+    private byte[] imageHash;
+    private byte[] imageHash2;
     @ManyToOne
     @JoinColumn(name="category_id")
     private @With Category category;
