@@ -1,6 +1,7 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.details;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.Order;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Product;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,11 +20,11 @@ public class DetailOrder {
     private Long detailId;
 
     @ManyToOne
-    @JoinColumn(name = "product", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name = "order", nullable = false)
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
     @Column(name = "product_quantity", nullable = false)
