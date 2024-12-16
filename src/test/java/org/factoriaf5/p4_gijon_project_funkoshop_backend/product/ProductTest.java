@@ -1,15 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
- */
-
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
 import java.math.BigDecimal;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.Category;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -102,8 +97,8 @@ public class ProductTest {
     public void testGetImageHash() {
         System.out.println("getImageHash");
         Product instance = new Product();
-        String expResult = null;
-        String result = instance.getImageHash();
+        byte[] expResult = null;
+        byte[] result = instance.getImageHash();
         assertEquals(expResult, result);
 
     }
@@ -115,8 +110,8 @@ public class ProductTest {
     public void testGetImageHash2() {
         System.out.println("getImageHash2");
         Product instance = new Product();
-        String expResult = null;
-        String result = instance.getImageHash2();
+        byte[] expResult = null;
+        byte[] result = instance.getImageHash2();
         assertEquals(expResult, result);
 
     }
@@ -212,7 +207,7 @@ public class ProductTest {
     @Test
     public void testSetImageHash() {
         System.out.println("setImageHash");
-        String imageHash = null;
+        byte[] imageHash = null;
         Product instance = new Product();
         instance.setImageHash(imageHash);
 
@@ -224,7 +219,7 @@ public class ProductTest {
     @Test
     public void testSetImageHash2() {
         System.out.println("setImageHash2");
-        String imageHash2 = null;
+        byte[] imageHash2 = null;
         Product instance = new Product();
         instance.setImageHash2(imageHash2);
 
