@@ -73,9 +73,9 @@ public class UserController {
         } catch (IllegalArgumentException error) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error.getMessage());
         } catch (SecurityException error) {
-            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error.getMessage());
         } catch (RuntimeException error) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error.getMessage());
         }
     }
 
@@ -100,7 +100,7 @@ public class UserController {
 
     // Eliminar usuario
     @DeleteMapping("/admin/delete/{userId}")
-    public ResponseEntity<Void> deleteUser(@RequestHeader("Authorization") String authorizationHeader,
+    public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String authorizationHeader,
             @PathVariable Long userId) {
         try {
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
@@ -108,14 +108,58 @@ public class UserController {
             }
 
             userService.deleteUser(authorizationHeader, userId);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.status(HttpStatus.OK).body("User succesfully deleted!");
 
         } catch (IllegalArgumentException error) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error.getMessage());
         } catch (SecurityException error) {
-            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error.getMessage());
         } catch (AccessDeniedException error) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error.getMessage());
         }
     }
+
+    @PostMapping("/user/add-first-address/{userId}")
+    public ResponseEntity<String> addFirstAddress(@RequestHeader("Authorization") String authorizationHeader, @RequestBody String entity) {
+        try {
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+        
+            userService.addFirstAddress(authorizationHeader, entity);
+            return ResponseEntity.status(HttpStatus.OK).body("Address was succesfully saved!");
+        
+        }
+        catch (IllegalArgumentException error) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error.getMessage());
+        } catch (SecurityException error) {
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error.getMessage());
+        } catch (AccessDeniedException error) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error.getMessage());
+        }
+    }
+
+    @PatchMapping("/user/add-second-address/{userId}")
+    public String addSecondAddress(@RequestBody String entity) {
+        //TODO: process POST request
+        
+        return entity;
+    }
+
+    @DeleteMapping("/user/remove-first-address/{userId}")
+    public String deleteFirstAddress(@RequestBody String entity) {
+        //TODO: process POST request
+        
+        return entity;
+    }
+
+    @DeleteMapping("/user/remove-second-address/{userId}")
+    public String deleteSecondAddress(@RequestBody String entity) {
+        //TODO: process POST request
+        
+        return entity;
+    }
+
+    
+    
 }
