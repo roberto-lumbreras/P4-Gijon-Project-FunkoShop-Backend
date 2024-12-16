@@ -1,5 +1,6 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,6 +74,25 @@ public class ProductService {
         Product updatedProduct = productRepository.save(product);
         return new ProductDTO(updatedProduct);
     }
+
+    public ProductDTO applyDiscount(Long id, Integer discount) {
+    Product product = productRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException(
+                    "Product not found by id " + id + ". Status: " + HttpStatus.NOT_FOUND));
+
+    if (discount < 0 || discount > 100) {
+        throw new IllegalArgumentException("The discount must be between 0 and 100.");
+    }
+
+    BigDecimal discountAmount = product.getPrice().multiply(BigDecimal.valueOf(discount)).divide(BigDecimal.valueOf(100));
+    BigDecimal newPrice = product.getPrice().subtract(discountAmount);
+    product.setPrice(newPrice);
+    product.setDiscount(discount);
+
+    Product updatedProduct = productRepository.save(product);
+
+    return new ProductDTO(updatedProduct);
+}
 
     public ProductDTO fetchProductById(Long id) {
         Product product = productRepository.findById(id)

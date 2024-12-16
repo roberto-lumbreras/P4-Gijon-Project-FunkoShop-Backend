@@ -22,7 +22,7 @@ public class ProductDTO{
     private String imageHash;
     private String imageHash2;
     private Long categoryId;
-     private LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     public ProductDTO(Product product){
         this.id=product.getId();
