@@ -8,6 +8,8 @@ import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Product;
 /*  */
 //import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
