@@ -148,13 +148,13 @@ public class ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found by id " + productId));
     
-        int newStock = product.getStock() + quantity;
-        if (newStock < 0) {
+       
+        if (quantity < 0) {
             throw new IllegalArgumentException("Stock cannot be negative. Current stock: " + product.getStock());
         }
     
   
-        product.setStock(newStock);
+        product.setStock(quantity);
   
         Product updatedProduct = productRepository.save(product);
     
