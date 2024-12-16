@@ -6,12 +6,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrderDTO;
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrderRepository;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.Order.Status;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Product;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.ProductDTO;
@@ -20,7 +18,6 @@ import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.Role;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.User;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.lowagie.text.Document;
@@ -36,8 +33,6 @@ public class OrderService {
     private UserRepository userRepository;
     @Autowired
     private OrderRepository orderRepository;
-    @Autowired
-    private DetailOrderRepository detailOrderRepository;
     @Autowired
     private ProductRepository productRepository;
 
@@ -74,7 +69,7 @@ public class OrderService {
         }
     } */
 
-    public Status getStatus(Long orderId) {
+/*     public Status getStatus(Long orderId) {
         String username = getAuthenticatedUsername(); if (username == null) { throw new SecurityException("User is not authenticated."); }
         User user = userRepository.findUserByUsername(username);
             if (user == null) {
@@ -86,7 +81,7 @@ public class OrderService {
             return authentication.getName();  }
         return null;
     }
-
+ */
     @Transactional
     public void updateOrderStatus(Long orderId, Status status) {
         Order order = orderRepository.findById(orderId)
@@ -96,7 +91,7 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    @Autowired
+/*     @Autowired
     @Transactional
     public byte[] generateOrderPDF(Long orderId) {
         Optional<Order> orderOptional = orderRepository.findById(orderId);
@@ -130,7 +125,7 @@ public class OrderService {
         }
 
         return byteArrayOutputStream.toByteArray();
-    }
+    } */
 
     public List<OrderDTO> getAllOrders() {
     List<Order> list = orderRepository.findAll();
@@ -144,11 +139,11 @@ public class OrderService {
 
         LocalDate firstDayOfLastMonth = now.minusMonths(1).withDayOfMonth(1);
         LocalDate lastDayOfLastMonth = now.withDayOfMonth(1).minusDays(1);
-        List<OrderDTO> orderDTO = orderRepository.findAll().stream().filter(order -> {
+        List<OrderDTO> OrderDTO = orderRepository.findAll().stream().filter(order -> {
             LocalDate orderDate = order.getOrderDate();
             return !orderDate.isBefore(firstDayOfLastMonth) && !orderDate.isAfter(lastDayOfLastMonth);
         }).map(order -> new OrderDTO(order)).collect(Collectors.toList());
-        return orderDTO;
+        return OrderDTO;
     }
 
     public List<ProductDTO> getBestSellers() {
@@ -193,7 +188,7 @@ public class OrderService {
         return bestSellers;
     }
 
-    public byte[] generatePDFAllOrders(DetailOrderDTO detailOrderDto) {
+    public byte[] generatePDFAllOrders(DetailOrderDTO detailOrderDTO) {
 
         List<Order> orders = orderRepository.findAll();
 
@@ -243,7 +238,7 @@ public class OrderService {
         }
     }
 
-    /* public void sendEmail(String authorizationHeader, DetailOrderDTO detailOrderDto) {
+    /* public void sendEmail(String authorizationHeader, DetailOrderDTO detailOrderDTO) {
         throw new UnsupportedOperationException("Unimplemented method 'sendEmail'");
     } */
 

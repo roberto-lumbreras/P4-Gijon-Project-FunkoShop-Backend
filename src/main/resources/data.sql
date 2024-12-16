@@ -33,31 +33,31 @@ VALUES
 ('2024-12-03', true, 'Credit Card', 'DELIVERED', 69.98, 2, 2);
 
 -- Inserciones en la tabla order_details
-INSERT INTO order_details (product_id, product_quantity, order_id) 
+INSERT INTO details (product_id, quantity,price, order_id) 
 VALUES
-(1, 1, 1),
-(2, 1, 1),
-(3, 1, 1),
-(4, 1, 2),
-(5, 1, 2),
-(1, 1, 3),
-(2, 1, 4),
-(3, 1, 4),
-(4, 1, 4),
-(6, 1, 4),
-(6, 1, 5),
-(1, 2, 6),
-(2, 1, 6),
-(3, 1, 6),
-(5, 1, 7),
-(6, 1, 7),
-(4, 1, 8),
-(2, 1, 9),
-(3, 2, 9),
-(5, 1, 10),
-(6, 1, 10),
-(5, 1, 11),
-(4, 1, 12),
-(3, 1, 12);
+(1, 1,(select price from products where id=1), 1),
+(2, 1,(select price from products where id=2), 1),
+(3, 1,(select price from products where id=3), 1),
+(4, 1,(select price from products where id=4), 2),
+(5, 1,(select price from products where id=5), 2),
+(1, 1,(select price from products where id=1), 3),
+(2, 1,(select price from products where id=2), 4),
+(3, 1,(select price from products where id=3), 4),
+(4, 1,(select price from products where id=4), 4),
+(6, 1,(select price from products where id=6), 4),
+(6, 1,(select price from products where id=6), 5),
+(1, 2,(select price from products where id=1), 6),
+(2, 1,(select price from products where id=2), 6),
+(3, 1,(select price from products where id=3), 6),
+(5, 1,(select price from products where id=5), 7),
+(6, 1,(select price from products where id=6), 7),
+(4, 1,(select price from products where id=4), 8),
+(2, 1,(select price from products where id=2), 9),
+(3, 2,(select price from products where id=3), 9),
+(5, 1,(select price from products where id=5), 10),
+(6, 1,(select price from products where id=6), 10),
+(5, 1,(select price from products where id=5), 11),
+(4, 1,(select price from products where id=4), 12),
+(3, 1,(select price from products where id=3), 12);
 
 

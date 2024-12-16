@@ -2,6 +2,8 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken;
 
 import java.io.IOException;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class AuthTokenFilter extends OncePerRequestFilter{
+public class AuthTokenFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -27,39 +29,55 @@ public class AuthTokenFilter extends OncePerRequestFilter{
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private DataSource dataSource;
+
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
     @Override
-    protected void doFilterInternal(@SuppressWarnings("null") HttpServletRequest request, @SuppressWarnings("null") HttpServletResponse response, @SuppressWarnings("null") FilterChain filterChain)
+    protected void doFilterInternal(@SuppressWarnings("null") HttpServletRequest request,
+            @SuppressWarnings("null") HttpServletResponse response, @SuppressWarnings("null") FilterChain filterChain)
             throws ServletException, IOException {
-            logger.debug("AuthTokenFilter called for URI: {}", request.getRequestURI());
-            try {
-                String jwt = parseJwt(request);
-                if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                    String email = jwtUtils.getEmailFromJwtToken(jwt);
+        // logger.debug("AuthTokenFilter called for URI: {}", request.getRequestURI());
+        try {
+            String jwt = parseJwt(request);
+            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+                String email = jwtUtils.getEmailFromJwtToken(jwt);
 
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    logger.debug("Roles from JWT: {}", userDetails.getAuthorities());
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
 
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                /*
+                 * logger.debug("Roles from JWT: {}", userDetails.getAuthorities());
+                 * 
+                 * System.out.println(userDetails);
+                 * 
+                 * List<String> roles = userDetails.getAuthorities().stream()
+                 * .map(GrantedAuthority::getAuthority) // Extrae el nombre del rol
+                 * .toList();
+                 * logger.debug("User roles: {}", roles);
+                 * 
+                 * authentication.setDetails(new
+                 * WebAuthenticationDetailsSource().buildDetails(request));
+                 * 
+                 * SecurityContextHolder.getContext().setAuthentication(authentication);
+                 */
 
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                }
-                
-            } catch (Exception e) {
-                logger.error("Cannot set user authentication: {}", e);
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-                filterChain.doFilter(request, response);
-        }
 
-        private String parseJwt(HttpServletRequest request) {
-            String jwt = jwtUtils.getJwtFromHeader(request);
-            logger.debug("AuthTokenFilter.java: {}", jwt);
-            return jwt;
+        } catch (Exception e) {
+            logger.error("Cannot set user authentication: {}", e);
         }
-    
+        filterChain.doFilter(request, response);
+    }
+
+    private String parseJwt(HttpServletRequest request) {
+        String jwt = jwtUtils.getJwtFromHeader(request);
+        logger.debug("AuthTokenFilter.java: {}", jwt);
+        return jwt;
+    }
+
 }
-
-
