@@ -33,8 +33,7 @@ public class JwtUtils {
     }
 
     @SuppressWarnings("deprecation")
-    public String generateTokenFromEmail(UserDetails userDetails) {
-        String email = userDetails.getUsername();
+    public String generateTokenFromEmail(String email) {
         return Jwts.builder()
                 .subject(email)
                 .issuedAt(new Date())
