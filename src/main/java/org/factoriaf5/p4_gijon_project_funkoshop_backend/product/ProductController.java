@@ -98,4 +98,13 @@ public class ProductController {
         return ResponseEntity.ok(products);
 
     }
+
+    @PatchMapping("/{id}/stock")
+    public ResponseEntity<ProductDTO> updateProductStock(
+        @PathVariable Long id,
+        @RequestParam int quantity) {
+        ProductDTO updatedProduct = productService.updateStock(id, quantity);
+        return ResponseEntity.ok(updatedProduct);
+}
+
 }

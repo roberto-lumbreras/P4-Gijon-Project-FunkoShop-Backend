@@ -163,4 +163,22 @@ public class ProductService {
 
     }
 
+    public ProductDTO updateStock(Long productId, int quantity) {
+  
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found by id " + productId));
+    
+       
+        if (quantity < 0) {
+            throw new IllegalArgumentException("Stock cannot be negative. Current stock: " + product.getStock());
+        }
+    
+  
+        product.setStock(quantity);
+  
+        Product updatedProduct = productRepository.save(product);
+    
+        return new ProductDTO(updatedProduct);
+    }
+    
 }
