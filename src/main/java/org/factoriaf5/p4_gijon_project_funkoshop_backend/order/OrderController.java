@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/orders") // ENDPOINT VISTO EN EL FRONTEND DEL FUNKO
@@ -64,22 +65,22 @@ public class OrderController {
     // ENDPOINT BACKEND - sin implementation en el frontend actual
     //@PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{orderId}")
-    public ResponseEntity<Map<String, String>> updateStatus(@PathVariable Long orderId, @RequestBody Status status) {
+    public ResponseEntity<Map<String, String>> updateStatus(@PathVariable Long orderId, @RequestParam Status status) {
         orderService.updateOrderStatus(orderId, status);
         Map<String, String> response = Map.of("message\n", "Order status updated successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // ENDPOINT BACKEND - sin implementation en el frontend actual
-/*     @PreAuthorize("hasRole('USER')")
+/*     @PreAuthorize("hasRole('USER')")*/
     @GetMapping("/order/pdf/{orderId}")
-    public ResponseEntity<byte[]> generateOrderPDF(@PathVariable Long orderId) {
-            byte[] pdfData = orderService.generateOrderPDF(orderId);
+    public ResponseEntity<byte[]> generateOrderPDFId(@PathVariable Long orderId) {
+            byte[] pdfData = orderService.generateOrderPDFId(orderId);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
             headers.setContentDisposition(ContentDisposition.inline().filename("order_" + orderId + ".pdf").build());
-            return Respons eEntity.ok().headers(headers).body(pdfData);
-    } */
+            return ResponseEntity.ok().headers(headers).body(pdfData);
+    }
 
     // ENDPOINT FRONTEND
     //@PreAuthorize("hasRole('ADMIN')")
@@ -98,13 +99,23 @@ public class OrderController {
 
     //@PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/details/pdf")
-    public ResponseEntity<byte[]> generateOrderPDF(DetailOrderDTO detailOrderDTO) {
-            byte[] pdfData = orderService.generatePDFAllOrders(detailOrderDTO);
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.setContentDisposition(ContentDisposition.inline().filename("detailorder_" + detailOrderDTO + ".pdf").build());
-            return ResponseEntity.ok().headers(headers).body(pdfData);
+    public ResponseEntity<byte[]> generateOrderPDF() {
+        byte[] pdfData = orderService.generatePDFAllOrders();
+        
+        if (pdfData.length == 0) {
+            throw new IllegalStateException("Generated PDF is empty.");
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.inline().filename("detailorder.pdf").build());
+
+        // Log to verify the PDF is generated
+        System.out.println("PDF generated successfully. Size: " + pdfData.length + " bytes");
+
+        return ResponseEntity.ok().headers(headers).body(pdfData);
     }
+
 
     /* @PreAuthorize("hasRole('USER')")
     @GetMapping("/details/email")

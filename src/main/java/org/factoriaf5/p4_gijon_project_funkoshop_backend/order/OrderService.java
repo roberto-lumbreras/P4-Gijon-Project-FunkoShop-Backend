@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrderDTO;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrderRepository;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.Order.Status;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Product;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.ProductDTO;
@@ -35,6 +37,8 @@ public class OrderService {
     private OrderRepository orderRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private DetailOrderRepository detailOrderRepository;
 
     public OrderDTO createOrder(OrderDTO orderDTO) {
         // Validar y obtener el usuario desde el repositorio
@@ -50,7 +54,7 @@ public class OrderService {
         order.setStatus(orderDTO.getStatus() != null ? orderDTO.getStatus() : Order.Status.PENDING);
         order.setTotalAmount(orderDTO.getTotalAmount());
         order.setProductList(orderDTO.getProductList());
-        order.setTotalAmount(orderDTO.getTotalAmount());
+        order.setProductQuantity(orderDTO.getProductQuantity());
 
         // Guardar la entidad en la base de datos
         Order savedOrder = orderRepository.save(order);
@@ -91,9 +95,8 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-/*     @Autowired
     @Transactional
-    public byte[] generateOrderPDF(Long orderId) {
+    public byte[] generateOrderPDFId(Long orderId) {
         Optional<Order> orderOptional = orderRepository.findById(orderId);
         if (orderOptional.isEmpty()) {
             throw new IllegalArgumentException("Order not found");
@@ -101,7 +104,6 @@ public class OrderService {
 
         Order order = orderOptional.get();
         List<DetailOrder> details = detailOrderRepository.findByOrderId(order.getOrderId());
-
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
             Document document = new Document();
@@ -125,7 +127,7 @@ public class OrderService {
         }
 
         return byteArrayOutputStream.toByteArray();
-    } */
+    }
 
     public List<OrderDTO> getAllOrders() {
     List<Order> list = orderRepository.findAll();
@@ -188,33 +190,35 @@ public class OrderService {
         return bestSellers;
     }
 
-    public byte[] generatePDFAllOrders(DetailOrderDTO detailOrderDTO) {
-
+    public byte[] generatePDFAllOrders() {
         List<Order> orders = orderRepository.findAll();
-
+        
+        if (orders.isEmpty()) {
+            throw new IllegalArgumentException("No orders found in the database.");
+        }
+    
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
-
             Document document = new Document();
             PdfWriter.getInstance(document, byteArrayOutputStream);
             document.open();
-
+    
             for (Order order : orders) {
-
                 document.add(new Paragraph("Order Invoice"));
                 document.add(new Paragraph("Order ID: " + order.getOrderId()));
                 document.add(new Paragraph("Order Status: " + order.getStatus()));
                 document.add(new Paragraph("Order Details:" + order.toString()));
-
+                
+                // Log the order to verify data
+                System.out.println("Adding order to PDF: " + order);
             }
             document.close();
-
+    
         } catch (Exception e) {
             throw new IllegalArgumentException("Error generating PDF: " + e.getMessage());
         }
-
+    
         return byteArrayOutputStream.toByteArray();
-
     }
 
     @SuppressWarnings("ConvertToStringSwitch")
