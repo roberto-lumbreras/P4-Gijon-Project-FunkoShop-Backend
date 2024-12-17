@@ -4,6 +4,8 @@ import javax.sql.DataSource;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.AuthEntryPointJwt;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.AuthTokenFilter;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.Authority;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.AuthorityRepository;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.Role;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.User;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.UserRepository;
@@ -33,6 +35,9 @@ public class SecurityConfig {
 
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
+
+    @Autowired
+    private AuthorityRepository authorityRepository;
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
@@ -72,7 +77,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CommandLineRunner initData(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public CommandLineRunner initData(UserRepository userRepository, PasswordEncoder passwordEncoder,
+            AuthorityRepository authorityRepository) {
         return args -> {
             if (!userRepository.findByEmail("admin@email.com").isPresent()) {
                 User admin = new User();
@@ -82,6 +88,13 @@ public class SecurityConfig {
                 admin.setRole(Role.ROLE_ADMIN);
                 admin.setEnabled(true);
                 userRepository.save(admin);
+
+                Authority authorityAdmin = new Authority();
+
+                authorityAdmin.setUsername(admin.getEmail());
+                authorityAdmin.setAuthority(Role.ROLE_ADMIN);
+
+                authorityRepository.save(authorityAdmin);
             }
 
             if (!userRepository.findByEmail("user@email.com").isPresent()) {
@@ -92,6 +105,13 @@ public class SecurityConfig {
                 user.setRole(Role.ROLE_USER);
                 user.setEnabled(true);
                 userRepository.save(user);
+
+                Authority authorityUser = new Authority();
+
+                authorityUser.setUsername(user.getEmail());
+                authorityUser.setAuthority(Role.ROLE_USER);
+
+                authorityRepository.save(authorityUser);
             }
         };
     }
