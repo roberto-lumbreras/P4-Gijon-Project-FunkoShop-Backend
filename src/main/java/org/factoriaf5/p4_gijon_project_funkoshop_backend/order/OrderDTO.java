@@ -39,5 +39,4 @@ public class OrderDTO {
         this.productList = order.getProductList();
         this.productQuantity = order.getProductQuantity();
     }
-
 }
