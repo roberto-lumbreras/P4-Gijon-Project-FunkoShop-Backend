@@ -45,19 +45,19 @@ public class User {
     @JoinTable(name = "user_favorites", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> favorites;
 
-    // @Column(name = "first_name")
-    // private String firstName;
-    // @Column(name = "last_name")
-    // private String lastName;
-    // @Column(name = "first_address")
-    // private String firstAddress;
-    // @Column(name = "second_address")
-    // private String secondAddress;
-    // @Column(name = "shipping_address")
-    // private String shippingAddress;
-    // @Column(name = "suscribed")
-    // private Boolean suscribed = false;
-    // @Column(name = "phoneNumber")
-    // private String phoneNumber;
+    @Column(name = "first_name")
+    private String firstName;
+    @Column(name = "last_name")
+    private String lastName;
+    @Column(name = "first_address")
+    private String firstAddress;
+    @Column(name = "second_address")
+    private String secondAddress;
+    @Column(name = "shipping_address")
+    private String shippingAddress;
+    @Column(name = "suscribed")
+    private Boolean suscribed;
+    @Column(name = "phoneNumber")
+    private String phoneNumber;
 
 }
