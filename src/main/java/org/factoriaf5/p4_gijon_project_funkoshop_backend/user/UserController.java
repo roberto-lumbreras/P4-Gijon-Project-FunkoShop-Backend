@@ -25,22 +25,17 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Crear un nuevo usuario
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody User user) {
         try {
-            // Llamar al servicio para crear el usuario
             userService.addUser(user);
 
-            // Respuesta exitosa
             return ResponseEntity.ok("Te has registrado correctamente");
         } catch (RuntimeException e) {
-            // Si el email ya está en uso, el servicio lanzará una excepción
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    // Obtener todos los usuarios
     @GetMapping(path = "/admin/get-users")
     public ResponseEntity<List<User>> getUsers(@RequestHeader("Authorization") String authorizationHeader) {
         try {
@@ -59,7 +54,6 @@ public class UserController {
         }
     }
 
-    // Obtener usuario por ID
     @GetMapping(path = "/user/{userId}")
     public ResponseEntity<?> getUserById(@RequestHeader("Authorization") String authorizationHeader,
             @PathVariable Long userId) {
@@ -79,7 +73,6 @@ public class UserController {
         }
     }
 
-    // Cambiar contraseña
     @PatchMapping("/user/change-password/{userId}")
     public ResponseEntity<User> changePassword(@RequestHeader("Authorization") String authorizationHeader,
             @PathVariable Long userId, @RequestBody User userDetails) {
@@ -98,7 +91,6 @@ public class UserController {
         }
     }
 
-    // Eliminar usuario
     @DeleteMapping("/admin/delete/{userId}")
     public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String authorizationHeader,
             @PathVariable Long userId) {
@@ -155,20 +147,26 @@ public class UserController {
 
     
 
-    // @DeleteMapping("/user/remove-first-address/{userId}")
-    // public String deleteFirstAddress(@RequestBody String entity) {
-    //     //TODO: process POST request
-        
-    //     return entity;
-    // }
 
-    // @DeleteMapping("/user/remove-second-address/{userId}")
-    // public String deleteSecondAddress(@RequestBody String entity) {
-    //     //TODO: process POST request
-        
-    //     return entity;
-    // }
 
+   /* @DeleteMapping("/user/remove-second-address/{userId}")
+    public ResponseEntity<?> deleteSecondAddress(@RequestHeader("Authorization") String authorizationHeader,
+        @PathVariable Long userId) {
+        try {
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+    
+            userService.removeSecondAddress(authorizationHeader, userId);
+    
+            return ResponseEntity.ok("Segunda dirección eliminada con éxito.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (SecurityException e) {
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(e.getMessage());
+    
+        }
+    }*/
     
     
 }
