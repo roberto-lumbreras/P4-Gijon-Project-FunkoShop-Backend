@@ -1,8 +1,7 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.auth;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 
 public class AuthRequestTest {
@@ -24,7 +23,7 @@ public class AuthRequestTest {
     public void testSetEmail() {
         AuthRequest authRequest = new AuthRequest();
         authRequest.setEmail("test@example.com");
-        assertEquals("test@example.com", authRequest.email);
+        assertEquals("test@example.com", authRequest.getEmail());
     }
 
     @Test
@@ -38,7 +37,7 @@ public class AuthRequestTest {
     public void testSetPassword() {
         AuthRequest authRequest = new AuthRequest();
         authRequest.setPassword("password123");
-        assertEquals("password123", authRequest.password);
+        assertEquals("password123", authRequest.getPassword());
     }
 
     @Test
