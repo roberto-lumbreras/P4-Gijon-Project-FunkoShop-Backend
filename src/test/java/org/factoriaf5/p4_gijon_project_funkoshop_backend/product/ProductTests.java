@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author CODER F5 ASTURIAS
  */
-public class ProductTest {
+public class ProductTests {
 
     /**
      * Test of getId method, of class Product.
