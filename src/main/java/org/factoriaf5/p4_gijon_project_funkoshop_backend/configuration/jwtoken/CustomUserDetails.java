@@ -1,12 +1,13 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken;
 
+import java.util.Collection;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import java.util.Collection;
 
 public class CustomUserDetails implements UserDetails {
 
-    private String email; // Nuevo campo
+    private String email; 
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
@@ -18,11 +19,11 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email; // Aquí hacemos que el email sea el identificador único
+        return email; 
     }
 
     public String getEmail() {
-        return email; // Agregamos un getter para obtener el email
+        return email; 
     }
 
     @Override

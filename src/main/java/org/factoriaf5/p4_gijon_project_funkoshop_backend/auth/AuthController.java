@@ -21,17 +21,14 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
         try {
-            // Llama al servicio de login
             String token = loginService.login(authRequest);
 
-            // Respuesta exitosa
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Login exitoso");
             response.put("token", token);
 
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            // Manejo de errores
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
