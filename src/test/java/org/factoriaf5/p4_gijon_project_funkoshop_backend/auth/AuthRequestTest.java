@@ -66,4 +66,30 @@ public class AuthRequestTest {
         authRequest.setPassword("");
         assertEquals("", authRequest.getPassword());
     }
+
+    @Test
+    public void testGetEmailReturnsNullWhenEmailIsNotSet() {
+        AuthRequest request = new AuthRequest();
+        request.setEmail("test@example.com");
+        String email = request.getEmail();
+        assertEquals("test@example.com", email);
+    }
+
+    @Test
+    public void testGetEmailReturnsEmptyStringWhenEmailIsEmpty() {
+        AuthRequest request = new AuthRequest();
+        String email = request.getEmail();
+        assertNull(email);
+    }
+
+    @Test
+    public void testGetEmailReturnsNullWhenEmailIsSetToNull() {
+        AuthRequest request = new AuthRequest();
+        request.setEmail(null);
+        String email = request.getEmail();
+        assertNull(email);
+    }
+
+
+
 }

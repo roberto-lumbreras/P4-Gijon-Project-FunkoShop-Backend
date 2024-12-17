@@ -2,8 +2,8 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.auth;
 
 public class AuthRequest {
     
-    private String email;
-    private String password;
+    String email;
+    String password;
 
     public String getEmail() {
         return email;
