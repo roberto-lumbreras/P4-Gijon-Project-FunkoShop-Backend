@@ -145,11 +145,8 @@ public class UserController {
         }
     }
 
-    
 
-
-
-   /* @DeleteMapping("/user/remove-second-address/{userId}")
+    @DeleteMapping("/user/remove-second-address/{userId}")
     public ResponseEntity<?> deleteSecondAddress(@RequestHeader("Authorization") String authorizationHeader,
         @PathVariable Long userId) {
         try {
@@ -166,7 +163,23 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(e.getMessage());
     
         }
-    }*/
+    }
+
+    @PatchMapping("/user/change-shipping-address/{userId}")
+    public ResponseEntity<User> changeShippingAddress(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long userId, @RequestBody User user) {
+        try {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        Boolean newShippingAddress = user.getShippingAddress();
+        User updatedUser = userService.changeShippingAddress(authorizationHeader, userId, newShippingAddress);
+        return ResponseEntity.ok(updatedUser);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (SecurityException error) {
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+        }
+    }
     
     
 }

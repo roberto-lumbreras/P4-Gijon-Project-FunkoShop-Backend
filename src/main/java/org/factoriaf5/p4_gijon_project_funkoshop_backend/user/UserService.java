@@ -165,6 +165,42 @@ public class UserService {
         return userRepository.save(userToUpdate);
     }
 
+    public void removeSecondAddress(String authorizationHeader, Long userId) {
+        String token = authorizationHeader.substring(7);
+        String emailFromToken = jwtUtils.getEmailFromJwtToken(token);
+    
+        User userRequest = userRepository.findByEmail(emailFromToken)
+                .orElseThrow(() -> new IllegalArgumentException("User request not found"));
+    
+        if (!userRequest.getJwToken().equals(token)) {
+            throw new SecurityException("User request token don't match with user's BDD token");
+        }
+    
+        User userToUpdate = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User to find on BD not found"));
+    
+        if (userToUpdate.getSecondAddress() == null) {
+            throw new IllegalArgumentException("The user has no second address to remove");
+        }
+    
+        userToUpdate.setSecondAddress(null);
+        userRepository.save(userToUpdate);
+    }
+
+    public User changeShippingAddress(String authorizationHeader, Long userId, Boolean shippingAddress) {
+        String token = authorizationHeader.substring(7);
+        String emailFromToken = jwtUtils.getEmailFromJwtToken(token);
+        User userRequest = userRepository.findByEmail(emailFromToken)
+                .orElseThrow(() -> new IllegalArgumentException("User request not found"));
+        if (!userRequest.getJwToken().equals(token)) {
+            throw new SecurityException("User request token don't match with user's BDD token");
+        }
+        User userToUpdate = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User to find on BD not found"));
+        userToUpdate.setShippingAddress(shippingAddress);
+        return userRepository.save(userToUpdate);
+    }
+
 
 
 

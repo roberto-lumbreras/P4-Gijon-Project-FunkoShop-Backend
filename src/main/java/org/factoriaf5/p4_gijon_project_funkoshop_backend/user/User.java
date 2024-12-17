@@ -14,7 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -54,7 +53,7 @@ public class User {
     @Column(name = "second_address")
     private String secondAddress;
     @Column(name = "shipping_address")
-    private String shippingAddress;
+    private Boolean shippingAddress;
     @Column(name = "suscribed")
     private Boolean suscribed;
     @Column(name = "phoneNumber")
