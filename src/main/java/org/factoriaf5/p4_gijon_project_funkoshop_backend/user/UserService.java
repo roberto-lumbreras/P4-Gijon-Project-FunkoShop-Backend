@@ -71,7 +71,7 @@ public class UserService {
         // Asignar automáticamente el email como username
         user.setUsername(user.getEmail());
         user.setEmail(user.getEmail());
-        user.setEnabled(true);
+        user.setEnabled(false);
 
         // Codificar la contraseña
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -91,6 +91,31 @@ public class UserService {
         return savedUser;
     }
 
+    // Activar usuario por ID
+    public Boolean activeUserById(String authorizationHeader, Long userId) throws AccessDeniedException {
+        String token = authorizationHeader.substring(7);
+        String emailFromToken = jwtUtils.getEmailFromJwtToken(token);
+
+        User userRequest = userRepository.findByEmail(emailFromToken)
+                .orElseThrow(() -> new IllegalArgumentException("User request not found"));
+
+        if (!userRequest.getJwToken().equals(token)) {
+            throw new SecurityException("User request token don't match with user's BDD token");
+        }
+
+        if (!userRequest.getRole().equals(Role.ROLE_ADMIN)) {
+            throw new AccessDeniedException("Access DENIED. User not authorizated, only ADMIN");
+        }
+
+        User userToActive = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User to active not found with ID: " + userId));
+
+        userToActive.setEnabled(!userToActive.getEnabled());
+        userRepository.save(userToActive);
+
+        return userToActive.getEnabled();
+    }
+
     // Eliminar usuario por ID
     public void deleteUser(String authorizationHeader, Long userId) throws AccessDeniedException {
         String token = authorizationHeader.substring(7);
@@ -108,7 +133,7 @@ public class UserService {
         }
 
         userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User to delete no found with ID: " + userId));
+                .orElseThrow(() -> new RuntimeException("User to delete not found with ID: " + userId));
 
         userRepository.deleteById(userId);
     }

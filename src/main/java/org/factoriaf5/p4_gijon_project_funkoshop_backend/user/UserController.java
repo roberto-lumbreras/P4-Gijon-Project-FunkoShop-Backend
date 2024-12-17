@@ -2,6 +2,7 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.user;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,6 +57,36 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
         } catch (AccessDeniedException error) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
+
+    // Activar usuario
+    @PatchMapping("/admin/active/{userId}")
+    public ResponseEntity<Map<String, String>> activeUser(@RequestHeader("Authorization") String authorizationHeader,
+            @PathVariable Long userId) {
+        try {
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            boolean isActive = userService.activeUserById(authorizationHeader, userId);
+
+            if (isActive) {
+                Map<String, String> response = Map.of("Usuario activo: ", "true");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            Map<String, String> response = Map.of("Usuario activo: ", "false");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IllegalArgumentException error) {
+            Map<String, String> errorResponse = Map.of("message", error.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        } catch (AccessDeniedException error) {
+            Map<String, String> errorResponse = Map.of("message", error.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+        } catch (SecurityException error) {
+            Map<String, String> errorResponse = Map.of("message", error.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.METHOD_NOT_ALLOWED);
         }
     }
 
