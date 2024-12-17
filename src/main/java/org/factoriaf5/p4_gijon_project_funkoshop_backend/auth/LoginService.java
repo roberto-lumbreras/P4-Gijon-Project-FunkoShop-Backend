@@ -31,4 +31,18 @@ public class LoginService {
         return jwt;
     }
 
+    public void setJwtUtils(JwtUtils jwtUtils) {
+        this.jwtUtils = jwtUtils;
+    }
+
+    public void setRepository(UserRepository repository) {
+        this.repository = repository;
+    }
+
+    public void setEncoder(PasswordEncoder encoder) {
+        this.encoder = encoder;
+    }
+
 }
+
+
