@@ -6,8 +6,6 @@ import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Product;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -53,6 +51,7 @@ public class User {
     private String secondAddress;
     @Column(name = "shipping_address")
     private String shippingAddress;
+    @Builder.Default
     @Column(name = "suscribed")
     private Boolean suscribed = false;
     @Column(name = "phoneNumber")
