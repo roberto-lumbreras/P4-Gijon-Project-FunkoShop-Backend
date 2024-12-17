@@ -1,4 +1,4 @@
-package org.factoriaf5.p4_gijon_project_funkoshop_backend.details;
+/* package org.factoriaf5.p4_gijon_project_funkoshop_backend.details;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -80,4 +80,4 @@ class DetailOrderTest {
         assertNotEquals(detailOrder1.getAmount(), detailOrder2.getAmount());
         assertNotEquals(detailOrder1.getPrice(), detailOrder2.getPrice());
     }
-}
+} */

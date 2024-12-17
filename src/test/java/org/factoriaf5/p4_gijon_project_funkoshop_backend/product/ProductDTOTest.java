@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
- */
-
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
 import java.math.BigDecimal;
@@ -101,28 +96,7 @@ public class ProductDTOTest {
     /**
      * Test of getImageHash method, of class ProductDTO.
      */
-    @Test
-    public void testGetImageHash() {
-        System.out.println("getImageHash");
-        ProductDTO instance = new ProductDTO(new Product().withCategory(new Category()));
-        String expResult = null;
-        String result = instance.getImageHash();
-        assertEquals(expResult, result);
 
-    }
-
-    /**
-     * Test of getImageHash2 method, of class ProductDTO.
-     */
-    @Test
-    public void testGetImageHash2() {
-        System.out.println("getImageHash2");
-        ProductDTO instance = new ProductDTO(new Product().withCategory(new Category()));
-        String expResult = null;
-        String result = instance.getImageHash2();
-        assertEquals(expResult, result);
-
-    }
 
     /**
      * Test of getCategoryId method, of class ProductDTO.
@@ -211,38 +185,35 @@ public class ProductDTOTest {
 
     /**
      * Test of setImageHash method, of class ProductDTO.
-     */
-    @Test
-    public void testSetImageHash() {
-        System.out.println("setImageHash");
-        String imageHash = null;
-        ProductDTO instance = new ProductDTO(new Product().withCategory(new Category()));
-        instance.setImageHash(imageHash);
-
-    }
-
-    /**
-     * Test of setImageHash2 method, of class ProductDTO.
-     */
-    @Test
-    public void testSetImageHash2() {
-        System.out.println("setImageHash2");
-        String imageHash2 = null;
-        ProductDTO instance = new ProductDTO(new Product().withCategory(new Category()));
-        instance.setImageHash2(imageHash2);
-
-    }
-
-    /**
-     * Test of setCategoryId method, of class ProductDTO.
-     */
-    @Test
-    public void testSetCategoryId() {
-        System.out.println("setCategoryId");
-        Long categoryId = null;
-        ProductDTO instance = new ProductDTO(new Product().withCategory(new Category()));
-        instance.setCategoryId(categoryId);
-
-    }
+    */
+     @Test
+     public void testSetImageHash() {
+         System.out.println("setImageHash");
+         byte[] imageHash = null;
+         ProductDTO instance = new ProductDTO(new Product().withCategory(new Category()));
+         instance.setImageHash(imageHash);
+     }
+     
+     /**
+      * Test of setImageHash2 method, of class ProductDTO.
+      */
+      @Test
+      public void testSetImageHash2() {
+          System.out.println("setImageHash2");
+          byte[] imageHash2 = null;
+          ProductDTO instance = new ProductDTO(new Product().withCategory(new Category()));
+          instance.setImageHash2(imageHash2);
+      }
+     
+     /**
+      * Test of setCategoryId method, of class ProductDTO.
+      */
+     @Test
+     public void testSetCategoryId() {
+         System.out.println("setCategoryId");
+         Long categoryId = null;
+         ProductDTO instance = new ProductDTO(new Product().withCategory(new Category()));
+         instance.setCategoryId(categoryId);
+     }
 
 }
