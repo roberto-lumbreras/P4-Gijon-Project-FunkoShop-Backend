@@ -19,9 +19,9 @@ import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfWriter;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import jakarta.transaction.Transactional;
 
@@ -90,39 +90,40 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-/*     @Transactional
+    @Transactional
     public byte[] generateOrderPDFId(Long orderId) {
-        Optional<Order> orderOptional = orderRepository.findById(orderId);
-        if (orderOptional.isEmpty()) {
-            throw new IllegalArgumentException("Order not found");
-        }
+        // Buscar la orden por ID
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + orderId));
 
-        Order order = orderOptional.get();
-        List<DetailOrder> details = detailOrderRepository.findByOrderId(order.getOrderId());
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
             Document document = new Document();
             PdfWriter.getInstance(document, byteArrayOutputStream);
             document.open();
 
+            // Agregar datos de la orden
             document.add(new Paragraph("Order Invoice"));
             document.add(new Paragraph("Order ID: " + order.getOrderId()));
             document.add(new Paragraph("Order Status: " + order.getStatus()));
-            document.add(new Paragraph("Order Details:"));
+            document.add(new Paragraph("Order Date: " + order.getOrderDate()));
+            document.add(new Paragraph("Total Amount: " + order.getTotalAmount()));
 
-            for (DetailOrder detail : details) {
-                document.add(new Paragraph("Product ID: " + detail.getProduct()));
-                document.add(new Paragraph("Product Quantity: " + detail.getQuantity()));
-                document.add(new Paragraph("Price: " + detail.getPrice()));
+            // Agregar detalles del pedido
+            document.add(new Paragraph("Order Details:"));
+            for (DetailOrder detail : order.getProductList()) {
+                document.add(new Paragraph("- Product: " + detail.getProduct().getName()));
+                document.add(new Paragraph("  Quantity: " + detail.getQuantity()));
+                document.add(new Paragraph("  Price: " + detail.getPrice()));
             }
 
             document.close();
         } catch (Exception e) {
-            throw new IllegalArgumentException("Error generating PDF: " + e.getMessage());
+            throw new RuntimeException("Error generating PDF for order ID: " + orderId, e);
         }
 
         return byteArrayOutputStream.toByteArray();
-    } */
+    }
 
     public List<OrderDTO> getAllOrders() {
     List<Order> list = orderRepository.findAll();
@@ -187,7 +188,7 @@ public class OrderService {
 
     public byte[] generatePDFAllOrders() {
         List<Order> orders = orderRepository.findAll();
-        
+    
         if (orders.isEmpty()) {
             throw new IllegalArgumentException("No orders found in the database.");
         }
@@ -202,19 +203,28 @@ public class OrderService {
                 document.add(new Paragraph("Order Invoice"));
                 document.add(new Paragraph("Order ID: " + order.getOrderId()));
                 document.add(new Paragraph("Order Status: " + order.getStatus()));
-                document.add(new Paragraph("Order Details:" + order.toString()));
-                
-                // Log the order to verify data
-                System.out.println("Adding order to PDF: " + order);
-            }
-            document.close();
+                document.add(new Paragraph("Order Date: " + order.getOrderDate()));
+                document.add(new Paragraph("Total Amount: " + order.getTotalAmount()));
+                document.add(new Paragraph("Order Details:"));
     
+                // Agregar los detalles de la orden
+                for (DetailOrder detail : order.getProductList()) {
+                    document.add(new Paragraph("- Product: " + detail.getProduct().getName()));
+                    document.add(new Paragraph("  Quantity: " + detail.getQuantity()));
+                    document.add(new Paragraph("  Price: " + detail.getPrice()));
+                }
+    
+                document.add(new Paragraph("\n")); // Espacio entre órdenes
+            }
+    
+            document.close();
         } catch (Exception e) {
             throw new IllegalArgumentException("Error generating PDF: " + e.getMessage());
         }
     
         return byteArrayOutputStream.toByteArray();
     }
+    
 
     @SuppressWarnings("ConvertToStringSwitch")
     public List<OrderDTO> listOrdersByUser(User authenticatedUser) {

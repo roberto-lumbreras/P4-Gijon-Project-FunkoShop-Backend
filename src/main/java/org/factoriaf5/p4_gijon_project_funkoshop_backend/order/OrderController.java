@@ -72,14 +72,14 @@ public class OrderController {
 
     // ENDPOINT BACKEND - sin implementation en el frontend actual
 /*     @PreAuthorize("hasRole('USER')")*/
-/*     @GetMapping("/order/pdf/{orderId}")
+    @GetMapping("/order/pdf/{orderId}")
     public ResponseEntity<byte[]> generateOrderPDFId(@PathVariable Long orderId) {
             byte[] pdfData = orderService.generateOrderPDFId(orderId);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
             headers.setContentDisposition(ContentDisposition.inline().filename("order_" + orderId + ".pdf").build());
             return ResponseEntity.ok().headers(headers).body(pdfData);
-    } */
+    }
 
     // ENDPOINT FRONTEND
     //@PreAuthorize("hasRole('ADMIN')")
