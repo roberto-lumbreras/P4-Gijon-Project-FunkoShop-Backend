@@ -20,18 +20,19 @@ public class LoginService {
     private PasswordEncoder encoder;
 
     public String login(AuthRequest request) {
-        //busca el email en la base de datos y comprueba que existe
-        User user = repository.findByEmail(request.getEmail()).orElseThrow(()-> new RuntimeException("User not found"));
-        //comprueba la contraseña
-        if(!encoder.matches(request.getPassword(), user.getPassword())) {
+        // busca el email en la base de datos y comprueba que existe
+        User user = repository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        // comprueba la contraseña
+        if (!encoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
-        //genera el token
+        // genera el token
         String jwt = jwtUtils.generateTokenFromEmail(user.getEmail());
-        //mete el token en la base de datos 
+        // mete el token en la base de datos
         user.setJwToken(jwt);
         repository.save(user);
-        //retorna el token
+        // retorna el token
         return jwt;
     }
 

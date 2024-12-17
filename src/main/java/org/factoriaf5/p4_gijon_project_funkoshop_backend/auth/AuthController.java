@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
-@RequestMapping ("/auth")
+@RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
@@ -37,6 +36,5 @@ public class AuthController {
             errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
-    }        
+    }
 }
-

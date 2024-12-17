@@ -1,5 +1,6 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -43,7 +44,7 @@ public class ProductServiceTest {
     }
 
     @Test
-    void testCreateProduct_WhenCategoryExists() {
+    void testCreateProduct_WhenCategoryExists() throws IOException {
 
         Category category = new Category();
         category.setId(1L);
@@ -60,7 +61,7 @@ public class ProductServiceTest {
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
         when(productRepository.save(any(Product.class))).thenReturn(savedProduct);
 
-        ProductDTO resulDto = productService.createProduct(productDTO);
+        ProductDTO resulDto = productService.createProduct(productDTO, null, null);
 
         assertNotNull(resulDto);
         assertEquals("Test of Product", resulDto.getName());
@@ -89,7 +90,7 @@ public class ProductServiceTest {
         when(productRepository.findById(productId)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> productService.deleteProduct(productId));
-        assertEquals("Product not found by id 1", exception.getMessage());
+        assertEquals("Product not found with id. Status: 404 NOT_FOUND 1", exception.getMessage());
     }
 
     @Test
@@ -124,13 +125,13 @@ public class ProductServiceTest {
 
         RuntimeException exception =assertThrows(RuntimeException.class,
             () -> productService.fetchProductById(productId));
-        assertEquals("Product not found by id 1. Status: 404 NOT_FOUND", exception.getMessage());
+        assertEquals("Product not found with id 1. Status: 404 NOT_FOUND", exception.getMessage());
         verify(productRepository).findById(productId);
 
     }
 
     @Test
-    void testUpdateProduct() {
+    void testUpdateProduct() throws IOException {
 
         Long productId = 1L;
 
@@ -153,7 +154,7 @@ public class ProductServiceTest {
         when(categoryRepository.findById(productId)).thenReturn(Optional.of(category));
         when(productRepository.save(any(Product.class))).thenReturn(updatedProduct);
 
-        ProductDTO resultProductDTO = productService.updateProduct(productId, productDTO);
+        ProductDTO resultProductDTO = productService.updateProduct(productId, productDTO, null, null);
 
         assertNotNull(resultProductDTO);
         assertEquals("Night Fury Funko", resultProductDTO.getDescription());
@@ -161,7 +162,7 @@ public class ProductServiceTest {
     }
 
     @Test
-    void testUpdateProduct_WhenProductDoesntExist(){
+    void testUpdateProduct_WhenProductDoesntExist()throws Exception {
         Long productId = 1L;
 
         ProductDTO productDTO = new ProductDTO();
@@ -171,13 +172,13 @@ public class ProductServiceTest {
         when(productRepository.findById(productId)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class,
-            () -> productService.updateProduct(productId, productDTO));
-        assertEquals("Product not found by id 1. Status: 404 NOT_FOUND", exception.getMessage());
+            () -> productService.updateProduct(productId, productDTO, null, null));
+        assertEquals("Product not found with id 1", exception.getMessage());
         verify(productRepository).findById(productId);
         }
 
     @Test
-    void testCreateProduct_WhenCategoryDoesntExists() {
+    void testCreateProduct_WhenCategoryDoesntExists() throws Exception {
         Long categoryId = 99L;
         ProductDTO productDTO = new ProductDTO();
         productDTO.setCategoryId(categoryId);
@@ -186,8 +187,8 @@ public class ProductServiceTest {
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class,
-            () -> productService.createProduct(productDTO));
-        assertEquals("Category not found by id 99. Status: 404 NOT_FOUND", exception.getMessage());
+            () -> productService.createProduct(productDTO, null, null));
+        assertEquals("Category not found with id. Status: 404 NOT_FOUND 99", exception.getMessage());
         verify(categoryRepository).findById(categoryId);
 }
 
@@ -200,8 +201,8 @@ public class ProductServiceTest {
         product.setPrice(new BigDecimal("29.99"));
         product.setStock(50);
         product.setDiscount(10);
-        product.setImageHash("imageHash1");
-        product.setImageHash2("imageHash2");
+        product.setImageHash("imageHash1".getBytes());
+        product.setImageHash2("imageHash2".getBytes());
         product.setCategory(new Category(1L, "Marvel", "", true));
         product.setCreatedAt(LocalDateTime.now());
 
@@ -212,8 +213,8 @@ public class ProductServiceTest {
         product2.setPrice(new BigDecimal("29.99"));
         product2.setStock(50);
         product2.setDiscount(0);
-        product2.setImageHash("imageHash21");
-        product2.setImageHash2("imageHash22");
+        product2.setImageHash("imageHash21".getBytes());
+        product2.setImageHash2("imageHash22".getBytes());
         product2.setCategory(new Category(1L, "Marvel2", "", true));
         product2.setCreatedAt(LocalDateTime.now());
 
