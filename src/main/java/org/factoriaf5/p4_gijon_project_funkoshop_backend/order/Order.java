@@ -6,6 +6,7 @@ import java.util.List;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -56,7 +57,7 @@ public class Order {
     @Column(name = "product_quantity", nullable = false)
     private Integer productQuantity;
 
-    @OneToMany
+    @OneToMany(cascade=CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private List<DetailOrder> productList;
 

@@ -6,12 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrderDTO;
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrderRepository;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.Order.Status;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Product;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.ProductDTO;
@@ -37,8 +34,6 @@ public class OrderService {
     private OrderRepository orderRepository;
     @Autowired
     private ProductRepository productRepository;
-    @Autowired
-    private DetailOrderRepository detailOrderRepository;
 
     public OrderDTO createOrder(OrderDTO orderDTO) {
         // Validar y obtener el usuario desde el repositorio
@@ -95,7 +90,7 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    @Transactional
+/*     @Transactional
     public byte[] generateOrderPDFId(Long orderId) {
         Optional<Order> orderOptional = orderRepository.findById(orderId);
         if (orderOptional.isEmpty()) {
@@ -127,7 +122,7 @@ public class OrderService {
         }
 
         return byteArrayOutputStream.toByteArray();
-    }
+    } */
 
     public List<OrderDTO> getAllOrders() {
     List<Order> list = orderRepository.findAll();
@@ -229,11 +224,11 @@ public class OrderService {
     
         Role role = authenticatedUser.getRole();
     
-        if ("ADMIN".equals(role.name())) {
+        if ("ROLE_ADMIN".equals(role.name())) {
             return orderRepository.findAll().stream()
                     .map(order -> new OrderDTO(order))  // Conversion manual
                     .collect(Collectors.toList());
-        } else if ("USER".equals(role.name())) {
+        } else if ("ROLE_USER".equals(role.name())) {
             return orderRepository.findByUserId(authenticatedUser.getId()).stream()
                     .map(order -> new OrderDTO(order))  // Conversion manual
                     .collect(Collectors.toList());

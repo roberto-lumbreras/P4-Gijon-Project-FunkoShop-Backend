@@ -3,7 +3,6 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 import java.util.List;
 import java.util.Map;
 
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrderDTO;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.Order.Status;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.ProductDTO;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.User;
@@ -73,14 +72,14 @@ public class OrderController {
 
     // ENDPOINT BACKEND - sin implementation en el frontend actual
 /*     @PreAuthorize("hasRole('USER')")*/
-    @GetMapping("/order/pdf/{orderId}")
+/*     @GetMapping("/order/pdf/{orderId}")
     public ResponseEntity<byte[]> generateOrderPDFId(@PathVariable Long orderId) {
             byte[] pdfData = orderService.generateOrderPDFId(orderId);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
             headers.setContentDisposition(ContentDisposition.inline().filename("order_" + orderId + ".pdf").build());
             return ResponseEntity.ok().headers(headers).body(pdfData);
-    }
+    } */
 
     // ENDPOINT FRONTEND
     //@PreAuthorize("hasRole('ADMIN')")
