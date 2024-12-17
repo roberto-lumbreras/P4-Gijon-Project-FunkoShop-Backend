@@ -5,7 +5,6 @@ import java.util.List;
 /* import java.util.Optional; */
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.JwtUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,21 +12,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    @Autowired
-    private final AddressRepository addressRepository;
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final JdbcTemplate jdbcTemplate;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils,
-                JdbcTemplate jdbcTemplate, AddressRepository addressRepository) {
-    this.userRepository = userRepository;
-    this.passwordEncoder = passwordEncoder;
-    this.jwtUtils = jwtUtils;
-    this.jdbcTemplate = jdbcTemplate;
-    this.addressRepository = addressRepository;
+            JdbcTemplate jdbcTemplate) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtils = jwtUtils;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     // Obtener usuario por ID
@@ -62,7 +57,6 @@ public class UserService {
         if (!userRequest.getRole().equals(Role.ROLE_ADMIN)) {
             throw new AccessDeniedException("Access DENIED. User not authorized, only ADMIN");
         }
-        
 
         return userRepository.findAll();
     }
@@ -137,23 +131,4 @@ public class UserService {
         userToFind.setPassword(passwordEncoder.encode(newPassword));
         return userRepository.save(userToFind);
     }
-
-public void addFirstAddress(String authorizationHeader, String address) {
-    String token = authorizationHeader.substring(7);
-    String emailFromToken = jwtUtils.getEmailFromJwtToken(token);
-
-    User userRequest = userRepository.findByEmail(emailFromToken)
-            .orElseThrow(() -> new IllegalArgumentException("User request not found"));
-
-    if (!userRequest.getJwToken().equals(token)) {
-        throw new SecurityException("User request token doesn't match with user's BDD token");
-    }
-
-    Address newAddress = new Address();
-    newAddress.setUser(userRequest);
-    newAddress.setAddress(address);
-
-    addressRepository.save(newAddress);
-}
-
 }
