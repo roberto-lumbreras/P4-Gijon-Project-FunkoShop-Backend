@@ -56,11 +56,12 @@ public class ProductController {
         return ResponseEntity.ok(updatedProduct);
     }
     
-    @PatchMapping("/discount")
+    */
+    @PatchMapping("/discount/{id}")
     public ResponseEntity<ProductDTO> applyDiscountToProduct(@PathVariable Long id, @RequestBody Integer discount) {
         ProductDTO updatedProduct = productService.applyDiscount(id, discount);
         return ResponseEntity.ok(updatedProduct);
-    } */
+    } 
     
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
