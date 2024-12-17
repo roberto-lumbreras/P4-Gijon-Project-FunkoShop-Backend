@@ -11,7 +11,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OrderDtoBORRAR {
+public class OrderDTO {
 
     private Long orderId;
     private Long userId;
