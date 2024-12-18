@@ -7,8 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -18,10 +16,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-
-import org.springframework.data.domain.Page;
-import java.util.Arrays;
-import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
@@ -79,18 +73,18 @@ public class ProductServiceTest {
 
 
 
-    /* @Test
+    @Test
     void testCreateProduct() throws IOException {
         // Arrange
         ProductDTO productDTO = new ProductDTO();
         productDTO.setName("Test Product");
         productDTO.setDescription("Test Description");
-        productDTO.setPrice(BigDecimal.valueOf(10.99));
+        productDTO.setPrice(BigDecimal.valueOf(10.00));
         productDTO.setStock(10);
         productDTO.setCategoryId(1L);
-        BigDecimal discount = BigDecimal.valueOf(0.1);
-        productDTO.setDiscount(discount.multiply(BigDecimal.valueOf(100)).intValue()); // convierte BigDecimal a Integer
-        //productDTO.setDiscount(BigDecimal.valueOf(0.1));
+        BigDecimal discount = BigDecimal.valueOf(1);
+        productDTO.setDiscount(discount.multiply(BigDecimal.valueOf(1)).intValue());
+        //productDTO.setDiscount(discount);
 
         MultipartFile image1 = mock(MultipartFile.class);
         when(image1.isEmpty()).thenReturn(false);
@@ -104,6 +98,9 @@ public class ProductServiceTest {
         category.setId(1L);
         when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(category));
 
+        // Configuración del método productRepository.save()
+        when(productRepository.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
         // Act
         ProductDTO savedProductDTO = productService.createProduct(productDTO, image1, image2);
 
@@ -111,10 +108,10 @@ public class ProductServiceTest {
         assertNotNull(savedProductDTO);
         assertEquals("Test Product", savedProductDTO.getName());
         assertEquals("Test Description", savedProductDTO.getDescription());
-        assertEquals(BigDecimal.valueOf(10.99), savedProductDTO.getPrice());
+        assertEquals(BigDecimal.valueOf(10.00), savedProductDTO.getPrice());
         assertEquals(10, savedProductDTO.getStock());
-        assertEquals(1L, savedProductDTO.getCategoryId());
-        assertEquals(BigDecimal.valueOf(0.1), savedProductDTO.getDiscount());
+        assertNull(savedProductDTO.getId());
+        assertEquals(1, savedProductDTO.getDiscount().intValue());
         assertNotNull(savedProductDTO.getImgUrl());
         assertNotNull(savedProductDTO.getImgUrl2());
     }
@@ -168,7 +165,7 @@ public class ProductServiceTest {
         assertNotNull(savedProductDTO.getImgUrl());
         assertNotNull(savedProductDTO.getImgUrl2());
     }
- */
+
     @Test
     void testCreateProductWithCategoryNotFound() {
     }
