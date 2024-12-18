@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/orders") // ENDPOINT VISTO EN EL FRONTEND DEL FUNKO
+@RequestMapping("/orders")
 @RestController
 public class OrderController {
 
@@ -114,37 +114,4 @@ public class OrderController {
 
         return ResponseEntity.ok().headers(headers).body(pdfData);
     }
-
-
-    /* @PreAuthorize("hasRole('USER')")
-    @GetMapping("/details/email")
-    public ResponseEntity<Void> sendEmail(DetailOrderDTO detailOrderDTO) {
-            orderService.sendEmail(detailOrderDTO);
-            return ResponseEntity.noContent().build();
-        } */
-
-    // ENDPOINT BACKEND - sin implementation en el frontend actual
-    /*
-     * @PreAuthorize("hasRole('USER')")
-     * 
-     * @PatchMapping("/order/payment/{orderId}")
-     * public ResponseEntity<OrderDTO>
-     * selectPaymentMethod(@RequestHeader("Authorization") String
-     * authorizationHeader,
-     * 
-     * @RequestParam OrderDTO payment, @PathVariable Long orderId) {
-     * try {
-     * if (authorizationHeader == null ||
-     * !authorizationHeader.startsWith("Bearer ")) {
-     * return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-     * }
-     * 
-     * OrderDTO result = orderService.selectPayment(authorizationHeader, payment,
-     * orderId);
-     * return ResponseEntity.ok(result);
-     * } catch (IllegalArgumentException error) {
-     * return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-     * }
-     * }
-     */
 }

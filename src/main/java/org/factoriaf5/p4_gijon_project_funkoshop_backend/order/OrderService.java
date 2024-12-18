@@ -58,16 +58,6 @@ public class OrderService {
         return new OrderDTO(savedOrder);
     }
 
-/*     private boolean confirmPaid(String payment) {
-        return "tarjeta".equalsIgnoreCase(payment);
-    }
-
-    private void validatePaymentMethod(String payment) {
-        if (!"contrareembolso".equalsIgnoreCase(payment) && !"tarjeta".equalsIgnoreCase(payment)) {
-            throw new IllegalArgumentException("El método de pago debe ser 'contrareembolso' o 'tarjeta'.");
-        }
-    } */
-
 /*     public Status getStatus(Long orderId) {
         String username = getAuthenticatedUsername(); if (username == null) { throw new SecurityException("User is not authenticated."); }
         User user = userRepository.findUserByUsername(username);
@@ -246,9 +236,4 @@ public class OrderService {
             throw new SecurityException("Acceso denegado. Solo un USER o un ADMIN pueden listar pedidos");
         }
     }
-
-    /* public void sendEmail(String authorizationHeader, DetailOrderDTO detailOrderDTO) {
-        throw new UnsupportedOperationException("Unimplemented method 'sendEmail'");
-    } */
-
 }
