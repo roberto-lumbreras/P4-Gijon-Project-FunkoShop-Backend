@@ -45,7 +45,7 @@ public class ProductController {
 
 
 
-   /*  @PutMapping("/{id}")
+  /*   @PutMapping("/{id}")
     public ResponseEntity<ProductDTO> updateProduct(
             @PathVariable Long id,
             @RequestPart("product") ProductDTO productDTO,
@@ -55,14 +55,10 @@ public class ProductController {
         ProductDTO updatedProduct = productService.updateProduct(id, productDTO, image1, image2);
         return ResponseEntity.ok(updatedProduct);
     }
-    
-    *//* 
-    @PatchMapping("/discount/{id}")
-    public ResponseEntity<ProductDTO> applyDiscountToProduct(@PathVariable Long id, @RequestBody Integer discount) {
-        ProductDTO updatedProduct = productService.applyDiscount(id, discount);
-        return ResponseEntity.ok(updatedProduct);
-    }  */
-    
+     */
+   
+
+ 
     @PatchMapping("/discount/{id}")
     public ResponseEntity<ProductDTO> applyDiscountToProduct(
         @PathVariable Long id,

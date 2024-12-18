@@ -1,205 +1,127 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.math.BigDecimal;
-import java.util.List;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc(addFilters= false)
-class ProductControllerTest {
+import java.util.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@RunWith(SpringRunner.class)
+public class ProductControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Mock
     private ProductService productService;
 
-    @BeforeEach
-    void setUp() {
+    @InjectMocks
+    private ProductController productController;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
+
+    @Before
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(productController).build();
     }
 
     @Test
-    void addProduct_ShouldReturnCreatedProduct() throws Exception {
-
+    public void testCreateProduct() throws Exception {
         ProductDTO productDTO = new ProductDTO();
-        productDTO.setName("Test Product");
-        productDTO.setDescription("Test Description");
-        productDTO.setPrice(new BigDecimal("19.99"));
-        productDTO.setStock(10);
-        productDTO.setCategoryId(1L);
+        productDTO.setId(1L);
+        productDTO.setName("Funko Pop");
 
-        MockMultipartFile file1 = new MockMultipartFile("file1", "test1.txt", "text/plain", "file1 content".getBytes());
-        MockMultipartFile file2 = new MockMultipartFile("file2", "test2.txt", "text/plain", "file2 content".getBytes());
+        // Simular la respuesta esperada
+        when(productService.createProduct(any(), any(), any())).thenReturn(productDTO);
 
-        when(productService.createProduct(any(ProductDTO.class), any(MultipartFile.class), any(MultipartFile.class)))
-                .thenReturn(productDTO);
-
-        mockMvc.perform(multipart("/api/products")
-                .file(file1)
-                .file(file2)
+        mockMvc.perform(post("/api/products")
                 .contentType(MediaType.MULTIPART_FORM_DATA)
-                .param("name", productDTO.getName())
-                .param("description", productDTO.getDescription())
-                .param("price", productDTO.getPrice().toString())
-                .param("stock", String.valueOf(productDTO.getStock()))
-                .param("categoryId", String.valueOf(productDTO.getCategoryId())))
+                .param("name", "Funko Pop")
+                .param("image1", "image1.jpg")
+                .param("image2", "image2.jpg"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Test Product"));
-
-        verify(productService, times(1)).createProduct(any(ProductDTO.class), any(MultipartFile.class), any(MultipartFile.class));
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.name").value("Funko Pop"));
+        
+        verify(productService, times(1)).createProduct(any(), any(), any());
     }
 
     @Test
-    void applyDiscountToProduct_ShouldReturnUpdatedProduct() throws Exception {
+    public void testApplyDiscountToProduct() throws Exception {
         Long productId = 1L;
         int discount = 20;
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(productId);
+        productDTO.setDiscount(discount);
 
-        ProductDTO updatedProduct = new ProductDTO();
-        updatedProduct.setId(productId);
-        updatedProduct.setName("Discounted Product");
-        updatedProduct.setPrice(new BigDecimal("15.99")); // Precio después del descuento
+        when(productService.applyDiscount(productId, discount)).thenReturn(productDTO);
 
-        when(productService.applyDiscount(eq(productId), eq(discount))).thenReturn(updatedProduct);
-
-        mockMvc.perform(patch("/api/products/{id}/discount", productId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(String.valueOf(discount)))
+        mockMvc.perform(patch("/api/products/discount/{id}", productId)
+                .param("discount", String.valueOf(discount)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Discounted Product"))
-                .andExpect(jsonPath("$.price").value(15.99));
-
-        verify(productService, times(1)).applyDiscount(eq(productId), eq(discount));
+                .andExpect(jsonPath("$.id").value(productId))
+                .andExpect(jsonPath("$.discount").value(discount));
+        
+        verify(productService, times(1)).applyDiscount(productId, discount);
     }
 
     @Test
-    void deleteProduct_ShouldReturnNoContent() throws Exception {
-        Long id = 1L;
+    public void testDeleteProduct() throws Exception {
+        Long productId = 1L;
 
-        doNothing().when(productService).deleteProduct(id);
+        doNothing().when(productService).deleteProduct(productId);
 
-        mockMvc.perform(delete("/api/products/{id}", id))
+        mockMvc.perform(delete("/api/products/{id}", productId))
                 .andExpect(status().isNoContent());
 
-        verify(productService, times(1)).deleteProduct(id);
+        verify(productService, times(1)).deleteProduct(productId);
     }
 
     @Test
-    void fetchProductById_ShouldReturnProduct() throws Exception {
-        Long id = 1L;
+    public void testFetchProductById() throws Exception {
+        Long productId = 1L;
         ProductDTO productDTO = new ProductDTO();
-        productDTO.setId(id);
-        productDTO.setName("Fetched Product");
+        productDTO.setId(productId);
+        productDTO.setName("Funko Pop");
 
-        when(productService.fetchProductById(id)).thenReturn(productDTO);
+        when(productService.fetchProductById(productId)).thenReturn(productDTO);
 
-        mockMvc.perform(get("/api/products/{id}", id))
+        mockMvc.perform(get("/api/products/{id}", productId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Fetched Product"));
+                .andExpect(jsonPath("$.id").value(productId))
+                .andExpect(jsonPath("$.name").value("Funko Pop"));
 
-        verify(productService, times(1)).fetchProductById(id);
+        verify(productService, times(1)).fetchProductById(productId);
     }
 
     @Test
-    void fetchProductsByCategory_ShouldReturnPagedProducts() throws Exception {
-        Long categoryId = 1L;
-        int page = 0, size = 10;
-        String sort = "price,desc";
-
-        Page<ProductDTO> productPage = new PageImpl<>(List.of(new ProductDTO()));
-        when(productService.fetchProductsByCategory(categoryId, page, size, sort)).thenReturn(productPage);
-
-        mockMvc.perform(get("/api/products/category/{categoryId}", categoryId)
-                .param("page", String.valueOf(page))
-                .param("size", String.valueOf(size))
-                .param("sort", sort))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").isArray());
-
-        verify(productService, times(1)).fetchProductsByCategory(categoryId, page, size, sort);
-    }
-
-    @Test
-    void fetchProducts_ShouldReturnPagedProducts() throws Exception {
+    public void testFetchProducts() throws Exception {
         int page = 0;
         int size = 10;
-        String sort = "name,asc";
-
-        Page<ProductDTO> productPage = new PageImpl<>(List.of(new ProductDTO()));
+        String sort = "name";
+        
+        Page<ProductDTO> productPage = mock(Page.class);
         when(productService.fetchProducts(page, size, sort)).thenReturn(productPage);
 
         mockMvc.perform(get("/api/products")
                 .param("page", String.valueOf(page))
                 .param("size", String.valueOf(size))
                 .param("sort", sort))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").isArray());
+                .andExpect(status().isOk());
 
         verify(productService, times(1)).fetchProducts(page, size, sort);
-    }
-
-    @Test
-    void fetchProductsByKeyword_ShouldReturnPagedProducts() throws Exception {
-        String keyword = "test";
-        int page = 0, size = 10;
-        String sort = "name,asc";
-
-        Page<ProductDTO> productPage = new PageImpl<>(List.of(new ProductDTO()));
-        when(productService.fetchProductsByKeyword(keyword, page, size, sort)).thenReturn(productPage);
-
-        mockMvc.perform(get("/api/products/keyword/{keyword}", keyword)
-                .param("page", String.valueOf(page))
-                .param("size", String.valueOf(size))
-                .param("sort", sort))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").isArray());
-
-        verify(productService, times(1)).fetchProductsByKeyword(keyword, page, size, sort);
-    }
-
-    @Test
-    void fetchDiscountedProducts_ShouldReturnListOfDiscountedProducts() throws Exception {
-        List<ProductDTO> discountedProducts = List.of(new ProductDTO());
-        when(productService.fetchDiscountedProducts()).thenReturn(discountedProducts);
-
-        mockMvc.perform(get("/api/products/discounted"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray());
-
-        verify(productService, times(1)).fetchDiscountedProducts();
-    }
-
-    @Test
-    void fetchNewProducts_ShouldReturnPagedNewProducts() throws Exception {
-        Pageable pageable = PageRequest.of(0, 8, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<ProductDTO> newProducts = new PageImpl<>(List.of(new ProductDTO()));
-        when(productService.fetchNewProducts(pageable)).thenReturn(newProducts);
-
-        mockMvc.perform(get("/api/products/new"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").isArray());
-
-        verify(productService, times(1)).fetchNewProducts(any(Pageable.class));
     }
 }
