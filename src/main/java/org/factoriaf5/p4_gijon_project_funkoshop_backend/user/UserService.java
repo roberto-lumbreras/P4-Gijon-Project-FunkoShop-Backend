@@ -70,6 +70,8 @@ public class UserService {
         user.setUsername(user.getEmail());
         user.setEmail(user.getEmail());
         user.setEnabled(true);
+        user.setSuscribed(false);
+        user.setShippingAddress(false);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -152,7 +154,7 @@ public class UserService {
         return userRepository.save(userToFind);
     }
 
-    public User addFirstAddress(String authorizationHeader, Long userId, String firstAddress) {
+    public User updateInfo(String authorizationHeader, Long userId, User user) {
         String token = authorizationHeader.substring(7);
         String emailFromToken = jwtUtils.getEmailFromJwtToken(token);
 
@@ -166,7 +168,14 @@ public class UserService {
         User userToUpdate = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User to find on BD not found"));
 
-        userToUpdate.setFirstAddress(firstAddress);
+        userToUpdate.setFirstName(user.getFirstName());
+        userToUpdate.setLastName(user.getLastName());
+        userToUpdate.setFirstAddress(user.getFirstAddress());
+        userToUpdate.setSecondAddress(null);
+        userToUpdate.setPhoneNumber(user.getPhoneNumber());
+        userToUpdate.setShippingAddress(user.getShippingAddress());
+        userToUpdate.setSuscribed(user.getSuscribed());
+
         return userRepository.save(userToUpdate);
     }
 

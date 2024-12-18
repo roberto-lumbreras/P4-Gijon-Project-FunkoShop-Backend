@@ -142,15 +142,14 @@ public class UserController {
     }
 
     @PatchMapping("/user/add-first-address/{userId}")
-    public ResponseEntity<User> addFirstAddress(@RequestHeader("Authorization") String authorizationHeader,
+    public ResponseEntity<User> updateUserInfo(@RequestHeader("Authorization") String authorizationHeader,
             @PathVariable Long userId, @RequestBody User user) {
         try {
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
 
-            String newFirstAddress = user.getFirstAddress();
-            User updatedUser = userService.addFirstAddress(authorizationHeader, userId, newFirstAddress);
+            User updatedUser = userService.updateInfo(authorizationHeader, userId, user);
             return ResponseEntity.ok(updatedUser);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
