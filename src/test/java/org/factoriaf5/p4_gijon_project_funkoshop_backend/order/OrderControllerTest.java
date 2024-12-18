@@ -86,12 +86,12 @@ public class OrderControllerTest {
                 null, null, categories.get(2), LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))));
 
         users.add(userRepository.save(new User(null, "admin", "admin@mail.com", passwordEncoder.encode("password"),
-                true, Role.ROLE_ADMIN, "token1", products)));
+                true, Role.ROLE_ADMIN, "token1", products, "first-name", "last-name", "first-address", "second-address", "shipping-address", true, "phone-number")));
         users.add(userRepository.save(new User(null, "customer1", "customer1@mail.com",
-                passwordEncoder.encode("password"), true, Role.ROLE_USER, "token2", List.of())));
+                passwordEncoder.encode("password"), true, Role.ROLE_USER, "token2", List.of(), "first-name", "last-name", "first-address", "second-address", "shipping-address", true, "phone-number")));
         users.add(userRepository.save(new User(null, "customer2", "customer2@mail.com",
-                passwordEncoder.encode("password"), true, Role.ROLE_USER, "token3", List.of())));
-
+                passwordEncoder.encode("password"), true, Role.ROLE_USER, "token3", List.of(), "first-name", "last-name", "first-address", "second-address", "shipping-address", true, "phone-number")));
+        
         List<DetailOrder> productListOrderOne = new ArrayList<>();
         productListOrderOne.add(new DetailOrder(null, products.get(0), 2, products.get(0).getPrice().doubleValue()));
         Float totalAmount = (float) productListOrderOne.stream().mapToDouble(x -> x.getPrice() * x.getQuantity()).sum();
