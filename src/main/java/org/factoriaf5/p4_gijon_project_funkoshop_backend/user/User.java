@@ -14,7 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,8 +34,10 @@ public class User {
     private String email;
     private String password;
     private Boolean enabled;
+
     @Enumerated(EnumType.STRING)
     private Role role;
+
     @Column(name = "jw_token")
     private String JwToken;
 
@@ -53,10 +54,9 @@ public class User {
     @Column(name = "second_address")
     private String secondAddress;
     @Column(name = "shipping_address")
-    private String shippingAddress;
-    @Builder.Default
+    private Boolean shippingAddress;
     @Column(name = "suscribed")
-    private Boolean suscribed = false;
+    private Boolean suscribed;
     @Column(name = "phoneNumber")
     private String phoneNumber;
 
