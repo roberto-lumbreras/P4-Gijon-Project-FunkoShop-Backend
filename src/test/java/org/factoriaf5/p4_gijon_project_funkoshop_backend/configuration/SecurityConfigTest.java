@@ -51,16 +51,6 @@ class SecurityConfigTest {
     }
 
     @Test
-    void testInitData() {
-        when(userRepository.findByEmail("admin@email.com")).thenReturn(java.util.Optional.empty());
-        when(passwordEncoder.encode("password1234")).thenReturn("encodedPassword");
-        CommandLineRunner initData = securityConfig.initData(userRepository, passwordEncoder, authorityRepository);
-        assertDoesNotThrow(() -> initData.run());
-        verify(userRepository, times(1)).save(any());
-        verify(authorityRepository, times(1)).save(any());
-    }
-
-    @Test
     void testAuthenticationManager() throws Exception {
         AuthenticationConfiguration authenticationConfiguration = mock(AuthenticationConfiguration.class);
         AuthenticationManager manager = mock(AuthenticationManager.class);

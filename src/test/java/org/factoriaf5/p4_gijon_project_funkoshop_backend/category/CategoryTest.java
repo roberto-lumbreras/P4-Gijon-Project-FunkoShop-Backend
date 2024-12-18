@@ -1,10 +1,7 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.category;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 import org.junit.jupiter.api.Test;
 public class CategoryTest {
     public CategoryTest() {

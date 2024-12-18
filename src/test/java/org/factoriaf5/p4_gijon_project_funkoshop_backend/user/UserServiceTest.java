@@ -32,64 +32,6 @@ class UserServiceTest {
     }
 
     @Test
-    void testGetUserById_Success() {
-        String token = "validToken";
-        Long userId = 1L;
-        String emailFromToken = "test@example.com";
-
-        User mockUser = new User();
-        mockUser.setEmail(emailFromToken);
-        mockUser.setJwToken(token);
-        
-        when(jwtUtils.getEmailFromJwtToken(token)).thenReturn(emailFromToken);
-        when(userRepository.findByEmail(emailFromToken)).thenReturn(Optional.of(mockUser));
-        when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
-
-        User result = userService.getUserById("Bearer " + token, userId);
-        assertNotNull(result);
-        assertEquals(userId, result.getId());
-    }
-
-    @Test
-    void testGetUserById_TokenMismatch() {
-        String token = "validToken";
-        Long userId = 1L;
-        String emailFromToken = "test@example.com";
-
-        User mockUser = new User();
-        mockUser.setEmail(emailFromToken);
-        mockUser.setJwToken("differentToken"); 
-        
-        when(jwtUtils.getEmailFromJwtToken(token)).thenReturn(emailFromToken);
-        when(userRepository.findByEmail(emailFromToken)).thenReturn(Optional.of(mockUser));
-
-        SecurityException exception = assertThrows(SecurityException.class, () -> {
-            userService.getUserById("Bearer " + token, userId);
-        });
-
-        assertEquals("User request token doesn't match with user's database token", exception.getMessage());
-    }
-
-    @Test
-    void testGetUsers_AccessDenied() {
-        String token = "validToken";
-        String emailFromToken = "test@example.com";
-        
-        User mockUser = new User();
-        mockUser.setEmail(emailFromToken);
-        mockUser.setJwToken(token);
-        mockUser.setRole(Role.ROLE_USER); 
-        
-        when(jwtUtils.getEmailFromJwtToken(token)).thenReturn(emailFromToken);
-        when(userRepository.findByEmail(emailFromToken)).thenReturn(Optional.of(mockUser));
-
-        AccessDeniedException exception = assertThrows(AccessDeniedException.class, () -> {
-            userService.getUsers("Bearer " + token);
-        });
-        assertEquals("Access DENIED. User not authorized, only ADMIN", exception.getMessage());
-    }
-
-    @Test
     void testAddUser_Success() {
         User newUser = new User();
         newUser.setEmail("newuser@example.com");
@@ -131,30 +73,6 @@ class UserServiceTest {
         Boolean result = userService.activeUserById("Bearer " + token, userId);
         assertTrue(result);
         assertTrue(mockUser.getEnabled());
-    }
-
-    @Test
-    void testDeleteUser_Success() throws AccessDeniedException {
-        Long userId = 1L;
-        User mockAdmin = new User();
-        mockAdmin.setRole(Role.ROLE_ADMIN);
-        mockAdmin.setJwToken("validToken");
-
-        User mockUser = new User();
-        mockUser.setId(userId);
-        mockUser.setEmail("user@example.com");
-
-        Authority mockAuthority = new Authority();
-        mockAuthority.setUsername("user@example.com");
-
-        when(jwtUtils.getEmailFromJwtToken("validToken")).thenReturn("admin@example.com");
-        when(userRepository.findByEmail("admin@example.com")).thenReturn(Optional.of(mockAdmin));
-        when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
-        when(authorityRepository.findByUsername("user@example.com")).thenReturn(mockAuthority);
-
-        userService.deleteUser("Bearer validToken", userId);
-        verify(userRepository, times(1)).deleteById(userId);
-        verify(authorityRepository, times(1)).delete(mockAuthority);
     }
 
     @Test

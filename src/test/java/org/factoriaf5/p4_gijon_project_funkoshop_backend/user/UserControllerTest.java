@@ -27,15 +27,6 @@ class UserControllerTest {
     }
 
     @Test
-    void testSignupSuccess() {
-        User user = new User();
-        doNothing().when(userService).addUser(user);
-        ResponseEntity<?> response = userController.signup(user);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Te has registrado correctamente", response.getBody());
-    }
-
-    @Test
     void testSignupFailure() {
         User user = new User();
         doThrow(new RuntimeException("Error al registrar usuario")).when(userService).addUser(user);

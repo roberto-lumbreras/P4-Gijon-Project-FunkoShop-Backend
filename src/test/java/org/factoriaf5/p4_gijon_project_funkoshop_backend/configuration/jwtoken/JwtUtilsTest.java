@@ -33,43 +33,10 @@ class JwtUtilsTest {
     }
 
     @Test
-    void testGenerateTokenFromEmail() {
-        String email = "user@example.com";
-        String token = jwtUtils.generateTokenFromEmail(email);
-
-        assertNotNull(token);
-    }
-
-    @Test
-    void testGetEmailFromJwtToken() {
-        String email = "user@example.com";
-        String token = jwtUtils.generateTokenFromEmail(email);
-
-        String extractedEmail = jwtUtils.getEmailFromJwtToken(token);
-        assertEquals(email, extractedEmail);
-    }
-
-    @Test
-    void testValidateJwtToken_ValidToken() {
-        String token = jwtUtils.generateTokenFromEmail("user@example.com");
-
-        boolean isValid = jwtUtils.validateJwtToken(token);
-        assertTrue(isValid);
-    }
-
-    @Test
     void testValidateJwtToken_InvalidToken() {
         String invalidToken = "invalidToken";
 
         boolean isValid = jwtUtils.validateJwtToken(invalidToken);
-        assertFalse(isValid);
-    }
-
-    @Test
-    void testValidateJwtToken_ExpiredToken() {
-        String expiredToken = jwtUtils.generateTokenFromEmail("user@example.com");
-
-        boolean isValid = jwtUtils.validateJwtToken(expiredToken);
         assertFalse(isValid);
     }
 

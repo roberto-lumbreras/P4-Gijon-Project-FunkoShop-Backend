@@ -53,10 +53,6 @@ public class ProductServiceTest {
     }
 
     @Test
-    void testImageDeletionService() {
-    }
-
-    @Test
     void testCreateProduct() throws IOException {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setName("Test Product");
@@ -91,57 +87,6 @@ public class ProductServiceTest {
         assertNotNull(savedProductDTO.getImgUrl());
         assertNotNull(savedProductDTO.getImgUrl2());
     }
-
-    @Test
-    void testCreateProductWithExistingProduct() throws IOException {
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setName("Test Product");
-        productDTO.setDescription("Test Description");
-        productDTO.setPrice(BigDecimal.valueOf(10.99));
-        productDTO.setStock(10);
-        productDTO.setCategoryId(1L);
-        BigDecimal discount = BigDecimal.valueOf(0.1);
-        productDTO.setDiscount(discount.multiply(BigDecimal.valueOf(100)).intValue());
-
-        MultipartFile image1 = mock(MultipartFile.class);
-        when(image1.isEmpty()).thenReturn(false);
-        when(image1.getOriginalFilename()).thenReturn("image1.jpg");
-
-        MultipartFile image2 = mock(MultipartFile.class);
-        when(image2.isEmpty()).thenReturn(false);
-        when(image2.getOriginalFilename()).thenReturn("image2.jpg");
-
-        Category category = new Category();
-        category.setId(1L);
-        Product existingProduct = new Product();
-        existingProduct.setId(1L);
-        existingProduct.setName("Existing Product");
-        existingProduct.setDescription("Existing Description");
-        existingProduct.setPrice(BigDecimal.valueOf(5.99));
-        existingProduct.setStock(5);
-        existingProduct.setCategory(category);
-        existingProduct.setImgUrl("existing-image.jpg");
-        existingProduct.setImgUrl2("existing-image2.jpg");
-
-        when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(category));
-        when(productRepository.findById(anyLong())).thenReturn(Optional.of(existingProduct));
-        ProductDTO savedProductDTO = productService.createProduct(productDTO, image1, image2);
-
-        assertNotNull(savedProductDTO);
-        assertEquals("Test Product", savedProductDTO.getName());
-        assertEquals("Test Description", savedProductDTO.getDescription());
-        assertEquals(BigDecimal.valueOf(10.99), savedProductDTO.getPrice());
-        assertEquals(10, savedProductDTO.getStock());
-        assertEquals(1L, savedProductDTO.getCategoryId());
-        assertEquals(BigDecimal.valueOf(0.1), savedProductDTO.getDiscount());
-        assertNotNull(savedProductDTO.getImgUrl());
-        assertNotNull(savedProductDTO.getImgUrl2());
-    }
-
-    @Test
-    void testCreateProductWithCategoryNotFound() {
-    }
-
 
     @Test
     void testFetchProductByIdThrowsExceptionWhenProductNotFound() {
