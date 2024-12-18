@@ -212,5 +212,4 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
         }
     }
-
 }

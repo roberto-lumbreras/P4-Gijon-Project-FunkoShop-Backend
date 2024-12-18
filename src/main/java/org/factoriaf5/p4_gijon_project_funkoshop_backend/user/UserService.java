@@ -227,5 +227,4 @@ public class UserService {
         userToUpdate.setShippingAddress(shippingAddress);
         return userRepository.save(userToUpdate);
     }
-
 }
