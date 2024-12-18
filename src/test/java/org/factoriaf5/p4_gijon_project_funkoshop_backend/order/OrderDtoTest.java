@@ -1,87 +1,177 @@
-/* package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
+package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
 import org.junit.jupiter.api.Test;
 
-class OrderDtoTest {
+public class OrderDTOTest {
 
-    private OrderDto orderDto;
-    private Order mockOrder;
-
-    @BeforeEach
-    void setUp() {
-        // Crear un mock de Order para las pruebas
-        mockOrder = new Order();
-        mockOrder.setId(1L);
-        
-        User mockUser = new User();
-        mockUser.setId(100L);
-        mockOrder.setUser(mockUser);
-        
-        mockOrder.setOrderDate(new Date());
-        mockOrder.setIsPaid(true);
-        mockOrder.setStatus(Status.PROCESSING);
-        mockOrder.setAmount(5);
-        
-        List<ArrayList> mockProductList = new ArrayList<>();
-        mockOrder.setProductList(mockProductList);
-        
-        mockOrder.setPrice(99.99f);
-
-        // Crear OrderDto usando el constructor con Order
-        orderDto = new OrderDto(mockOrder);
+    public OrderDTOTest() {
     }
 
     @Test
-    void testConstructorFromOrder() {
-        assertEquals(1L, orderDto.getId());
-        assertEquals(100L, orderDto.getUser());
-        assertNotNull(orderDto.getOrderDate());
-        assertTrue(orderDto.isPaid());
-        assertEquals(Status.PROCESSING, orderDto.getStatus());
-        assertEquals(5, orderDto.getAmount());
-        assertNotNull(orderDto.getProductList());
-        assertEquals(99.99f, orderDto.getPrice(), 0.001);
+    public void testGetOrderId() {
+        System.out.println("getOrderId");
+        OrderDTO instance = new OrderDTO();
+        Long expResult = null;
+        Long result = instance.getOrderId();
+        assertEquals(expResult, result);
     }
 
     @Test
-    void testSettersAndGetters() {
-        // Probar cada setter y getter
-        orderDto.setId(2L);
-        assertEquals(2L, orderDto.getId());
-
-        User newUser = new User();
-        newUser.setId(200L);
-        orderDto.setUser(newUser);
-        assertEquals(newUser, orderDto.getUser());
-
-        Date newDate = new Date();
-        orderDto.setOrderDate(newDate);
-        assertEquals(newDate, orderDto.getOrderDate());
-
-        orderDto.setPaid(false);
-        assertFalse(orderDto.isPaid());
-
-        orderDto.setAmount(10);
-        assertEquals(10, orderDto.getAmount());
-
-        List<ArrayList> newProductList = new ArrayList<>();
-        orderDto.setProductList(newProductList);
-        assertEquals(newProductList, orderDto.getProductList());
-
-        orderDto.setPrice(149.99f);
-        assertEquals(149.99f, orderDto.getPrice(), 0.001);
+    public void testGetUserId() {
+        System.out.println("getUserId");
+        OrderDTO instance = new OrderDTO();
+        Long expResult = null;
+        Long result = instance.getUserId();
+        assertEquals(expResult, result);
     }
 
     @Test
-    void testDefaultConstructor() {
-        OrderDto emptyOrderDto = new OrderDto();
-        assertNotNull(emptyOrderDto);
+    public void testGetOrderDate() {
+        System.out.println("getOrderDate");
+        OrderDTO instance = new OrderDTO();
+        LocalDate expResult = null;
+        LocalDate result = instance.getOrderDate();
+        assertEquals(expResult, result);
     }
-} */
+
+    @Test
+    public void testGetIsPaid() {
+        System.out.println("getIsPaid");
+        OrderDTO instance = new OrderDTO();
+        Boolean expResult = null;
+        Boolean result = instance.getIsPaid();
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testGetPayment() {
+        System.out.println("getPayment");
+        OrderDTO instance = new OrderDTO();
+        String expResult = null;
+        String result = instance.getPayment();
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testGetStatus() {
+        System.out.println("getStatus");
+        OrderDTO instance = new OrderDTO();
+        Order.Status expResult = null;
+        Order.Status result = instance.getStatus();
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testGetProductQuantity() {
+        System.out.println("getProductQuantity");
+        OrderDTO instance = new OrderDTO();
+        Integer expResult = null;
+        Integer result = instance.getProductQuantity();
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testGetProductList() {
+        System.out.println("getProductList");
+        OrderDTO instance = new OrderDTO();
+        ArrayList<DetailOrder> expResult = null;
+        ArrayList<DetailOrder> result = (ArrayList<DetailOrder>) instance.getProductList();
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testGetTotalAmount() {
+        System.out.println("getTotalAmount");
+        OrderDTO instance = new OrderDTO();
+        Float expResult = null;
+        Float result = instance.getTotalAmount();
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testSetOrderId() {
+        System.out.println("setOrderId");
+        Long orderId = 1L;
+        OrderDTO instance = new OrderDTO();
+        instance.setOrderId(orderId);
+        assertEquals(orderId, instance.getOrderId());
+    }
+
+    @Test
+    public void testSetUserId() {
+        System.out.println("setUserId");
+        Long userId = 1L;
+        OrderDTO instance = new OrderDTO();
+        instance.setUserId(userId);
+        assertEquals(userId, instance.getUserId());
+    }
+
+    @Test
+    public void testSetOrderDate() {
+        System.out.println("setOrderDate");
+        LocalDate orderDate = LocalDate.now();
+        OrderDTO instance = new OrderDTO();
+        instance.setOrderDate(orderDate);
+        assertEquals(orderDate, instance.getOrderDate());
+    }
+
+    @Test
+    public void testSetIsPaid() {
+        System.out.println("setIsPaid");
+        Boolean isPaid = true;
+        OrderDTO instance = new OrderDTO();
+        instance.setIsPaid(isPaid);
+        assertEquals(isPaid, instance.getIsPaid());
+    }
+
+    @Test
+    public void testSetPayment() {
+        System.out.println("setPayment");
+        String payment = "Credit Card";
+        OrderDTO instance = new OrderDTO();
+        instance.setPayment(payment);
+        assertEquals(payment, instance.getPayment());
+    }
+
+    @Test
+    public void testSetStatus() {
+        System.out.println("setStatus");
+        Order.Status status = Order.Status.PROCESSING;
+        OrderDTO instance = new OrderDTO();
+        instance.setStatus(status);
+        assertEquals(status, instance.getStatus());
+    }
+
+    @Test
+    public void testSetProductQuantity() {
+        System.out.println("setProductQuantity");
+        Integer productQuantity = 5;
+        OrderDTO instance = new OrderDTO();
+        instance.setProductQuantity(productQuantity);
+        assertEquals(productQuantity, instance.getProductQuantity());
+    }
+
+    @Test
+    public void testSetProductList() {
+        System.out.println("setProductList");
+        ArrayList<DetailOrder> productList = new ArrayList<>();
+        OrderDTO instance = new OrderDTO();
+        instance.setProductList(productList);
+        assertEquals(productList, instance.getProductList());
+    }
+
+    @Test
+    public void testSetTotalAmount() {
+        System.out.println("setTotalAmount");
+        Float totalAmount = 100.0f;
+        OrderDTO instance = new OrderDTO();
+        instance.setTotalAmount(totalAmount);
+        assertEquals(totalAmount, instance.getTotalAmount());
+    }
+}

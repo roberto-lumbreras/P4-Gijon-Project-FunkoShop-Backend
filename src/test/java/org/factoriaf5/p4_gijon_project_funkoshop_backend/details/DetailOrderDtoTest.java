@@ -1,94 +1,102 @@
-/* package org.factoriaf5.p4_gijon_project_funkoshop_backend.details;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.Order;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-class DetailOrderDtoTest {
-
-    private DetailOrder mockDetailOrder;
-    private Product mockProduct;
-    private Order mockOrder;
-
-    @BeforeEach
-    void setUp() {
-        mockProduct = new Product();
-        mockProduct.setProductId(1L);
-        
-        mockOrder = new Order();
-        mockOrder.setOrderId(2L);
-        
-        mockDetailOrder = new DetailOrder();
-        mockDetailOrder.setDetailId(3L);
-        mockDetailOrder.setProduct(mockProduct);
-        mockDetailOrder.setOrder(mockOrder);
-        mockDetailOrder.setAmount(5);
-        mockDetailOrder.setPrice(29.99);
+pa
+ * kage org.factoriaf5.p4_gijon_project_funkoshop_backend.details;
+ * 
+ * import static org.junit.jupiter.api.Assertions.as
+ * 
+ * import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Prod
+ * import org.junit.jupiter.api.Test;
+ * 
+ * 
+ * 
+ * 
+ * }
+ * 
+ * @Test
+ * 
+ *     System.
+ *     DetailOrde
+ * Long expResult = null;
+ * Long result = instance.getDet
+ * 
+ * 
+ * 
+ * 
+ * ic void testGetProduct() {
+ * System.out.println("getProduct")
+ * DetailOrderDTO instance = new DetailOrde
+ * Product expResult = null;
+ * Product result = instance.get
+ * assertEquals(expResult, result);
+ * }
+ * 
+ * @Test
+ * public void testGetProductQuant
+ * System.out.println("getProductQuantity");
+ * DetailOrderDTO instance = new 
+ *  
+ * 
+ *     a
+ * }
+ * 
+ * 
+ * ic void testGetPrice() {
+ * System.out.println("getPrice");
+ * DetailOrderDTO instance = new DetailOrderDTO()
+ * Double expResult = null;
+ * Double result = instance.getPrice();
+ *  
+ * 
+ * 
+ * @Test
+ * ic void testSetDetailId() {
+ * 
+ * Long detailId = 1L;
+ * DetailOrderDTO instance = new DetailOrderDTO();
+ * instance.setDetailId(detailId);
+ * assertEquals(detailId, instance.getDetailId(
+ * 
+ * 
+ * 
+ * publi
+ *     System.out.println("setProduct");
+ * Product product = new Product();
+ * DetailOrderDTO instance = new Det
+ * 
+ * assertEquals(product, instance.ge
+ * 
+ * 
+ * t
+ * ic void testSetProductQuantity() {
+ * System.out.println("setProductQuantity");
+ * Integer productQuantity = 5;
+ * DetailOrderDTO instance = new De
+ * instance.setProductQuantity(product
+ * 
+ * 
+ * 
+ * t
+ * ic void testSetPrice() {
+ * System.out.println("setPrice");
+ * Double price = 100.0;
+ * DetailOrderDTO instance = new DetailOrderDTO();
+ *  
+ * 
+ * }
+ * 
+ * t
+ * ic void testConstructorWithDetailOrder() {
+ * 
+ * DetailOrder detailOrder = new DetailOrder
+ * detailOrder.setId(1L);
+ * detailOrder.setProduct(new Product());
+ * detailOrder.setQuantity(10);
+ * detailOrder.setPrice(200.0);
+ * 
+ *  
+       DetailOrderDTO instance = new DetailOrderDTO(detailOrder);
+        assertEquals(1L, instance.getDetailId());
+        assertEquals(detailOrder.getProduct(), instance.getProduct());
+        assertEquals(10, instance.getProductQuantity());
+        assertEquals(200.0, instance.getPrice());
     }
-
-    @Test
-    void testDefaultConstructor() {
-        DetailOrderDto detailOrderDto = new DetailOrderDto();
-        assertNotNull(detailOrderDto);
-    }
-
-    @Test
-    void testParameterizedConstructor() {
-        DetailOrderDto detailOrderDto = new DetailOrderDto(mockDetailOrder);
-        
-        assertEquals(3L, detailOrderDto.getDetailId());
-        assertEquals(1L, detailOrderDto.getProductId());
-        assertEquals(2L, detailOrderDto.getOrderId());
-        assertEquals(5, detailOrderDto.getAmount());
-        assertEquals(29.99, detailOrderDto.getPrice());
-    }
-
-    @Test
-    void testGetters() {
-        DetailOrderDto detailOrderDto = new DetailOrderDto(mockDetailOrder);
-        
-        assertEquals(3L, detailOrderDto.getDetailId());
-        assertEquals(1L, detailOrderDto.getProductId());
-        assertEquals(2L, detailOrderDto.getOrderId());
-        assertEquals(5, detailOrderDto.getAmount());
-        assertEquals(29.99, detailOrderDto.getPrice());
-    }
-
-    @Test
-    void testConstructorWithDifferentValues() {
-        Product anotherProduct = new Product();
-        anotherProduct.setProductId(10L);
-        
-        Order anotherOrder = new Order();
-        anotherOrder.setOrderId(20L);
-        
-        DetailOrder anotherDetailOrder = new DetailOrder();
-        anotherDetailOrder.setDetailId(30L);
-        anotherDetailOrder.setProduct(anotherProduct);
-        anotherDetailOrder.setOrder(anotherOrder);
-        anotherDetailOrder.setAmount(3);
-        anotherDetailOrder.setPrice(19.99);
-        
-        DetailOrderDto detailOrderDto = new DetailOrderDto(anotherDetailOrder);
-        
-        assertEquals(30L, detailOrderDto.getDetailId());
-        assertEquals(10L, detailOrderDto.getProductId());
-        assertEquals(20L, detailOrderDto.getOrderId());
-        assertEquals(3, detailOrderDto.getAmount());
-        assertEquals(19.99, detailOrderDto.getPrice());
-    }
-
-    @Test
-    void testNullValues() {
-        DetailOrder nullDetailOrder = new DetailOrder();
-        DetailOrderDto detailOrderDto = new DetailOrderDto(nullDetailOrder);
-        
-        assertNull(detailOrderDto.getDetailId());
-        assertNull(detailOrderDto.getProductId());
-        assertNull(detailOrderDto.getOrderId());
-        assertNull(detailOrderDto.getAmount());
-        assertNull(detailOrderDto.getPrice());
-    }
-} */
+}

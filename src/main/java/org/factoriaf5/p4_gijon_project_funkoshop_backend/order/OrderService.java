@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
-import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrderDTO;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.Order.Status;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Product;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.ProductDTO;
@@ -20,9 +19,9 @@ import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfWriter;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import jakarta.transaction.Transactional;
 
@@ -50,7 +49,7 @@ public class OrderService {
         order.setStatus(orderDTO.getStatus() != null ? orderDTO.getStatus() : Order.Status.PENDING);
         order.setTotalAmount(orderDTO.getTotalAmount());
         order.setProductList(orderDTO.getProductList());
-        order.setTotalAmount(orderDTO.getTotalAmount());
+        order.setProductQuantity(orderDTO.getProductQuantity());
 
         // Guardar la entidad en la base de datos
         Order savedOrder = orderRepository.save(order);
@@ -59,48 +58,26 @@ public class OrderService {
         return new OrderDTO(savedOrder);
     }
 
-/*     private boolean confirmPaid(String payment) {
-        return "tarjeta".equalsIgnoreCase(payment);
-    }
-
-    private void validatePaymentMethod(String payment) {
-        if (!"contrareembolso".equalsIgnoreCase(payment) && !"tarjeta".equalsIgnoreCase(payment)) {
-            throw new IllegalArgumentException("El método de pago debe ser 'contrareembolso' o 'tarjeta'.");
-        }
-    } */
-
-/*     public Status getStatus(Long orderId) {
-        String username = getAuthenticatedUsername(); if (username == null) { throw new SecurityException("User is not authenticated."); }
-        User user = userRepository.findUserByUsername(username);
-            if (user == null) {
-                throw new IllegalArgumentException("User not found."); }
-        Order order = orderRepository.findById(orderId)
-            .orElseThrow(() -> new IllegalArgumentException("Order not found.")); return order.getStatus(); }
-        private String getAuthenticatedUsername() {
-            var authentication = SecurityContextHolder.getContext().getAuthentication(); if (authentication != null && authentication.isAuthenticated()) {
-            return authentication.getName();  }
-        return null;
-    }
- */
     @Transactional
     public void updateOrderStatus(Long orderId, Status status) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado con ID: " + orderId));
-    
+
         order.setStatus(status);
         orderRepository.save(order);
     }
 
-/*     @Autowired
-    @Transactional
-    public byte[] generateOrderPDF(Long orderId) {
-        Optional<Order> orderOptional = orderRepository.findById(orderId);
-        if (orderOptional.isEmpty()) {
-            throw new IllegalArgumentException("Order not found");
-        }
+    public Status getStatus(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found."));
+        return order.getStatus();
+    }
 
-        Order order = orderOptional.get();
-        List<DetailOrder> details = detailOrderRepository.findByOrderId(order.getOrderId());
+    @Transactional
+    public byte[] generateOrderPDFId(Long orderId) {
+        // Buscar la orden por ID
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + orderId));
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
@@ -108,30 +85,34 @@ public class OrderService {
             PdfWriter.getInstance(document, byteArrayOutputStream);
             document.open();
 
+            // Agregar datos de la orden
             document.add(new Paragraph("Order Invoice"));
             document.add(new Paragraph("Order ID: " + order.getOrderId()));
             document.add(new Paragraph("Order Status: " + order.getStatus()));
-            document.add(new Paragraph("Order Details:"));
+            document.add(new Paragraph("Order Date: " + order.getOrderDate()));
+            document.add(new Paragraph("Total Amount: " + order.getTotalAmount()));
 
-            for (DetailOrder detail : details) {
-                document.add(new Paragraph("Product ID: " + detail.getProduct()));
-                document.add(new Paragraph("Product Quantity: " + detail.getQuantity()));
-                document.add(new Paragraph("Price: " + detail.getPrice()));
+            // Agregar detalles del pedido
+            document.add(new Paragraph("Order Details:"));
+            for (DetailOrder detail : order.getProductList()) {
+                document.add(new Paragraph("- Product: " + detail.getProduct().getName()));
+                document.add(new Paragraph("  Quantity: " + detail.getQuantity()));
+                document.add(new Paragraph("  Price: " + detail.getPrice()));
             }
 
             document.close();
         } catch (Exception e) {
-            throw new IllegalArgumentException("Error generating PDF: " + e.getMessage());
+            throw new RuntimeException("Error generating PDF for order ID: " + orderId, e);
         }
 
         return byteArrayOutputStream.toByteArray();
-    } */
+    }
 
     public List<OrderDTO> getAllOrders() {
-    List<Order> list = orderRepository.findAll();
-    return list.stream()
-        .map(OrderDTO::new)
-        .collect(Collectors.toList());
+        List<Order> list = orderRepository.findAll();
+        return list.stream()
+                .map(OrderDTO::new)
+                .collect(Collectors.toList());
     }
 
     public List<OrderDTO> listByMonth() {
@@ -188,33 +169,43 @@ public class OrderService {
         return bestSellers;
     }
 
-    public byte[] generatePDFAllOrders(DetailOrderDTO detailOrderDTO) {
-
+    public byte[] generatePDFAllOrders() {
         List<Order> orders = orderRepository.findAll();
+
+        if (orders.isEmpty()) {
+            throw new IllegalArgumentException("No orders found in the database.");
+        }
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
-
             Document document = new Document();
             PdfWriter.getInstance(document, byteArrayOutputStream);
             document.open();
 
             for (Order order : orders) {
-
                 document.add(new Paragraph("Order Invoice"));
                 document.add(new Paragraph("Order ID: " + order.getOrderId()));
                 document.add(new Paragraph("Order Status: " + order.getStatus()));
-                document.add(new Paragraph("Order Details:" + order.toString()));
+                document.add(new Paragraph("Order Date: " + order.getOrderDate()));
+                document.add(new Paragraph("Total Amount: " + order.getTotalAmount()));
+                document.add(new Paragraph("Order Details:"));
 
+                // Agregar los detalles de la orden
+                for (DetailOrder detail : order.getProductList()) {
+                    document.add(new Paragraph("- Product: " + detail.getProduct().getName()));
+                    document.add(new Paragraph("  Quantity: " + detail.getQuantity()));
+                    document.add(new Paragraph("  Price: " + detail.getPrice()));
+                }
+
+                document.add(new Paragraph("\n")); // Espacio entre órdenes
             }
-            document.close();
 
+            document.close();
         } catch (Exception e) {
             throw new IllegalArgumentException("Error generating PDF: " + e.getMessage());
         }
 
         return byteArrayOutputStream.toByteArray();
-
     }
 
     @SuppressWarnings("ConvertToStringSwitch")
@@ -222,24 +213,19 @@ public class OrderService {
         if (authenticatedUser == null) {
             throw new IllegalArgumentException("Usuario no autenticado");
         }
-    
+
         Role role = authenticatedUser.getRole();
-    
-        if ("ADMIN".equals(role.name())) {
+
+        if ("ROLE_ADMIN".equals(role.name())) {
             return orderRepository.findAll().stream()
-                    .map(order -> new OrderDTO(order))  // Conversion manual
+                    .map(order -> new OrderDTO(order)) // Conversion manual
                     .collect(Collectors.toList());
-        } else if ("USER".equals(role.name())) {
+        } else if ("ROLE_USER".equals(role.name())) {
             return orderRepository.findByUserId(authenticatedUser.getId()).stream()
-                    .map(order -> new OrderDTO(order))  // Conversion manual
+                    .map(order -> new OrderDTO(order)) // Conversion manual
                     .collect(Collectors.toList());
         } else {
             throw new SecurityException("Acceso denegado. Solo un USER o un ADMIN pueden listar pedidos");
         }
     }
-
-    /* public void sendEmail(String authorizationHeader, DetailOrderDTO detailOrderDTO) {
-        throw new UnsupportedOperationException("Unimplemented method 'sendEmail'");
-    } */
-
 }
