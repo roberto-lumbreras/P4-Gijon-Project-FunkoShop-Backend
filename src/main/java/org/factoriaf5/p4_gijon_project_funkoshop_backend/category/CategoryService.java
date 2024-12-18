@@ -19,7 +19,7 @@ public class CategoryService {
         Category existingCategory = categoryRepository.findById(categoryId).orElse(null);
         if (existingCategory != null) {
             existingCategory.setName(categoryDTO.getName());
-            existingCategory.setImageHash(categoryDTO.getImageHash());
+            existingCategory.setImgUrl(categoryDTO.getImgUrl());
             existingCategory.setHighlights(categoryDTO.isHighlights());
             return new CategoryDTO(categoryRepository.save(existingCategory));
         } else {

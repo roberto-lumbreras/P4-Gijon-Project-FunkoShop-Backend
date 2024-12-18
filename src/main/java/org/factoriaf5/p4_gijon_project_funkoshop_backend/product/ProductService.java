@@ -1,5 +1,6 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -33,6 +34,14 @@ public class ProductService {
         productRepository.deleteById(id);
     }
     
+private void imageDeletionService(String imgUrl) {
+        imgUrl = System.getProperty("user.dir")+"/src/main/resources/static"+imgUrl;
+        File img = new File(imgUrl);
+        if(img.exists()&&!imgUrl.contains("default")){
+            img.delete();
+        }
+    }
+
 
     public ProductDTO createProduct(ProductDTO productDTO, MultipartFile image1, MultipartFile image2) throws IOException {
         Category category = categoryRepository.findById(productDTO.getCategoryId())
@@ -40,14 +49,35 @@ public class ProductService {
     
         // Eliminamos 'product' y usamos directamente 'savedProduct'
         Product savedProduct = new Product();
+        //hace falta pasar id?
         savedProduct.setName(productDTO.getName());
         savedProduct.setDescription(productDTO.getDescription());
         savedProduct.setPrice(productDTO.getPrice());
         savedProduct.setStock(productDTO.getStock());
         savedProduct.setCategory(category);
         savedProduct.setDiscount(productDTO.getDiscount());
-        savedProduct.setImageHash(image1 != null ? image1.getBytes() : null);
-        savedProduct.setImageHash2(image2 != null ? image2.getBytes() : null);
+        if(!image1.isEmpty()){
+            if(savedProduct.getId()!=null){
+                String url = fetchProductById(savedProduct.getId()).getImgUrl();
+                if(url!=null){
+                    imageDeletionService(url);
+                }
+            }
+            savedProduct.setImgUrl(imageCreationService(image1));
+        }else if(savedProduct.getId()!=null){
+            savedProduct.setImgUrl(fetchProductById(savedProduct.getId()).getImgUrl());
+        }
+        if(!image2.isEmpty()){
+            if(savedProduct.getId()!=null){
+                String url = fetchProductById(savedProduct.getId()).getImgUrl2();
+                if(url!=null){
+                    imageDeletionService(url);
+                }
+            }
+            savedProduct.setImgUrl2(imageCreationService(image2));
+        }else if(savedProduct.getId()!=null){
+            savedProduct.setImgUrl2(fetchProductById(savedProduct.getId()).getImgUrl2());
+        }
         savedProduct.setCreatedAt(LocalDateTime.now());
     
         // Guardamos el producto en la base de datos
@@ -57,8 +87,22 @@ public class ProductService {
         return new ProductDTO(savedProduct);
     }
     
+    private String imageCreationService(MultipartFile img) throws IOException{
+        final String UPLOAD_DIR = System.getProperty("user.dir")+"/src/main/resources/static/images";
+        File uploadDir = new File(UPLOAD_DIR);
+        System.out.println("ruta del directorio de carga de imagen -> "+uploadDir.getAbsolutePath());
+        if(!uploadDir.exists()){
+            uploadDir.mkdir();
+        }
+        String filename = System.currentTimeMillis()+"_"+img.getOriginalFilename();
+    
+        uploadDir = new File(uploadDir,filename);
+        System.out.println("ruta del archivo de imagen -> "+uploadDir.getAbsolutePath());
+        img.transferTo(uploadDir);
+        return "/images/"+filename;
+    }
 
-    public ProductDTO updateProduct(Long id, ProductDTO productDTO, MultipartFile image1, MultipartFile image2) throws IOException {
+    /* public ProductDTO updateProduct(Long id, ProductDTO productDTO, MultipartFile image1, MultipartFile image2) throws IOException {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id " + id));
 
@@ -81,7 +125,7 @@ public class ProductService {
 
         Product updatedProduct = productRepository.save(product);
         return new ProductDTO(updatedProduct);
-    }
+    } */
 
     public ProductDTO fetchProductById(Long id) {
         Product product = productRepository.findById(id)

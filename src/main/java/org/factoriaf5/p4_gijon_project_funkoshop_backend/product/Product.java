@@ -32,12 +32,11 @@ public class Product {
     private BigDecimal price;
     private Integer stock;
     private Integer discount;
-    private byte[] imageHash;
-    private byte[] imageHash2;
+    private String imgUrl;
+    private String imgUrl2;
     @ManyToOne
     @JoinColumn(name="category_id")
     private @With Category category;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-
 }

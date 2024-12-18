@@ -47,8 +47,10 @@ public class SecurityConfig {
     private static final String[] WhiteList = {
             "/auth/**",
             "/api/signup",
-            "/products/**",
-            "/categories/**"
+            "/api/products",
+            "/api/products/**",
+            "/api/products/discount/**",
+            "/api/categories/**"
     };
 
     @Bean
