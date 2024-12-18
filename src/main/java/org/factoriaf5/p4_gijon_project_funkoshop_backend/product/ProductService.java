@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.Category;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +44,7 @@ public class ProductService {
         Category category = categoryRepository.findById(productDTO.getCategoryId())
                 .orElseThrow(() -> new RuntimeException(
                         "Category not found with id. Status: 404 NOT_FOUND " + productDTO.getCategoryId()));
-        // Eliminamos 'product' y usamos directamente 'savedProduct'
         Product savedProduct = new Product();
-        // hace falta pasar id?
         savedProduct.setName(productDTO.getName());
         savedProduct.setDescription(productDTO.getDescription());
         savedProduct.setPrice(productDTO.getPrice());
@@ -77,9 +74,7 @@ public class ProductService {
             savedProduct.setImgUrl2(fetchProductById(savedProduct.getId()).getImgUrl2());
         }
         savedProduct.setCreatedAt(LocalDateTime.now());
-        // Guardamos el producto en la base de datos
         savedProduct = productRepository.save(savedProduct);
-        // Devolvemos el DTO con el producto guardado
         if (savedProduct == null) {
             throw new RuntimeException(
                     "Failed to save the product to the database. Status: 500 INTERNAL SERVER ERROR.");
@@ -116,13 +111,11 @@ public class ProductService {
         Sort.Direction direction = Sort.Direction.valueOf(sortDirection);
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
         Page<Product> productPage = productRepository.findAll(pageable);
-        // Filtrar los productos después de obtener la página
         List<ProductDTO> filteredProducts = productPage.stream()
                 .filter(x -> x.getName().toLowerCase().contains(keyword.toLowerCase()) ||
                         x.getDescription().toLowerCase().contains(keyword.toLowerCase()))
                 .map(ProductDTO::new)
                 .collect(Collectors.toList());
-        // Convertir la lista filtrada a una página
         return new PageImpl<>(filteredProducts, pageable, productPage.getTotalElements());
     }
 

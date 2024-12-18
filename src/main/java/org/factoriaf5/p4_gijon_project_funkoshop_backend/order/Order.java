@@ -2,10 +2,8 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 
 import java.time.LocalDate;
 import java.util.List;
-
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.User;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -64,5 +62,4 @@ public class Order {
     public enum Status {
         PENDING, PROCESSING, DELIVERED, CANCELED
     }
-
 }

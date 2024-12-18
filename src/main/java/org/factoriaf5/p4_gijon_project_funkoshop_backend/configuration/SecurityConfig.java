@@ -1,7 +1,6 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration;
 
 import javax.sql.DataSource;
-
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.AuthEntryPointJwt;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.AuthTokenFilter;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.Authority;

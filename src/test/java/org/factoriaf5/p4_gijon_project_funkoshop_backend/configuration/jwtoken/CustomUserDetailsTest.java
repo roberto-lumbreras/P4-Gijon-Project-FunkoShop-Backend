@@ -1,10 +1,8 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,7 +11,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 class CustomUserDetailsTest {
 
     private CustomUserDetails customUserDetails;
-
     private String email = "user@example.com";
     private String password = "password1234";
     private List<GrantedAuthority> authorities;

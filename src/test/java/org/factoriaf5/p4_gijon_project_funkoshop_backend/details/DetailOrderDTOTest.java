@@ -1,7 +1,6 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.details;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Product;
 import org.junit.jupiter.api.Test;
 

@@ -1,7 +1,6 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken;
 
 import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,13 +21,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtUtils jwtUtils;
-
     @Autowired
     private UserDetailsService userDetailsService;
-
-    @Autowired
-    // private DataSource dataSource;
-
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
     @Override
@@ -60,5 +53,4 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         logger.debug("AuthTokenFilter.java: {}", jwt);
         return jwt;
     }
-
 }

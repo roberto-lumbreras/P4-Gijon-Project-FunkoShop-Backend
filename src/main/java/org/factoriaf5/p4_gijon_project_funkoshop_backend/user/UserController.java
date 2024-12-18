@@ -3,7 +3,6 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.user;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -111,7 +109,7 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
 
-            String newPassword = userDetails.getPassword(); // Extrae la nueva contraseña
+            String newPassword = userDetails.getPassword(); 
             User updatedUser = userService.changePassword(authorizationHeader, userId, newPassword);
             return ResponseEntity.ok(updatedUser);
         } catch (IllegalArgumentException e) {

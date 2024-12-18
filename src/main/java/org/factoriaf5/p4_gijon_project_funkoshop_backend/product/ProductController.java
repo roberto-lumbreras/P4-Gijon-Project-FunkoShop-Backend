@@ -2,7 +2,6 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
 import java.io.IOException;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,11 +14,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,22 +39,6 @@ public class ProductController {
         }
     }
 
-
-
-  /*   @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> updateProduct(
-            @PathVariable Long id,
-            @RequestPart("product") ProductDTO productDTO,
-            @RequestPart(value = "image1", required = false) MultipartFile image1,
-            @RequestPart(value = "image2", required = false) MultipartFile image2) throws Exception {
-
-        ProductDTO updatedProduct = productService.updateProduct(id, productDTO, image1, image2);
-        return ResponseEntity.ok(updatedProduct);
-    }
-     */
-   
-
- 
     @PatchMapping("/discount/{id}")
     public ResponseEntity<ProductDTO> applyDiscountToProduct(
         @PathVariable Long id,
@@ -129,6 +109,5 @@ public class ProductController {
         @RequestParam int quantity) {
         ProductDTO updatedProduct = productService.updateStock(id, quantity);
         return ResponseEntity.ok(updatedProduct);
-}
-
+    }
 }

@@ -16,9 +16,7 @@ class AuthorityTest {
     void testParameterizedConstructor() {
         String username = "testUser";
         Role role = Role.ROLE_ADMIN;
-
         Authority authority = new Authority(username, role);
-
         assertEquals(username, authority.getUsername());
         assertEquals(role, authority.getAuthority());
     }
@@ -27,9 +25,7 @@ class AuthorityTest {
     void testSetUsername() {
         Authority authority = new Authority();
         String username = "newUser";
-
         authority.setUsername(username);
-
         assertEquals(username, authority.getUsername());
     }
 
@@ -37,9 +33,7 @@ class AuthorityTest {
     void testSetAuthority() {
         Authority authority = new Authority();
         Role role = Role.ROLE_USER;
-
         authority.setAuthority(role);
-
         assertEquals(role, authority.getAuthority());
     }
 }

@@ -7,7 +7,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.Category;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.category.CategoryRepository;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
@@ -29,11 +28,9 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
@@ -67,7 +64,7 @@ public class OrderControllerTest {
                 mapper = new ObjectMapper();
                 mapper.registerModule(new JavaTimeModule());
                 mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-                // Inicializar listas
+                
                 users = new ArrayList<>();
                 products = new ArrayList<>();
                 categories = new ArrayList<>();
@@ -145,7 +142,6 @@ public class OrderControllerTest {
                 order.setProductList(productList);
                 order.setTotalAmount(totalAmount);
                 order.setProductQuantity(productQuantity);
-
                 mockMvc.perform(MockMvcRequestBuilders.post("/orders")
                                 .with(SecurityMockMvcRequestPostProcessors.user("admin").password("password")
                                                 .roles("ADMIN"))

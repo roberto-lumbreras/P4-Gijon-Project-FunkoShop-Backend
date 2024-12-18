@@ -1,7 +1,6 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.details;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Product;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,8 +18,6 @@ public class DetailOrderDTO {
         this.productQuantity = detailOrder.getQuantity();
         this.price = detailOrder.getPrice();
     }
-
     public DetailOrderDTO() {
-
     }
 }

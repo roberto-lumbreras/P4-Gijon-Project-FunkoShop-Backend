@@ -1,10 +1,8 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
-
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
 import org.junit.jupiter.api.Test;
 

@@ -6,10 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import java.nio.file.AccessDeniedException;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -17,19 +15,14 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
-
     @Mock
     private PasswordEncoder passwordEncoder;
-
     @Mock
     private JwtUtils jwtUtils;
-
     @Mock
     private JdbcTemplate jdbcTemplate;
-
     @Mock
     private AuthorityRepository authorityRepository;
-
     private UserService userService;
 
     @BeforeEach
@@ -53,7 +46,6 @@ class UserServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
 
         User result = userService.getUserById("Bearer " + token, userId);
-
         assertNotNull(result);
         assertEquals(userId, result.getId());
     }
@@ -94,7 +86,6 @@ class UserServiceTest {
         AccessDeniedException exception = assertThrows(AccessDeniedException.class, () -> {
             userService.getUsers("Bearer " + token);
         });
-
         assertEquals("Access DENIED. User not authorized, only ADMIN", exception.getMessage());
     }
 
@@ -114,7 +105,6 @@ class UserServiceTest {
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
         
         User result = userService.addUser(newUser);
-
         assertNotNull(result);
         assertEquals(newUser.getEmail(), result.getEmail());
     }
@@ -139,7 +129,6 @@ class UserServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
 
         Boolean result = userService.activeUserById("Bearer " + token, userId);
-
         assertTrue(result);
         assertTrue(mockUser.getEnabled());
     }
@@ -147,7 +136,6 @@ class UserServiceTest {
     @Test
     void testDeleteUser_Success() throws AccessDeniedException {
         Long userId = 1L;
-
         User mockAdmin = new User();
         mockAdmin.setRole(Role.ROLE_ADMIN);
         mockAdmin.setJwToken("validToken");
@@ -165,7 +153,6 @@ class UserServiceTest {
         when(authorityRepository.findByUsername("user@example.com")).thenReturn(mockAuthority);
 
         userService.deleteUser("Bearer validToken", userId);
-
         verify(userRepository, times(1)).deleteById(userId);
         verify(authorityRepository, times(1)).delete(mockAuthority);
     }
@@ -189,11 +176,9 @@ class UserServiceTest {
         User updatedUser = new User();
         updatedUser.setId(userId);
         updatedUser.setPassword("encodedNewPassword");
-
         when(userRepository.save(any(User.class))).thenReturn(updatedUser);
 
         User result = userService.changePassword("Bearer " + token, userId, newPassword);
-
         assertNotNull(result);
         assertEquals("encodedNewPassword", result.getPassword());
     }

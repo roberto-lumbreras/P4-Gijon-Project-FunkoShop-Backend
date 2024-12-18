@@ -2,24 +2,20 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
-
 import jakarta.servlet.http.HttpServletRequest;
 
 class JwtUtilsTest {
 
     @InjectMocks
     private JwtUtils jwtUtils;
-
     @Mock
     private HttpServletRequest request;
-
     @Mock
     private Logger logger;
 

@@ -26,8 +26,4 @@ public class CategoryService {
             throw new RuntimeException("Category not found");
         }
     }
-
-
-
-
 }

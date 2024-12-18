@@ -3,9 +3,7 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.auth;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-
 import java.util.Optional;
-
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.JwtUtils;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.User;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.UserRepository;
@@ -26,11 +24,7 @@ public class LoginServiceTest {
         jwtUtils = Mockito.mock(JwtUtils.class);
         userRepository = Mockito.mock(UserRepository.class);
         passwordEncoder = Mockito.mock(PasswordEncoder.class);
-
         loginService = new LoginService();
-        loginService.setJwtUtils(jwtUtils);
-        loginService.setRepository(userRepository);
-        loginService.setEncoder(passwordEncoder);
     }
 
     @Test

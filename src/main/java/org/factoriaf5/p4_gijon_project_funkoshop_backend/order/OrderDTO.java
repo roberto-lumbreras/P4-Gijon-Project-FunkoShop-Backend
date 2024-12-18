@@ -2,10 +2,8 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
 
 import java.time.LocalDate;
 import java.util.List;
-
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.Order.Status;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,7 +26,6 @@ public class OrderDTO {
     }
 
     public OrderDTO(Order order) {
-
         this.orderId = order.getOrderId();
         this.userId = order.getUser().getId();
         this.orderDate = order.getOrderDate();

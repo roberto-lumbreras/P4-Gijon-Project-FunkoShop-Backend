@@ -1,9 +1,7 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.user;
 
 import java.util.List;
-
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Product;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

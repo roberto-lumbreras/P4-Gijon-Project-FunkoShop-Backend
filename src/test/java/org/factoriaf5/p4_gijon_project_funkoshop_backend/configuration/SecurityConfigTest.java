@@ -3,9 +3,7 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-
 import javax.sql.DataSource;
-
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.AuthEntryPointJwt;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.AuthTokenFilter;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.AuthorityRepository;
@@ -24,19 +22,14 @@ class SecurityConfigTest {
 
     @InjectMocks
     private SecurityConfig securityConfig;
-
     @Mock
     private DataSource dataSource;
-
     @Mock
     private AuthEntryPointJwt unauthorizedHandler;
-
     @Mock
     private AuthorityRepository authorityRepository;
-
     @Mock
     private UserRepository userRepository;
-
     @Mock
     private PasswordEncoder passwordEncoder;
 
@@ -61,11 +54,8 @@ class SecurityConfigTest {
     void testInitData() {
         when(userRepository.findByEmail("admin@email.com")).thenReturn(java.util.Optional.empty());
         when(passwordEncoder.encode("password1234")).thenReturn("encodedPassword");
-
         CommandLineRunner initData = securityConfig.initData(userRepository, passwordEncoder, authorityRepository);
-
         assertDoesNotThrow(() -> initData.run());
-
         verify(userRepository, times(1)).save(any());
         verify(authorityRepository, times(1)).save(any());
     }
@@ -74,11 +64,8 @@ class SecurityConfigTest {
     void testAuthenticationManager() throws Exception {
         AuthenticationConfiguration authenticationConfiguration = mock(AuthenticationConfiguration.class);
         AuthenticationManager manager = mock(AuthenticationManager.class);
-
         when(authenticationConfiguration.getAuthenticationManager()).thenReturn(manager);
-
         AuthenticationManager authManager = securityConfig.authenticationManager(authenticationConfiguration);
-
         assertNotNull(authManager, "AuthenticationManager should not be null");
     }
 }

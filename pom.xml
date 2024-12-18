@@ -7,7 +7,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.4.0</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<relativePath /> 
 	</parent>
 	<groupId>org.factoriaf5</groupId>
 	<artifactId>p4-gijon-project-funkoshop-backend</artifactId>
@@ -69,7 +69,6 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
@@ -103,21 +102,13 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-       <!-- Test/EFS1-50/testingProductController -->
 			<version>3.12.4</version>
 
 			<scope>test</scope>
 		</dependency>
-<!-- 	<version>5.14.2</version> ANULADA ESTA VERSIÓN POR PROBLEMAS, hablar con ana belén o acacia -->
-	<!-- 	<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>4.6.1</version> <!- - Asegúrate de usar una versión compatible - ->
-			<scope>test</scope>
-		</dependency> -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson if Gson is preferred -->
+			<artifactId>jjwt-jackson</artifactId> 
 			<version>0.12.5</version>
 			<scope>runtime</scope>
 		</dependency>

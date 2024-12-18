@@ -2,9 +2,7 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.user;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
-
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.JwtUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,7 +16,6 @@ public class UserService {
     private final JdbcTemplate jdbcTemplate;
     private final AuthorityRepository authorityRepository;
 
-    @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils,
             JdbcTemplate jdbcTemplate, AuthorityRepository authorityRepository) {
         this.userRepository = userRepository;
@@ -31,7 +28,6 @@ public class UserService {
     public User getUserById(String authorizationHeader, Long userId) {
         String token = authorizationHeader.substring(7);
         String emailFromToken = jwtUtils.getEmailFromJwtToken(token);
-
         User userRequest = userRepository.findByEmail(emailFromToken)
                 .orElseThrow(() -> new IllegalArgumentException("User request not found"));
 
@@ -46,7 +42,6 @@ public class UserService {
     public List<User> getUsers(String authorizationHeader) throws AccessDeniedException {
         String token = authorizationHeader.substring(7);
         String emailFromToken = jwtUtils.getEmailFromJwtToken(token);
-
         User userRequest = userRepository.findByEmail(emailFromToken)
                 .orElseThrow(() -> new IllegalArgumentException("User request not found"));
 
@@ -66,11 +61,9 @@ public class UserService {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new RuntimeException("Email already in use: " + user.getEmail());
         }
-
         user.setUsername(user.getEmail());
         user.setEmail(user.getEmail());
         user.setEnabled(true);
-
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         if (user.getRole() == null) {
@@ -78,7 +71,6 @@ public class UserService {
         }
 
         User savedUser = userRepository.save(user);
-
         String authorityQuery = "INSERT INTO authorities (username, authority) VALUES ('" + user.getEmail() + "', '"
                 + user.getRole() + "')";
         jdbcTemplate.update(authorityQuery);

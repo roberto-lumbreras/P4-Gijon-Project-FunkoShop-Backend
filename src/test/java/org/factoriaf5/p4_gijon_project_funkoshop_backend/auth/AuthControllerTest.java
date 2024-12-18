@@ -4,7 +4,6 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,10 +19,8 @@ public class AuthControllerTest {
 
     @Mock
     private LoginService loginService;
-
     @InjectMocks
     private AuthController authController;
-
     private MockMvc mockMvc;
 
     @BeforeEach
