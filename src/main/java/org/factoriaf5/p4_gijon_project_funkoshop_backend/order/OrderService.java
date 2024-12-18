@@ -1,291 +1,245 @@
-/*
- * package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
- * 
- * import java.io.ByteArrayOutputStream;
- * import java.util.List;
- * import java.util.Optional;
- * import java.util.stream.Collectors;
- * 
- * import javax.swing.text.Document;
- * 
- * import
- * org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.
- * JwtUtils;
- * import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
- * import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.
- * DetailOrderRepository;
- * import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.User;
- * import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.UserRepository;
- * import org.springframework.beans.factory.annotation.Autowired;
- * import org.springframework.stereotype.Service;
- * import org.springframework.web.bind.annotation.RequestHeader;
- * 
- * import com.lowagie.text.Paragraph;
- * import com.lowagie.text.pdf.PdfWriter;
- * 
- * import jakarta.transaction.Transactional;
- * 
- * @Service
- * public class OrderService {
- * 
- * @Autowired
- * private UserRepository userRepository;
- * private JwtUtils jwtUtils;
- * private OrderRepository orderRepository;
- * private DetailOrderRepository detailOrderRepository;
- * 
- * public enum Status {
- * PENDING, PROCESSING, DELIVERED, CANCELED
- * }
- * 
- * public OrderService(OrderRepository orderRepository, UserRepository
- * userRepository, JwtUtils jwtUtils,
- * DetailOrderRepository detailOrderRepository) {
- * this.orderRepository = orderRepository;
- * this.userRepository = userRepository;
- * this.jwtUtils = jwtUtils;
- * this.detailOrderRepository = detailOrderRepository;
- * 
- * }
- * 
- * public OrderService() {
- * }
- * 
- * private Order initializeOrder(OrderDto orderDto) {
- * Order order = new Order();
- * 
- * order.setUser(orderDto.getUserId());
- * order.setOrderDate(orderDto.getOrderDate());
- * order.setPayment(orderDto.getPayment());
- * order.setIsPaid(confirmPaid(orderDto.getPayment()));
- * order.setStatus(Status.PROCESSING);
- * order.setTotalAmount(orderDto.getTotalAmount());
- * order.setPrice(orderDto.getPrice());
- * 
- * return order;
- * }
- * 
- * @Transactional
- * public Order createOrder(@RequestHeader("Authorization") String
- * authorizationHeader, OrderDto orderDto) {
- * String token = authorizationHeader.substring(7);
- * String emailToken = jwtUtils.getEmailFromJwtToken(token);
- * 
- * User user = userRepository.findByEmail(emailToken)
- * .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
- * 
- * if (!user.getJwToken().equals(token)) {
- * throw new
- * SecurityException("El token enviado no coincide con el que tiene el usuario"
- * );
- * }
- * 
- * if (!"user".equals(user.getRole()) && !"admin".equals(user.getRole())) {
- * throw new
- * IllegalArgumentException("Acceso denegado. Solo un USER o un ADMIN pueden crear un pedido"
- * );
- * }
- * 
- * validatePaymentMethod(orderDto.getPayment());
- * 
- * Order order = initializeOrder(orderDto);
- * Order savedOrder = orderRepository.save(order);
- * 
- * List<DetailOrder> productList = mapDetails(orderDto.getProductList(),
- * savedOrder);
- * 
- * detailOrderRepository.saveAll(productList);
- * savedOrder.setProductList(productList);
- * 
- * orderRepository.save(savedOrder);
- * }
- * 
- * private List<DetailOrder> mapDetails(List<DetailOrder> productList, Order
- * savedOrder) {
- * return productList.stream()
- * .map(detailDto -> {
- * DetailOrder detailOrder = new DetailOrder();
- * 
- * detailOrder.setProductQuantity(detailDto.getProductQuantity());
- * detailOrder.setPrice(detailDto.getPrice());
- * detailOrder.setOrder(savedOrder);
- * detailOrder.setProduct(productList);
- * 
- * return detailOrder;
- * })
- * .collect(Collectors.toList());
- * }
- * 
- * private boolean confirmPaid(String payment) {
- * return "tarjeta".equalsIgnoreCase(payment);
- * }
- * 
- * private void validatePaymentMethod(String payment) {
- * if (!"contrareembolso".equalsIgnoreCase(payment) &&
- * !"tarjeta".equalsIgnoreCase(payment)) {
- * throw new
- * IllegalArgumentException("El método de pago debe ser 'contrareembolso' o 'tarjeta'."
- * );
- * }
- * }
- * 
- * public List<OrderDto> listOrdersByUser(String authorizationHeader, OrderDto
- * orderDto) {
- * String token = authorizationHeader.substring(7);
- * String emailToken = jwtUtils.getEmailFromJwtToken(token);
- * 
- * User user = userRepository.findByEmail(emailToken)
- * .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
- * 
- * if (!user.getJwToken().equals(token)) {
- * throw new
- * SecurityException("El token enviado no coincide con el que tiene el usuario"
- * );
- * }
- * 
- * if (!"user".equals(user.getRole()) && !"admin".equals(user.getRole())) {
- * throw new
- * IllegalArgumentException("Acceso denegado. Solo un USER o un ADMIN pueden crear un pedido"
- * );
- * }
- * 
- * List<Order> listOrdersFromUser =
- * orderRepository.findByUserId(orderDto.getUserId());
- * 
- * return listOrdersFromUser.stream()
- * .map(OrderDto::new)
- * .collect(Collectors.toList());
- * }
- * 
- * public List<OrderDto> getAllOrders(String authorizationHeader) {
- * String token = authorizationHeader.substring(7);
- * String emailToken = jwtUtils.getEmailFromJwtToken(token);
- * 
- * User user = userRepository.findByEmail(emailToken)
- * .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
- * 
- * if (!user.getJwToken().equals(token)) {
- * throw new
- * SecurityException("El token enviado no coincide con el que tiene el usuario"
- * );
- * }
- * 
- * if (!"user".equals(user.getRole()) && !"admin".equals(user.getRole())) {
- * throw new
- * IllegalArgumentException("Acceso denegado. Solo un USER o un ADMIN pueden crear un pedido"
- * );
- * }
- * 
- * List<Order> list = orderRepository.findAll();
- * 
- * return list.stream()
- * .map(OrderDto::new)
- * .collect(Collectors.toList());
- * }
- * 
- * public Status getStatus(String authorizationHeader, Long orderId) {
- * String token = authorizationHeader.substring(7);
- * String emailToken = jwtUtils.getEmailFromJwtToken(token);
- * 
- * User user = userRepository.findByEmail(emailToken);
- * 
- * if (user == null) {
- * throw new IllegalArgumentException("User not found.");
- * }
- * 
- * if (!token.equals(user.getJwToken())) {
- * throw new SecurityException("Invalid token.");
- * }
- * 
- * if (!"user".equals(user.getRole()) && !"admin".equals(user.getRole())) {
- * throw new IllegalArgumentException("Unauthorized user.");
- * }
- * 
- * Order order = orderRepository.findById(orderId)
- * .orElseThrow(() -> new IllegalArgumentException("Order not found."));
- * 
- * if (order == null) {
- * throw new IllegalArgumentException("Order not found.");
- * }
- * 
- * return order.getStatus();
- * }
- * 
- * @Transactional
- * public void updateOrderStatus(String authorizationHeader, Long orderId,
- * Status status) {
- * String token = authorizationHeader.substring(7);
- * String emailToken = jwtUtils.getEmailFromJwtToken(token);
- * 
- * User user = userRepository.findByEmail(emailToken);
- * 
- * if (user == null) {
- * throw new IllegalArgumentException("User not found");
- * }
- * 
- * if (!token.equals(user.getJwToken())) {
- * throw new SecurityException("Invalid token");
- * }
- * 
- * Order order = orderRepository.findById(orderId)
- * .orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " +
- * orderId));
- * 
- * order.setStatus(status);
- * orderRepository.save(order);
- * }
- * 
- * @Autowired
- * 
- * @Transactional
- * public byte[] generateOrderPDF(String authorizationHeader, Long orderId) {
- * String token = authorizationHeader.substring(7);
- * String emailToken = jwtUtils.getEmailFromJwtToken(token);
- * 
- * User user = userRepository.findByEmail(emailToken);
- * 
- * if (user == null) {
- * throw new IllegalArgumentException("User not found");
- * }
- * 
- * if (!token.equals(user.getJwToken())) {
- * throw new IllegalArgumentException("Invalid token");
- * }
- * 
- * Optional<Order> orderOptional = orderRepository.findById(orderId);
- * if (orderOptional.isEmpty()) {
- * throw new IllegalArgumentException("Order not found");
- * }
- * 
- * Order order = orderOptional.get();
- * List<DetailOrder> details =
- * detailOrderRepository.findByOrderId(order.getOrderId());
- * 
- * ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
- * try {
- * Document document = new Document();
- * PdfWriter.getInstance(document, byteArrayOutputStream);
- * document.open();
- * 
- * document.add(new Paragraph("Order Invoice"));
- * document.add(new Paragraph("Order ID: " + order.getOrderId()));
- * document.add(new Paragraph("Order Status: " + order.getStatus()));
- * document.add(new Paragraph("Order Details:"));
- * 
- * for (DetailOrder detail : details) {
- * document.add(new Paragraph("Product ID: " + detail.getProduct()));
- * document.add(new Paragraph("Product Quantity: " +
- * detail.getProductQuantity()));
- * document.add(new Paragraph("Price: " + detail.getPrice()));
- * }
- * 
- * document.close();
- * } catch (Exception e) {
- * throw new IllegalArgumentException("Error generating PDF: " +
- * e.getMessage());
- * }
- * 
- * return byteArrayOutputStream.toByteArray();
- * }
- * }
+package org.factoriaf5.p4_gijon_project_funkoshop_backend.order;
+
+import java.io.ByteArrayOutputStream;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrder;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.details.DetailOrderDTO;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.order.Order.Status;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.Product;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.ProductDTO;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.product.ProductRepository;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.Role;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.User;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
+
+import jakarta.transaction.Transactional;
+
+@Service
+public class OrderService {
+
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private ProductRepository productRepository;
+
+    public OrderDTO createOrder(OrderDTO orderDTO) {
+        // Validar y obtener el usuario desde el repositorio
+        User user = userRepository.findById(orderDTO.getUserId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Convertir el DTO en una entidad `Order`
+        Order order = new Order();
+        order.setUser(user);
+        order.setOrderDate(orderDTO.getOrderDate() != null ? orderDTO.getOrderDate() : LocalDate.now());
+        order.setIsPaid(orderDTO.getIsPaid());
+        order.setPayment(orderDTO.getPayment());
+        order.setStatus(orderDTO.getStatus() != null ? orderDTO.getStatus() : Order.Status.PENDING);
+        order.setTotalAmount(orderDTO.getTotalAmount());
+        order.setProductList(orderDTO.getProductList());
+        order.setTotalAmount(orderDTO.getTotalAmount());
+
+        // Guardar la entidad en la base de datos
+        Order savedOrder = orderRepository.save(order);
+
+        // Convertir la entidad guardada en un DTO y devolverla
+        return new OrderDTO(savedOrder);
+    }
+
+/*     private boolean confirmPaid(String payment) {
+        return "tarjeta".equalsIgnoreCase(payment);
+    }
+
+    private void validatePaymentMethod(String payment) {
+        if (!"contrareembolso".equalsIgnoreCase(payment) && !"tarjeta".equalsIgnoreCase(payment)) {
+            throw new IllegalArgumentException("El método de pago debe ser 'contrareembolso' o 'tarjeta'.");
+        }
+    } */
+
+/*     public Status getStatus(Long orderId) {
+        String username = getAuthenticatedUsername(); if (username == null) { throw new SecurityException("User is not authenticated."); }
+        User user = userRepository.findUserByUsername(username);
+            if (user == null) {
+                throw new IllegalArgumentException("User not found."); }
+        Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new IllegalArgumentException("Order not found.")); return order.getStatus(); }
+        private String getAuthenticatedUsername() {
+            var authentication = SecurityContextHolder.getContext().getAuthentication(); if (authentication != null && authentication.isAuthenticated()) {
+            return authentication.getName();  }
+        return null;
+    }
  */
+    @Transactional
+    public void updateOrderStatus(Long orderId, Status status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado con ID: " + orderId));
+    
+        order.setStatus(status);
+        orderRepository.save(order);
+    }
+
+/*     @Autowired
+    @Transactional
+    public byte[] generateOrderPDF(Long orderId) {
+        Optional<Order> orderOptional = orderRepository.findById(orderId);
+        if (orderOptional.isEmpty()) {
+            throw new IllegalArgumentException("Order not found");
+        }
+
+        Order order = orderOptional.get();
+        List<DetailOrder> details = detailOrderRepository.findByOrderId(order.getOrderId());
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try {
+            Document document = new Document();
+            PdfWriter.getInstance(document, byteArrayOutputStream);
+            document.open();
+
+            document.add(new Paragraph("Order Invoice"));
+            document.add(new Paragraph("Order ID: " + order.getOrderId()));
+            document.add(new Paragraph("Order Status: " + order.getStatus()));
+            document.add(new Paragraph("Order Details:"));
+
+            for (DetailOrder detail : details) {
+                document.add(new Paragraph("Product ID: " + detail.getProduct()));
+                document.add(new Paragraph("Product Quantity: " + detail.getQuantity()));
+                document.add(new Paragraph("Price: " + detail.getPrice()));
+            }
+
+            document.close();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error generating PDF: " + e.getMessage());
+        }
+
+        return byteArrayOutputStream.toByteArray();
+    } */
+
+    public List<OrderDTO> getAllOrders() {
+    List<Order> list = orderRepository.findAll();
+    return list.stream()
+        .map(OrderDTO::new)
+        .collect(Collectors.toList());
+    }
+
+    public List<OrderDTO> listByMonth() {
+        LocalDate now = LocalDate.now();
+
+        LocalDate firstDayOfLastMonth = now.minusMonths(1).withDayOfMonth(1);
+        LocalDate lastDayOfLastMonth = now.withDayOfMonth(1).minusDays(1);
+        List<OrderDTO> OrderDTO = orderRepository.findAll().stream().filter(order -> {
+            LocalDate orderDate = order.getOrderDate();
+            return !orderDate.isBefore(firstDayOfLastMonth) && !orderDate.isAfter(lastDayOfLastMonth);
+        }).map(order -> new OrderDTO(order)).collect(Collectors.toList());
+        return OrderDTO;
+    }
+
+    public List<ProductDTO> getBestSellers() {
+
+        // Mapa para almacenar la cantidad total de cada producto
+        Map<Long, Integer> productSalesMap = new HashMap<>();
+
+        List<Order> orders = orderRepository.findAll();
+
+        // Recorrer todas las órdenes y contar la cantidad de cada producto vendido
+
+        for (Order order : orders) {
+
+            for (DetailOrder detailOrder : order.getProductList()) {
+                Long productId = detailOrder.getProduct().getId();
+                int quantity = detailOrder.getQuantity();
+
+                productSalesMap.put(productId, productSalesMap.getOrDefault(productId, 0) + quantity);
+            }
+        }
+
+        // Ordenar los productos por la cantidad total (de mayor a menor)
+
+        List<Map.Entry<Long, Integer>> sortedProductList = productSalesMap.entrySet().stream()
+                .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
+                .collect(Collectors.toList());
+
+        // Convertir los productos ordenados en una lista de DTO
+
+        List<ProductDTO> bestSellers = new ArrayList<>();
+        for (Map.Entry<Long, Integer> entry : sortedProductList) {
+            Long productId = entry.getKey();
+
+            // Obtener detalles del producto
+            Product product = productRepository.findById(productId)
+                    .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
+
+            // agregar los datos que consideres necesarios en ProductDto
+            bestSellers.add(new ProductDTO(product));
+        }
+
+        return bestSellers;
+    }
+
+    public byte[] generatePDFAllOrders(DetailOrderDTO detailOrderDTO) {
+
+        List<Order> orders = orderRepository.findAll();
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try {
+
+            Document document = new Document();
+            PdfWriter.getInstance(document, byteArrayOutputStream);
+            document.open();
+
+            for (Order order : orders) {
+
+                document.add(new Paragraph("Order Invoice"));
+                document.add(new Paragraph("Order ID: " + order.getOrderId()));
+                document.add(new Paragraph("Order Status: " + order.getStatus()));
+                document.add(new Paragraph("Order Details:" + order.toString()));
+
+            }
+            document.close();
+
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error generating PDF: " + e.getMessage());
+        }
+
+        return byteArrayOutputStream.toByteArray();
+
+    }
+
+    @SuppressWarnings("ConvertToStringSwitch")
+    public List<OrderDTO> listOrdersByUser(User authenticatedUser) {
+        if (authenticatedUser == null) {
+            throw new IllegalArgumentException("Usuario no autenticado");
+        }
+    
+        Role role = authenticatedUser.getRole();
+    
+        if ("ADMIN".equals(role.name())) {
+            return orderRepository.findAll().stream()
+                    .map(order -> new OrderDTO(order))  // Conversion manual
+                    .collect(Collectors.toList());
+        } else if ("USER".equals(role.name())) {
+            return orderRepository.findByUserId(authenticatedUser.getId()).stream()
+                    .map(order -> new OrderDTO(order))  // Conversion manual
+                    .collect(Collectors.toList());
+        } else {
+            throw new SecurityException("Acceso denegado. Solo un USER o un ADMIN pueden listar pedidos");
+        }
+    }
+
+    /* public void sendEmail(String authorizationHeader, DetailOrderDTO detailOrderDTO) {
+        throw new UnsupportedOperationException("Unimplemented method 'sendEmail'");
+    } */
+
+}

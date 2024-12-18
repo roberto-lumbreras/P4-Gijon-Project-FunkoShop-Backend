@@ -1,20 +1,22 @@
 package org.factoriaf5.p4_gijon_project_funkoshop_backend.product;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.multipart.MultipartFile;
+
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -25,66 +27,84 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.math.BigDecimal;
 import java.util.List;
 
-@WebMvcTest(ProductController.class)
+
+@SpringBootTest
+@AutoConfigureMockMvc
 class ProductControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockitoBean
+    @SuppressWarnings("removal")
+    @MockBean
     private ProductService productService;
-
-    @InjectMocks
-    private ProductController productController;
-
-    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        this.objectMapper = new ObjectMapper();
     }
 
     @Test
     void addProduct_ShouldReturnCreatedProduct() throws Exception {
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setName("Test Product");
-        productDTO.setDescription("Test Description");
-        productDTO.setPrice(new BigDecimal("19.99"));
-        productDTO.setStock(10);
-        productDTO.setCategoryId(1L);
+    ProductDTO productDTO = new ProductDTO();
+    productDTO.setName("Test Product");
+    productDTO.setDescription("Test Description");
+    productDTO.setPrice(new BigDecimal("19.99"));
+    productDTO.setStock(10);
+    productDTO.setCategoryId(1L);
 
-        when(productService.createProduct(any(ProductDTO.class))).thenReturn(productDTO);
+    MockMultipartFile file1 = new MockMultipartFile("file1", "test1.txt", "text/plain", "file1 content".getBytes());
+    MockMultipartFile file2 = new MockMultipartFile("file2", "test2.txt", "text/plain", "file2 content".getBytes());
 
-        mockMvc.perform(post("/api/products")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(productDTO)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Test Product"));
+    when(productService.createProduct(any(ProductDTO.class), any(MultipartFile.class), any(MultipartFile.class)))
+            .thenReturn(productDTO);
 
-        verify(productService, times(1)).createProduct(any(ProductDTO.class));
-    }
+    mockMvc.perform(multipart("/api/products")
+            .file(file1)
+            .file(file2)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .param("name", productDTO.getName())
+            .param("description", productDTO.getDescription())
+            .param("price", productDTO.getPrice().toString())
+            .param("stock", String.valueOf(productDTO.getStock()))
+            .param("categoryId", String.valueOf(productDTO.getCategoryId())))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name").value("Test Product"));
 
-    @Test
-    void updateProduct_ShouldReturnUpdatedProduct() throws Exception {
-        Long id = 1L;
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setName("Updated Product");
-        productDTO.setDescription("Updated Description");
-        productDTO.setPrice(new BigDecimal("29.99"));
-        productDTO.setStock(20);
-        productDTO.setCategoryId(1L);
+    verify(productService, times(1)).createProduct(any(ProductDTO.class), any(MultipartFile.class), any(MultipartFile.class));
+}
 
-        when(productService.updateProduct(eq(id), any(ProductDTO.class))).thenReturn(productDTO);
+@Test
+void updateProduct_ShouldReturnUpdatedProduct() throws Exception {
+    Long id = 1L;
+    ProductDTO productDTO = new ProductDTO();
+    productDTO.setName("Updated Product");
+    productDTO.setDescription("Updated Description");
+    productDTO.setPrice(new BigDecimal("29.99"));
+    productDTO.setStock(20);
+    productDTO.setCategoryId(1L);
 
-        mockMvc.perform(put("/api/products/{id}", id)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(productDTO)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Updated Product"));
+    MockMultipartFile file1 = new MockMultipartFile("file1", "update1.txt", "text/plain", "file1 content".getBytes());
+    MockMultipartFile file2 = new MockMultipartFile("file2", "update2.txt", "text/plain", "file2 content".getBytes());
 
-        verify(productService, times(1)).updateProduct(eq(id), any(ProductDTO.class));
-    }
+    when(productService.updateProduct(eq(id), any(ProductDTO.class), any(MultipartFile.class), any(MultipartFile.class)))
+            .thenReturn(productDTO);
+
+    mockMvc.perform(multipart("/api/products/{id}", id)
+            .file(file1)
+            .file(file2)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .param("name", productDTO.getName())
+            .param("description", productDTO.getDescription())
+            .param("price", productDTO.getPrice().toString())
+            .param("stock", String.valueOf(productDTO.getStock()))
+            .param("categoryId", String.valueOf(productDTO.getCategoryId())))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name").value("Updated Product"));
+
+    verify(productService, times(1)).updateProduct(eq(id), any(ProductDTO.class), any(MultipartFile.class), any(MultipartFile.class));
+}
+
 
     @Test
     void deleteProduct_ShouldReturnNoContent() throws Exception {

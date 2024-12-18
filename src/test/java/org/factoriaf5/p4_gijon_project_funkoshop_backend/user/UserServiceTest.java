@@ -12,6 +12,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.Optional;
 
 public class UserServiceTest {
@@ -41,16 +42,17 @@ public class UserServiceTest {
 
     @Test
     void testGetUserById_success() {
-        // Simular que el repositorio encuentra el usuario
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+    // Simular que el repositorio encuentra el usuario
+    when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        // Llamada al servicio
-        User result = userService.getUserById(1L);
+    // Llamada al servicio
+    User result = userService.getUserById("anyString", 1L);
 
-        // Verificar el resultado
-        assertNotNull(result);
-        assertEquals(user.getId(), result.getId());
-    }
+    // Verificar el resultado
+    assertNotNull(result);
+    assertEquals(user.getId(), result.getId());
+}
+
 
     @Test
     void testGetUserById_userNotFound() {
@@ -59,7 +61,7 @@ public class UserServiceTest {
 
         // Llamada al servicio y comprobación de la excepción
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            userService.getUserById(1L);
+            userService.getUserById("test", 1L);
         });
         assertEquals("User not found with ID: 1", exception.getMessage());
     }
@@ -91,19 +93,16 @@ public class UserServiceTest {
         assertEquals("Email already in use: test@example.com", exception.getMessage());
     }
 
-   @Test
-    void testDeleteUser_success() {
-    // Simular que el usuario existe en el repositorio
-    when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-    when(userRepository.existsById(1L)).thenReturn(true); // Asegurarnos de que el usuario existe
-    doNothing().when(userRepository).deleteById(1L); // Simulamos que el método deleteById no hace nada (que es lo esperado)
-
-    // Llamada al servicio
-    userService.deleteUser(1L);
-
-    // Verificar que se llamó al método deleteById en el repositorio
-    verify(userRepository, times(1)).deleteById(1L);
-}
+    @Test
+    void testDeleteUser_success() throws AccessDeniedException{
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        doNothing().when(userRepository).deleteById(1L);
+    
+        userService.deleteUser("anyString", 1L);
+    
+        verify(userRepository, times(1)).deleteById(1L);
+    }
+    
 
     @Test
     void testDeleteUser_userNotFound() {
@@ -112,25 +111,23 @@ public class UserServiceTest {
 
         // Llamada al servicio y comprobación de la excepción
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            userService.deleteUser(1L);
+            userService.deleteUser("test", 1L);
+
         });
         assertEquals("User not found with ID: 1", exception.getMessage());
     }
 
     @Test
     void testChangePassword_success() {
-        // Simular que el usuario existe
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(passwordEncoder.encode(anyString())).thenReturn("encodednewPassword");
-        when(userRepository.save(any(User.class))).thenReturn(user);
+    when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+    when(passwordEncoder.encode(anyString())).thenReturn("encodednewPassword");
 
-        // Llamada al servicio
-        User result = userService.changePassword(1L, "newPassword");
+    User result = userService.changePassword("anyString", 1L, "newPassword");
 
-        // Verificar el resultado
-        assertNotNull(result);
-        assertEquals("encodednewPassword", result.getPassword());
-    }
+    assertNotNull(result);
+    assertEquals("encodednewPassword", result.getPassword());
+}
+
 
     @Test
     void testChangePassword_userNotFound() {
@@ -139,7 +136,7 @@ public class UserServiceTest {
 
         // Llamada al servicio y comprobación de la excepción
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            userService.changePassword(1L, "newPassword");
+            userService.changePassword("test", 1L, "newPassword");
         });
         assertEquals("User not found with ID: 1", exception.getMessage());
     }

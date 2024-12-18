@@ -18,7 +18,6 @@ public class UserDTO {
     private Boolean suscribed;
     private String phoneNumber;
 
-
     public UserDTO(String firstName, String lastName, String firstAddress, String secondAddress,
             Boolean shippingAddress, Boolean suscribed, String phoneNumber) {
         this.firstName = firstName;
