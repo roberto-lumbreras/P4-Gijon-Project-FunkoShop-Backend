@@ -26,22 +26,17 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Crear un nuevo usuario
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody User user) {
         try {
-            // Llamar al servicio para crear el usuario
             userService.addUser(user);
 
-            // Respuesta exitosa
             return ResponseEntity.ok("Te has registrado correctamente");
         } catch (RuntimeException e) {
-            // Si el email ya está en uso, el servicio lanzará una excepción
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    // Obtener todos los usuarios
     @GetMapping(path = "/admin/get-users")
     public ResponseEntity<List<User>> getUsers(@RequestHeader("Authorization") String authorizationHeader) {
         try {
@@ -60,7 +55,6 @@ public class UserController {
         }
     }
 
-    // Activar usuario
     @PatchMapping("/admin/active/{userId}")
     public ResponseEntity<Map<String, String>> activeUser(@RequestHeader("Authorization") String authorizationHeader,
             @PathVariable Long userId) {
@@ -90,7 +84,6 @@ public class UserController {
         }
     }
 
-    // Obtener usuario por ID
     @GetMapping(path = "/user/{userId}")
     public ResponseEntity<?> getUserById(@RequestHeader("Authorization") String authorizationHeader,
             @PathVariable Long userId) {
@@ -110,7 +103,6 @@ public class UserController {
         }
     }
 
-    // Cambiar contraseña
     @PatchMapping("/user/change-password/{userId}")
     public ResponseEntity<User> changePassword(@RequestHeader("Authorization") String authorizationHeader,
             @PathVariable Long userId, @RequestBody User userDetails) {
@@ -129,7 +121,6 @@ public class UserController {
         }
     }
 
-    // Eliminar usuario
     @DeleteMapping("/admin/delete/{userId}")
     public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String authorizationHeader,
             @PathVariable Long userId) {
@@ -149,4 +140,77 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error.getMessage());
         }
     }
+
+    @PatchMapping("/user/add-first-address/{userId}")
+    public ResponseEntity<User> addFirstAddress(@RequestHeader("Authorization") String authorizationHeader,
+            @PathVariable Long userId, @RequestBody User user) {
+        try {
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            String newFirstAddress = user.getFirstAddress();
+            User updatedUser = userService.addFirstAddress(authorizationHeader, userId, newFirstAddress);
+            return ResponseEntity.ok(updatedUser);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (SecurityException error) {
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+        }
+    }
+
+    @PatchMapping("/user/add-second-address/{userId}")
+    public ResponseEntity<User> addSecondAddress(@RequestHeader("Authorization") String authorizationHeader,
+            @PathVariable Long userId, @RequestBody User user) {
+        try {
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            String newSecondAddress = user.getSecondAddress();
+            User updatedUser = userService.addSecondAddress(authorizationHeader, userId, newSecondAddress);
+            return ResponseEntity.ok(updatedUser);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (SecurityException error) {
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+        }
+    }
+
+    @DeleteMapping("/user/remove-second-address/{userId}")
+    public ResponseEntity<?> deleteSecondAddress(@RequestHeader("Authorization") String authorizationHeader,
+            @PathVariable Long userId) {
+        try {
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            userService.removeSecondAddress(authorizationHeader, userId);
+
+            return ResponseEntity.ok("Segunda dirección eliminada con éxito.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (SecurityException e) {
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(e.getMessage());
+
+        }
+    }
+
+    @PatchMapping("/user/change-shipping-address/{userId}")
+    public ResponseEntity<User> changeShippingAddress(@RequestHeader("Authorization") String authorizationHeader,
+            @PathVariable Long userId, @RequestBody User user) {
+        try {
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            Boolean newShippingAddress = user.getShippingAddress();
+            User updatedUser = userService.changeShippingAddress(authorizationHeader, userId, newShippingAddress);
+            return ResponseEntity.ok(updatedUser);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (SecurityException error) {
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+        }
+    }
+
 }
