@@ -16,14 +16,16 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final JdbcTemplate jdbcTemplate;
+    private final AuthorityRepository authorityRepository;
 
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils,
-            JdbcTemplate jdbcTemplate) {
+            JdbcTemplate jdbcTemplate, AuthorityRepository authorityRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
         this.jdbcTemplate = jdbcTemplate;
+        this.authorityRepository = authorityRepository;
     }
 
     public User getUserById(String authorizationHeader, Long userId) {
@@ -123,8 +125,11 @@ public class UserService {
             throw new AccessDeniedException("Access DENIED. User not authorizated, only ADMIN");
         }
 
-        userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User to delete no found with ID: " + userId));
+
+        Authority authorityToDelete = authorityRepository.findByUsername(user.getUsername());
+        authorityRepository.delete(authorityToDelete);
 
         userRepository.deleteById(userId);
     }
