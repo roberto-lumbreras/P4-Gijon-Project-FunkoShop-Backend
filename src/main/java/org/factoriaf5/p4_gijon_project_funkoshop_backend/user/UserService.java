@@ -73,7 +73,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         if (user.getRole() == null) {
-            user.setRole(Role.ROLE_USER); 
+            user.setRole(Role.ROLE_USER);
         }
 
         User savedUser = userRepository.save(user);
@@ -83,6 +83,30 @@ public class UserService {
         jdbcTemplate.update(authorityQuery);
 
         return savedUser;
+    }
+
+    public Boolean activeUserById(String authorizationHeader, Long userId) throws AccessDeniedException {
+        String token = authorizationHeader.substring(7);
+        String emailFromToken = jwtUtils.getEmailFromJwtToken(token);
+
+        User userRequest = userRepository.findByEmail(emailFromToken)
+                .orElseThrow(() -> new IllegalArgumentException("User request not found"));
+
+        if (!userRequest.getJwToken().equals(token)) {
+            throw new SecurityException("User request token don't match with user's BDD token");
+        }
+
+        if (!userRequest.getRole().equals(Role.ROLE_ADMIN)) {
+            throw new AccessDeniedException("Access DENIED. User not authorizated, only ADMIN");
+        }
+
+        User userToActive = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User to active not found with ID: " + userId));
+
+        userToActive.setEnabled(!userToActive.getEnabled());
+        userRepository.save(userToActive);
+
+        return userToActive.getEnabled();
     }
 
     public void deleteUser(String authorizationHeader, Long userId) throws AccessDeniedException {
@@ -155,9 +179,8 @@ public class UserService {
 
         User userToUpdate = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User to find on BD not found"));
-        
-        
-        if(userToUpdate.getFirstAddress() == null){
+
+        if (userToUpdate.getFirstAddress() == null) {
             throw new IllegalArgumentException("The user needs first address");
         }
 
@@ -168,21 +191,21 @@ public class UserService {
     public void removeSecondAddress(String authorizationHeader, Long userId) {
         String token = authorizationHeader.substring(7);
         String emailFromToken = jwtUtils.getEmailFromJwtToken(token);
-    
+
         User userRequest = userRepository.findByEmail(emailFromToken)
                 .orElseThrow(() -> new IllegalArgumentException("User request not found"));
-    
+
         if (!userRequest.getJwToken().equals(token)) {
             throw new SecurityException("User request token don't match with user's BDD token");
         }
-    
+
         User userToUpdate = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User to find on BD not found"));
-    
+
         if (userToUpdate.getSecondAddress() == null) {
             throw new IllegalArgumentException("The user has no second address to remove");
         }
-    
+
         userToUpdate.setSecondAddress(null);
         userRepository.save(userToUpdate);
     }
@@ -201,8 +224,4 @@ public class UserService {
         return userRepository.save(userToUpdate);
     }
 
-
-
-
 }
-

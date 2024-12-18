@@ -38,6 +38,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(name = "jw_token")
     private String JwToken;
 
     @ManyToMany

@@ -2,6 +2,7 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.user;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +52,35 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
         } catch (AccessDeniedException error) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
+
+    @PatchMapping("/admin/active/{userId}")
+    public ResponseEntity<Map<String, String>> activeUser(@RequestHeader("Authorization") String authorizationHeader,
+            @PathVariable Long userId) {
+        try {
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            boolean isActive = userService.activeUserById(authorizationHeader, userId);
+
+            if (isActive) {
+                Map<String, String> response = Map.of("Usuario activo: ", "true");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            Map<String, String> response = Map.of("Usuario activo: ", "false");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IllegalArgumentException error) {
+            Map<String, String> errorResponse = Map.of("message", error.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        } catch (AccessDeniedException error) {
+            Map<String, String> errorResponse = Map.of("message", error.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+        } catch (SecurityException error) {
+            Map<String, String> errorResponse = Map.of("message", error.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.METHOD_NOT_ALLOWED);
         }
     }
 
@@ -112,7 +142,8 @@ public class UserController {
     }
 
     @PatchMapping("/user/add-first-address/{userId}")
-    public ResponseEntity<User> addFirstAddress(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long userId, @RequestBody User user) {
+    public ResponseEntity<User> addFirstAddress(@RequestHeader("Authorization") String authorizationHeader,
+            @PathVariable Long userId, @RequestBody User user) {
         try {
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -129,7 +160,8 @@ public class UserController {
     }
 
     @PatchMapping("/user/add-second-address/{userId}")
-    public ResponseEntity<User> addSecondAddress(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long userId, @RequestBody User user) {
+    public ResponseEntity<User> addSecondAddress(@RequestHeader("Authorization") String authorizationHeader,
+            @PathVariable Long userId, @RequestBody User user) {
         try {
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -145,41 +177,40 @@ public class UserController {
         }
     }
 
-
     @DeleteMapping("/user/remove-second-address/{userId}")
     public ResponseEntity<?> deleteSecondAddress(@RequestHeader("Authorization") String authorizationHeader,
-        @PathVariable Long userId) {
+            @PathVariable Long userId) {
         try {
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
-    
+
             userService.removeSecondAddress(authorizationHeader, userId);
-    
+
             return ResponseEntity.ok("Segunda dirección eliminada con éxito.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (SecurityException e) {
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(e.getMessage());
-    
+
         }
     }
 
     @PatchMapping("/user/change-shipping-address/{userId}")
-    public ResponseEntity<User> changeShippingAddress(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long userId, @RequestBody User user) {
+    public ResponseEntity<User> changeShippingAddress(@RequestHeader("Authorization") String authorizationHeader,
+            @PathVariable Long userId, @RequestBody User user) {
         try {
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        Boolean newShippingAddress = user.getShippingAddress();
-        User updatedUser = userService.changeShippingAddress(authorizationHeader, userId, newShippingAddress);
-        return ResponseEntity.ok(updatedUser);
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            Boolean newShippingAddress = user.getShippingAddress();
+            User updatedUser = userService.changeShippingAddress(authorizationHeader, userId, newShippingAddress);
+            return ResponseEntity.ok(updatedUser);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (SecurityException error) {
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
         }
     }
-    
-    
+
 }

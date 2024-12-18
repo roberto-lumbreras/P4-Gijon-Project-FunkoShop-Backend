@@ -2,8 +2,6 @@ package org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken;
 
 import java.io.IOException;
 
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +28,14 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private UserDetailsService userDetailsService;
 
     @Autowired
-    private DataSource dataSource;
+    // private DataSource dataSource;
 
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
     @Override
-    protected void doFilterInternal(@SuppressWarnings("null") HttpServletRequest request,
-            @SuppressWarnings("null") HttpServletResponse response, @SuppressWarnings("null") FilterChain filterChain)
-            throws ServletException, IOException {
-        // logger.debug("AuthTokenFilter called for URI: {}", request.getRequestURI());
+    protected void doFilterInternal(HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = parseJwt(request);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
@@ -48,29 +45,13 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
 
-                /*
-                 * logger.debug("Roles from JWT: {}", userDetails.getAuthorities());
-                 * 
-                 * System.out.println(userDetails);
-                 * 
-                 * List<String> roles = userDetails.getAuthorities().stream()
-                 * .map(GrantedAuthority::getAuthority) // Extrae el nombre del rol
-                 * .toList();
-                 * logger.debug("User roles: {}", roles);
-                 * 
-                 * authentication.setDetails(new
-                 * WebAuthenticationDetailsSource().buildDetails(request));
-                 * 
-                 * SecurityContextHolder.getContext().setAuthentication(authentication);
-                 */
-
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-
         } catch (Exception e) {
-            logger.error("Cannot set user authentication: {}", e);
+            logger.error("Cannot set user authentication: {}", e.getMessage());
         }
+
         filterChain.doFilter(request, response);
     }
 

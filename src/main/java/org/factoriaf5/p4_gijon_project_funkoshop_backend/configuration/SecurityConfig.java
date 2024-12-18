@@ -4,7 +4,13 @@ import javax.sql.DataSource;
 
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.AuthEntryPointJwt;
 import org.factoriaf5.p4_gijon_project_funkoshop_backend.configuration.jwtoken.AuthTokenFilter;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.Authority;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.AuthorityRepository;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.Role;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.User;
+import org.factoriaf5.p4_gijon_project_funkoshop_backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +35,9 @@ public class SecurityConfig {
 
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
+
+    @Autowired
+    private AuthorityRepository authorityRepository;
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
@@ -67,29 +76,45 @@ public class SecurityConfig {
         return new JdbcUserDetailsManager(dataSource);
     }
 
-    /*
-     * @Bean
-     * public CommandLineRunner initData(UserRepository repository, PasswordEncoder
-     * encoder) {
-     * return args -> {
-     * User user1 = new User();
-     * user1.setUsername("admin@email.com");
-     * user1.setEmail("admin@email.com");
-     * user1.setPassword(encoder.encode("1234"));
-     * user1.setRole("admin");
-     * user1.setEnabled(true);
-     * repository.save(user1);
-     * 
-     * User user2 = new User();
-     * user2.setUsername("user@email.com");
-     * user2.setEmail("user@email.com");
-     * user2.setPassword(encoder.encode("1234"));
-     * user2.setRole("user");
-     * user2.setEnabled(true);
-     * repository.save(user2);
-     * };
-     * }
-     */
+    @Bean
+    public CommandLineRunner initData(UserRepository userRepository, PasswordEncoder passwordEncoder,
+            AuthorityRepository authorityRepository) {
+        return args -> {
+            if (!userRepository.findByEmail("admin@email.com").isPresent()) {
+                User admin = new User();
+                admin.setUsername("admin@email.com");
+                admin.setEmail("admin@email.com");
+                admin.setPassword(passwordEncoder.encode("password1234"));
+                admin.setRole(Role.ROLE_ADMIN);
+                admin.setEnabled(true);
+                userRepository.save(admin);
+
+                Authority authorityAdmin = new Authority();
+
+                authorityAdmin.setUsername(admin.getEmail());
+                authorityAdmin.setAuthority(Role.ROLE_ADMIN);
+
+                authorityRepository.save(authorityAdmin);
+            }
+
+            if (!userRepository.findByEmail("user@email.com").isPresent()) {
+                User user = new User();
+                user.setUsername("user@email.com");
+                user.setEmail("user@email.com");
+                user.setPassword(passwordEncoder.encode("password1234"));
+                user.setRole(Role.ROLE_USER);
+                user.setEnabled(true);
+                userRepository.save(user);
+
+                Authority authorityUser = new Authority();
+
+                authorityUser.setUsername(user.getEmail());
+                authorityUser.setAuthority(Role.ROLE_USER);
+
+                authorityRepository.save(authorityUser);
+            }
+        };
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
