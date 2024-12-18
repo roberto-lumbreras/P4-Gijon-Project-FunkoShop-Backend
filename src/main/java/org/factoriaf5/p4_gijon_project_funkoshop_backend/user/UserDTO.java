@@ -10,24 +10,6 @@ public class UserDTO {
     private String role;
     private String JwToken;
     private List<Long> favorites;
-    private String firstName;
-    private String lastName;
-    private String firstAddress;
-    private String secondAddress;
-    private Boolean shippingAddress;
-    private Boolean suscribed;
-    private String phoneNumber;
-
-    public UserDTO(String firstName, String lastName, String firstAddress, String secondAddress,
-            Boolean shippingAddress, Boolean suscribed, String phoneNumber) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.firstAddress = firstAddress;
-        this.secondAddress = secondAddress;
-        this.shippingAddress = shippingAddress;
-        this.suscribed = suscribed;
-        this.phoneNumber = phoneNumber;
-    }
 
     public UserDTO(Long id, String email, String password, String role, String JwtToken, List<Long> favorites) {
         this.id = id;
@@ -85,33 +67,4 @@ public class UserDTO {
     public void setFavorites(List<Long> favorites) {
         this.favorites = favorites;
     }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getFirstAddress() {
-        return firstAddress;
-    }
-
-    public String getSecondAddress() {
-        return secondAddress;
-    }
-
-    public Boolean getShippingAddress() {
-        return shippingAddress;
-    }
-
-    public Boolean getSuscribed() {
-        return suscribed;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
 }
