@@ -52,13 +52,12 @@ public class UserService {
             throw new SecurityException("User request token don't match with user's BDD token");
         }
 
-        if (!"ROLE_ADMIN".equals(userRequest.getRole())) {
+        if (!userRequest.getRole().equals(Role.ROLE_ADMIN)) {
             throw new AccessDeniedException("Access DENIED. User not authorizated, only ADMIN");
         }
-
         List<User> list = userRepository.findAll();
 
-        return userRepository.findAll();
+        return list;
     }
 
     public User addUser(User user) {
@@ -120,7 +119,7 @@ public class UserService {
             throw new SecurityException("User request token don't match with user's BDD token");
         }
 
-        if (!"ROLE_ADMIN".equals(userRequest.getRole())) {
+        if (!userRequest.getRole().equals(Role.ROLE_ADMIN)) {
             throw new AccessDeniedException("Access DENIED. User not authorizated, only ADMIN");
         }
 
