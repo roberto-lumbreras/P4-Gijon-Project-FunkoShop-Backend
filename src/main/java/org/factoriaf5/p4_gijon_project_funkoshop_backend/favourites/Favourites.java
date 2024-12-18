@@ -9,12 +9,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "favorites")
 public class Favourites {
@@ -35,16 +32,6 @@ public class Favourites {
 
     public Long getId() {
         throw new UnsupportedOperationException("Unimplemented method 'getId'");
-    }
-
-
-    public FavouritesDTO getUser() {
-        throw new UnsupportedOperationException("Unimplemented method 'getUser'");
-    }
-
-
-    public FavouritesDTO getProduct() {
-        throw new UnsupportedOperationException("Unimplemented method 'getProduct'");
     }
 
 
