@@ -19,8 +19,8 @@ public class ProductDTO {
     private BigDecimal price;
     private Integer stock;
     private Integer discount;
-    private byte[] imageHash;
-    private byte[] imageHash2;
+    private String imgUrl;
+    private String imgUrl2;
     private Long categoryId;
     private LocalDateTime createdAt;
 
@@ -31,8 +31,8 @@ public class ProductDTO {
         this.price = product.getPrice();
         this.stock = product.getStock();
         this.discount = product.getDiscount();
-        this.imageHash = product.getImageHash();
-        this.imageHash2 = product.getImageHash2();
+        this.imgUrl = product.getImgUrl();
+        this.imgUrl2 = product.getImgUrl2();
         this.categoryId = product.getCategory().getId();
         this.createdAt = product.getCreatedAt();
     }
